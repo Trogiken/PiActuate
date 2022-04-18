@@ -18,7 +18,7 @@ anvil.server.connect("V5QNUE3PMZD42P7RSPOVDGL5-PTAOXCGWB7VCBPZK")
 
 @anvil.server.callable
 def show_message(message):
-    print(message)
+    return message + '[Modified By Client]'
 
 
 anvil.server.wait_forever()
