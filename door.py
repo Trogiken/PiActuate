@@ -28,7 +28,7 @@ class Door:
         exceeded_limit = True
 
         GPIO.output(relay, GPIO.HIGH)
-        while time.time() < start + self.maximum_travel_time:  # Stops after at least 5 seconds
+        while time.time() < start + self.maximum_travel_time:  # Stops after at least max_travel_time
             if GPIO.input(switch) is True:  # If limit switch is triggered
                 exceeded_limit = False
                 break
