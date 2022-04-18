@@ -16,7 +16,7 @@ class Door:
     GPIO.setup(RELAY1, GPIO.OUT, initial=0)
     GPIO.setup(RELAY2, GPIO.OUT, initial=0)
 
-    def __motion(self, direction):
+    def go(self, direction):
         directions = ['up', 'down']
         if direction in directions:
             if direction == 'up':
@@ -41,12 +41,6 @@ class Door:
         if exceeded_limit:
             return False  # If door movement took longer than 5 seconds
         return True  # If door hit top switch with 5 seconds
-
-    def open(self):
-        self.__motion('up')
-
-    def close(self):
-        self.__motion('down')
 
     @staticmethod
     def status():
