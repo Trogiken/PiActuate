@@ -36,7 +36,7 @@ class Door:
         GPIO.output(relay, GPIO.LOW)
         if exceeded_limit:
             return False  # If door movement took longer than 5 seconds
-        return True  # If door hit top switch within 5 seconds
+        return True  # If door hit switch within 5 seconds
 
     def status(self):
         top = GPIO.input(self.TOP_SWITCH)
