@@ -5,7 +5,7 @@ import anvil.server
 # Check for update button that pulls from GitHub
 # Change max travel time
 
-# use anvil to make app, publish it to an embed
+# use anvil to make app
 
 # door = Door()
 #
