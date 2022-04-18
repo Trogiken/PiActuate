@@ -4,3 +4,5 @@ from door import Door
 # Check for update button that pulls from GitHub
 
 door = Door
+
+door.mo
