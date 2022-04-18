@@ -1,0 +1,3 @@
+pip install anvil-uplink
+RPi.GPIO
+python 10.2
