@@ -15,13 +15,12 @@ class Door:
 
     def move(self, direction):
         directions = ['up', 'down']
-        if direction in directions:
-            if direction == 'up':
-                relay = self.RELAY1
-                switch = self.TOP_SWITCH
-            elif direction == 'down':
-                relay = self.RELAY2
-                switch = self.BOTTOM_SWITCH
+        if direction == 'up':
+            relay = self.RELAY1
+            switch = self.TOP_SWITCH
+        elif direction == 'down':
+            relay = self.RELAY2
+            switch = self.BOTTOM_SWITCH
         else:
             raise ValueError(f"Valid Directions: {directions}\nDirection Given: {direction}")
 
