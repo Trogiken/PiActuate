@@ -43,9 +43,9 @@ class Door:
         bottom = GPIO.input(self.BOTTOM_SWITCH)
 
         if top and bottom is False or True:  # Incorrect Door Position
+            return False
+        else:
             if top is True and bottom is False:
                 return 'up'
             elif top is False and bottom is True:
                 return 'down'
-        else:
-            return False
