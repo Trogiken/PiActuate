@@ -14,14 +14,35 @@ class Door:
     GPIO.setup(RELAY2, GPIO.OUT, initial=0)
     # GPIO.setup(0, GPIO.IN, pull_up_down=GPIO.PUD_UP) Change zero to what ever pin switch is attached to
 
+    def status(self):
+        top = GPIO.input(self.TOP_SWITCH)
+        bottom = GPIO.input(self.BOTTOM_SWITCH)
+        sensor = GPIO.input(self.LIGHT_SENSOR)
+
+        status = {'position': None, 'path': None}
+
+        if top and bottom is False or True:
+            status['position'] = 'Incorrect'
+        if top is True and bottom is False:
+            status['position'] = 'Up'
+        else:
+            status['position'] = 'Down'
+        if sensor is True:
+            status['path'] = 'Blocked'
+        else:
+            status['path'] = 'Clear'
+
+        return status
+
     def move(self, direction):
         directions = ['up', 'down']
-        if direction == directions[0]:  # up
-            relay = self.RELAY1
-            switch = self.TOP_SWITCH
-        elif direction == directions[1]:  # down
-            relay = self.RELAY2
-            switch = self.BOTTOM_SWITCH
+        if direction in directions:
+            if direction == 'up':
+                relay = self.RELAY1
+                switch = self.TOP_SWITCH
+            elif direction == 'down':
+                relay = self.RELAY2
+                switch = self.BOTTOM_SWITCH
         else:
             raise ValueError(f"Valid Directions: {directions}\nDirection Given: {direction}")
 
@@ -34,30 +55,10 @@ class Door:
                 if GPIO.input(switch) is True:  # If limit switch is triggered
                     exceeded_limit = False
                     break
+            GPIO.output(relay, GPIO.LOW)
         else:
             return False  # Light sensor is blocked
 
-        GPIO.output(relay, GPIO.LOW)
         if exceeded_limit:
             return False  # If door movement took longer than 5 seconds
         return True  # If door hit switch within 5 seconds
-
-    def status(self):
-        top = GPIO.input(self.TOP_SWITCH)
-        bottom = GPIO.input(self.BOTTOM_SWITCH)
-        sensor = GPIO.input(self.LIGHT_SENSOR)
-
-        status = {'position': None, 'path': None}
-
-        if top and bottom is False or True:  # Incorrect Door Position
-            status['position'] = 'Incorrect'
-        if top is True and bottom is False:
-            status['position'] = 'Up'
-        else:
-            status['position'] = 'Down'
-        if sensor is True:
-            status['path'] = 'Blocked'
-        else:
-            status['path'] = 'Clear'
-
-        return status
