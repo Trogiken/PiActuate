@@ -8,6 +8,7 @@ class Door:
     RELAY2 = 20
     TOP_SWITCH = 0  # Change to correct pin
     BOTTOM_SWITCH = 0  # Change to correct pin
+    LIGHT_SENSOR = 0  # Change to correct pin
     maximum_travel_time = 5
     GPIO.setup(RELAY1, GPIO.OUT, initial=0)
     GPIO.setup(RELAY2, GPIO.OUT, initial=0)
@@ -15,10 +16,10 @@ class Door:
 
     def move(self, direction):
         directions = ['up', 'down']
-        if direction == 'up':
+        if direction == directions[0]:  # up
             relay = self.RELAY1
             switch = self.TOP_SWITCH
-        elif direction == 'down':
+        elif direction == directions[1]:  # down
             relay = self.RELAY2
             switch = self.BOTTOM_SWITCH
         else:
@@ -27,11 +28,14 @@ class Door:
         start = time.time()
         exceeded_limit = True
 
-        GPIO.output(relay, GPIO.HIGH)
-        while time.time() < start + self.maximum_travel_time:  # Stops after at least max_travel_time
-            if GPIO.input(switch) is True:  # If limit switch is triggered
-                exceeded_limit = False
-                break
+        if GPIO.input(self.LIGHT_SENSOR) is False:  # If light sensor isn't blocked
+            GPIO.output(relay, GPIO.HIGH)
+            while time.time() < start + self.maximum_travel_time:  # Stops after at least max_travel_time
+                if GPIO.input(switch) is True:  # If limit switch is triggered
+                    exceeded_limit = False
+                    break
+        else:
+            return False  # Light sensor is blocked
 
         GPIO.output(relay, GPIO.LOW)
         if exceeded_limit:
@@ -41,11 +45,19 @@ class Door:
     def status(self):
         top = GPIO.input(self.TOP_SWITCH)
         bottom = GPIO.input(self.BOTTOM_SWITCH)
+        sensor = GPIO.input(self.LIGHT_SENSOR)
+
+        status = {'position': None, 'path': None}
 
         if top and bottom is False or True:  # Incorrect Door Position
-            return False
+            status['position'] = 'Incorrect'
+        if top is True and bottom is False:
+            status['position'] = 'Up'
         else:
-            if top is True and bottom is False:
-                return 'up'
-            elif top is False and bottom is True:
-                return 'down'
+            status['position'] = 'Down'
+        if sensor is True:
+            status['path'] = 'Blocked'
+        else:
+            status['path'] = 'Clear'
+
+        return status
