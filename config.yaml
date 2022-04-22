@@ -1,10 +1,10 @@
-relay1: 26
-relay2: 20
-top_switch: 0
+automation: true
 bottom_switch: 0
-light_sensor: 0
-maximum_travel_time: 5
-automation: True
 city: Riley
 country: United States
+light_sensor: 0
+max_travel_time: 5
+relay1: 26
+relay2: 20
 timezone: US/Eastern
+top_switch: 0

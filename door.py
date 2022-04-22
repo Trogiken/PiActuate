@@ -13,7 +13,7 @@ class Door:
     TOP_SWITCH = config['top_switch']  # Change to correct pin
     BOTTOM_SWITCH = config['bottom_switch']  # Change to correct pin
     LIGHT_SENSOR = config['light_sensor']  # Change to correct pin
-    maximum_travel_time = config['maximum_travel_time']
+    max_travel_time = config['maximum_travel_time']
     GPIO.setup(RELAY1, GPIO.OUT, initial=0)
     GPIO.setup(RELAY2, GPIO.OUT, initial=0)
     # GPIO.setup(0, GPIO.IN, pull_up_down=GPIO.PUD_UP) Change zero to what ever pin switch is attached to
@@ -55,7 +55,7 @@ class Door:
 
         if GPIO.input(self.LIGHT_SENSOR) is False:  # If light sensor isn't blocked
             GPIO.output(relay, GPIO.HIGH)
-            while time.time() < start + self.maximum_travel_time:  # Stops after at least max_travel_time
+            while time.time() < start + self.max_travel_time:  # Stops after at least max_travel_time
                 if GPIO.input(switch) is True:  # If limit switch is triggered
                     exceeded_limit = False
                     break
@@ -64,5 +64,5 @@ class Door:
             return {'check': False, 'msg': 'Sensor Blocked'}  # Light sensor is blocked
 
         if exceeded_limit:  # If movement took longer than set seconds
-            return {'check': False, 'msg': f'Exceeded movement limit of {self.maximum_travel_time} seconds'}
+            return {'check': False, 'msg': f'Exceeded movement limit of {self.max_travel_time} seconds'}
         return True  # If door hit switch within 5 seconds
