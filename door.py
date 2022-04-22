@@ -1,15 +1,19 @@
 import RPi.GPIO as GPIO
 import time
+import yaml
+
+with open('config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
 
 
 class Door:
-    GPIO.setmode(GPIO.BCM)
-    RELAY1 = 26
-    RELAY2 = 20
-    TOP_SWITCH = 0  # Change to correct pin
-    BOTTOM_SWITCH = 0  # Change to correct pin
-    LIGHT_SENSOR = 0  # Change to correct pin
-    maximum_travel_time = 5
+    # GPIO.setmode(GPIO.BCM)
+    RELAY1 = config['relay1']
+    RELAY2 = config['relay2']
+    TOP_SWITCH = config['top_switch']  # Change to correct pin
+    BOTTOM_SWITCH = config['bottom_switch']  # Change to correct pin
+    LIGHT_SENSOR = config['light_sensor']  # Change to correct pin
+    maximum_travel_time = config['maximum_travel_time']
     GPIO.setup(RELAY1, GPIO.OUT, initial=0)
     GPIO.setup(RELAY2, GPIO.OUT, initial=0)
     # GPIO.setup(0, GPIO.IN, pull_up_down=GPIO.PUD_UP) Change zero to what ever pin switch is attached to
@@ -44,7 +48,7 @@ class Door:
                 relay = self.RELAY2
                 switch = self.BOTTOM_SWITCH
         else:
-            raise ValueError(f"Valid Directions: {directions}\nDirection Given: {direction}")
+            return {'check': False, 'msg': 'Invalid Direction'}
 
         start = time.time()
         exceeded_limit = True
@@ -57,8 +61,8 @@ class Door:
                     break
             GPIO.output(relay, GPIO.LOW)
         else:
-            return False  # Light sensor is blocked
+            return {'check': False, 'msg': 'Sensor Blocked'}  # Light sensor is blocked
 
-        if exceeded_limit:
-            return False  # If door movement took longer than 5 seconds
+        if exceeded_limit:  # If movement took longer than set seconds
+            return {'check': False, 'msg': f'Exceeded movement limit of {self.maximum_travel_time} seconds'}
         return True  # If door hit switch within 5 seconds
