@@ -6,9 +6,6 @@ import yaml
 
 # Set static IP for RPI
 # Check for update button that pulls from GitHub
-# Change max travel time
-# Text Fields with background text like: max_travel_time: int
-#   Then have a save button that changes variable values and saves it to a local file
 
 # door = Door()
 # @anvil.server.callable
@@ -39,7 +36,10 @@ def set_state(variable, value):
 
 @anvil.server.callable
 def restart():
-    pass
+    import os
+    anvil.server.disconnect()
+    os.system('python restart.py')
+    exit()
 
 
 @anvil.server.callable
