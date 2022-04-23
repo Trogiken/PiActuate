@@ -4,3 +4,4 @@ python 10.2
 pyyaml
 pytz
 solartime
+requests
