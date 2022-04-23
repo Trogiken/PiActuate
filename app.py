@@ -36,6 +36,11 @@ def automation():
 
 
 @anvil.server.callable
+def test():  # used in status check
+    return
+
+
+@anvil.server.callable
 def get_state(variable):
     with open('config.yaml') as file:
         data = yaml.safe_load(file)
