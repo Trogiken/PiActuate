@@ -64,5 +64,5 @@ class Door:
             return {'check': False, 'msg': 'Sensor Blocked'}  # Light sensor is blocked
 
         if exceeded_limit:  # If movement took longer than set seconds
-            return {'check': False, 'msg': f'Exceeded movement limit of {self.max_travel_time} seconds'}
-        return True  # If door hit switch within 5 seconds
+            return {'check': False, 'msg': f'Exceeded movement limit of {self.max_travel_time} seconds: [{direction}]'}
+        return {'check': True, 'msg': f'Door Moved Successfully: [{direction}]'}  # If door hit switch within 5 seconds

@@ -38,10 +38,18 @@ class Auto:
         return {'today': today, 'sunset': sunset, 'sunrise': sunrise}
 
     def up(self):
-        self.door.move('up')
+        response = self.door.move('up')
+        if response['check']:
+            print(f"Door INFO: {response['msg']}")
+        elif not response['check']:
+            print(f"Door ERROR: {response['msg']}")
 
     def down(self):
-        self.door.move('down')
+        response = self.door.move('down')
+        if response['check']:
+            print(f"Door INFO: {response['msg']}")
+        elif not response['check']:
+            print(f"Door ERROR: {response['msg']}")
 
     def scheduler(self, sunrise, sunset):
 
