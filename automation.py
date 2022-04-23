@@ -45,8 +45,8 @@ class Auto:
 
     def scheduler(self, sunrise, sunset):
 
-        schedule.every().at(sunrise).do(self.up())
-        schedule.every().at(sunset).do(self.down())
+        schedule.every().at(sunrise).do(self.up())  # check if it needs number:number instead of number:number:number
+        schedule.every().at(sunset).do(self.down())  # check if it needs number:number instead of number:number:number
 
         while True:
             schedule.run_pending()

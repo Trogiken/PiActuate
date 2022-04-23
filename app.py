@@ -1,6 +1,5 @@
 # from door import Door
 # from automation import Auto
-from time import sleep
 import anvil.server
 import os
 import yaml
@@ -135,7 +134,6 @@ except Exception as err:
         exit()
     else:
         print(f"**** CRITICAL ERROR: {err} ****")
-        sleep(5)
         anvil.server.disconnect()
         os.system('python restart.py')
         exit()
