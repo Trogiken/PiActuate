@@ -5,3 +5,5 @@ pyyaml
 pytz
 solartime
 requests
+anvil
+pip install schedule

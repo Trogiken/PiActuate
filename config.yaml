@@ -1,6 +1,7 @@
 automation: true
 bottom_switch: 0
 city: Riley
+state: Michigan
 country: United States
 light_sensor: 0
 max_travel_time: 5

@@ -7,7 +7,7 @@ def main():
 
 
 if __name__ == '__main__':
-    sleep(3)
+    sleep(5)
     main()
     print('done')
     exit()

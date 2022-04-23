@@ -8,8 +8,8 @@ with open('config.yaml', 'r') as file:
 
 class Door:
     # GPIO.setmode(GPIO.BCM)
-    RELAY1 = config['relay1']
-    RELAY2 = config['relay2']
+    RELAY1 = config['relay_1']
+    RELAY2 = config['relay_2']
     TOP_SWITCH = config['top_switch']  # Change to correct pin
     BOTTOM_SWITCH = config['bottom_switch']  # Change to correct pin
     LIGHT_SENSOR = config['light_sensor']  # Change to correct pin

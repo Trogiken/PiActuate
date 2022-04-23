@@ -11,16 +11,23 @@ def automation():
 
     city = config['city']
     country = config['country']
+    state = config['state']
 
-    url = "https://nominatim.openstreetmap.org/?addressdetails=1&q=" + city + "+" + country +"&format=json&limit=1"
+    if state:
+        url = f"https://nominatim.openstreetmap.org/?addressdetails=1&q={city}+{state}+{country}&format=json&limit=1"
+    if not state:
+        url = f"https://nominatim.openstreetmap.org/?addressdetails=1&q={city}+{country}&format=json&limit=1"
 
-    response = requests.get(url).json()
+    try:
+        response = requests.get(url).json()
+    except Exception:
+        return
 
-    yesterday = datetime.today() - timedelta(1)
+    today = datetime.today()
 
-    year = yesterday.year
-    month = yesterday.month
-    day = yesterday.day
+    year = today.year
+    month = today.month
+    day = today.day
 
     today = date(year, month, day)
     localtz = timezone(config['timezone'])
@@ -29,8 +36,10 @@ def automation():
     sun = SolarTime()
     schedule = sun.sun_utc(today, lat, lon)
     sunset = schedule['sunset'].astimezone(localtz)
+    sunrise = schedule['sunrise'].astimezone(localtz)
 
-    return sunset
+    return {'sunset': sunset, 'sunrise': sunrise}
 
 
-print(automation())
+data = automation()
+print(f"Sunrise: {data['sunrise']}\nSunset : {data['sunset']}")
