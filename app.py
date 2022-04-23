@@ -6,6 +6,7 @@ import yaml
 
 # Set static IP for RPI
 # Check for update button that pulls from GitHub
+# Make a status timer that calls a function that returns the position
 
 # door = Door()
 # @anvil.server.callable
@@ -17,13 +18,6 @@ with open('config.yaml') as f:
     config = yaml.safe_load(f)
 
 
-@anvil.server.background_task
-def automation():
-    if config['automation'] is False:
-        return
-# anvil.server.launch_background_task('automation')
-
-
 def set_state(variable, value):
     with open('config.yaml') as file:
         data = yaml.safe_load(file)
@@ -32,6 +26,21 @@ def set_state(variable, value):
 
     with open('config.yaml', 'w') as file:
         yaml.safe_dump(data, file)
+
+
+@anvil.server.background_task
+def automation():
+    if config['automation'] is False:
+        return
+# anvil.server.launch_background_task('automation')
+
+
+@anvil.server.callable
+def get_state(variable):
+    with open('config.yaml') as file:
+        data = yaml.safe_load(file)
+
+    return f"{variable} = {data[variable]}"
 
 
 @anvil.server.callable
@@ -79,13 +88,13 @@ def change(variable, value):  # Restart required for changes
         elif variable == 'relay_1':
             try:
                 value = int(value)
-                set_state('relay1', value)
+                set_state('relay_1', value)
             except ValueError:
                 return '[Relay 1] Must be an Integer'
         elif variable == 'relay_2':
             try:
                 value = int(value)
-                set_state('relay2', value)
+                set_state('relay_2', value)
             except ValueError:
                 return '[Relay 2] Must be an Integer'
         elif variable == 'top_switch':

@@ -4,7 +4,7 @@ city: Riley
 country: United States
 light_sensor: 0
 max_travel_time: 5
-relay1: 26
-relay2: 20
+relay_1: 26
+relay_2: 20
 timezone: US/Eastern
 top_switch: 0
