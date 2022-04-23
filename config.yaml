@@ -1,9 +1,8 @@
 automation: true
 bottom_switch: 0
-city: Riley
-state: Michigan
-country: United States
+latitude: 42.9150336
 light_sensor: 0
+longitude: -84.6805442
 max_travel_time: 5
 relay_1: 26
 relay_2: 20

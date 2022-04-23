@@ -58,8 +58,8 @@ try:
 
     @anvil.server.callable
     def change(variable, value):  # Restart required for changes
-        valid_variables = ['max_travel_time', 'relay_1', 'relay_2', 'automation', 'city', 'country',
-                           'top_switch', 'bottom_switch', 'timezone', 'light_sensor', 'state']
+        valid_variables = ['max_travel_time', 'relay_1', 'relay_2', 'automation', 'latitude', 'longitude',
+                           'top_switch', 'bottom_switch', 'timezone', 'light_sensor']
         if variable in valid_variables:
             if variable == 'max_travel_time':
                 try:
@@ -75,23 +75,20 @@ try:
                 else:
                     return '[Automation] Must be True or False'
                 set_state('automation', value)
-            elif variable == 'city':
-                if type(value) == 'str':
-                    set_state('city', value)
-                else:
-                    return '[City] Must be a String'
-            elif variable == 'state':
-                if type(value) == 'str':
-                    set_state('state', value)
-                else:
-                    return '[State] Must be a String'
-            elif variable == 'country':
-                if type(value) == 'str':
-                    set_state('country', value)
-                else:
-                    return '[Country] Must be a String'
+            elif variable == 'latitude':
+                try:
+                    value = float(value)
+                    set_state('latitude', value)
+                except ValueError:
+                    return '[Latitude] Must be an Float'
+            elif variable == 'longitude':
+                try:
+                    value = float(value)
+                    set_state('longitude', value)
+                except ValueError:
+                    return '[Longitude] Must be an Float'
             elif variable == 'timezone':
-                if type(value) == 'str':
+                if type(value) == str:
                     set_state('timezone', value)
                 else:
                     return '[Timezone] Must be a String'

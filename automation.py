@@ -1,26 +1,58 @@
+from door import Door
+from datetime import date, datetime
+from pytz import timezone
+from solartime import SolarTime
+from time import sleep
 import schedule
-import time
-# from door import Door
+import yaml
+import re
 
 
-# def job(t):
-#     print("I'm working...", t)
-#     return
-#
-#
-# schedule.every().day.at("01:00").do(job, 'It is 01:00')
-#
-# while True:
-#     schedule.run_pending()
-#     time.sleep(60)  # wait one minute
+class Auto:
+    with open('config.yaml') as f:
+        config = yaml.safe_load(f)
 
+    door = Door()
 
-# class Auto:
-#     door = Door()
-#
-#     # get open and close time
-#     def open(self):
-#         self.door.move('up')
-#
-#     def run(self):
-#         pass
+    def get_world(self):
+        today = datetime.today()
+
+        year = today.year
+        month = today.month
+        day = today.day
+
+        today = date(year, month, day)
+        localtz = timezone(self.config['timezone'])
+        lat, lon = self.config['latitude'], self.config['longitude']
+
+        sun = SolarTime()
+        schedule_ = sun.sun_utc(today, lat, lon)
+        raw_sunset = str(schedule_['sunset'].astimezone(localtz))  # year-month-day hour:min:second-timezone
+        raw_sunrise = str(schedule_['sunrise'].astimezone(localtz))  # year-month-day hour:min:second-timezone
+
+        pattern = r" (.*?)\-"
+
+        sunset = re.search(pattern, raw_sunset).group(1)
+        sunrise = re.search(pattern, raw_sunrise).group(1)
+
+        return {'today': today, 'sunset': sunset, 'sunrise': sunrise}
+
+    def up(self):
+        self.door.move('up')
+
+    def down(self):
+        self.door.move('down')
+
+    def scheduler(self, sunrise, sunset):
+
+        schedule.every().at(sunrise).do(self.up())
+        schedule.every().at(sunset).do(self.down())
+
+        while True:
+            schedule.run_pending()
+            sleep(60)  # wait one minute
+
+    def run(self):
+        sun_data = self.get_world()
+
+        self.scheduler(sunrise=sun_data['sunrise'], sunset=sun_data['sunset'])
