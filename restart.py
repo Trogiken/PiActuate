@@ -9,5 +9,4 @@ def main():
 if __name__ == '__main__':
     sleep(5)
     main()
-    print('done')
     exit()
