@@ -6,8 +6,8 @@ with open('config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
 
-class Door:
-    # GPIO.setmode(GPIO.BCM)
+class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
+    GPIO.setmode(GPIO.BCM)
     RELAY1 = config['relay_1']
     RELAY2 = config['relay_2']
     TOP_SWITCH = config['top_switch']  # Change to correct pin
