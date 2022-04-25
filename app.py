@@ -1,8 +1,16 @@
-# from door import Door
-# from automation import Auto
+from door import Door
+from automation import Auto
 import anvil.server
 import os
 import yaml
+
+with open('config.yaml') as f:
+    config = yaml.safe_load(f)
+
+door = Door(relay1=config['relay_1'], relay2=config['relay_2'], top_switch=config['top_switch'],
+            bottom_switch=config['bottom_switch'], light_sensor=config['light_sensor'],
+            max_travel_time=config['max_travel_time'])
+auto = Auto(door=door, zone=config['timezone'], latitude=config['latitude'], longitude=config['longitude'])
 
 
 try:
@@ -13,16 +21,19 @@ try:
     # door = Door()
     # auto = Auto()
     #
-    # with open('config.yaml') as f:
-    #     config = yaml.safe_load(f)
-    #     if config['automation']:
-    #         auto.run()
 
     # @anvil.server.callable
     # def move(direction):
     #     return door.move(direction)
 
     anvil.server.connect("V5QNUE3PMZD42P7RSPOVDGL5-PTAOXCGWB7VCBPZK")
+
+    @anvil.server.background_task
+    def run_auto():
+        auto.run()
+
+    if config['automation']:
+        anvil.server.launch_background_task('run_auto')
 
 
     def set_state(variable, value):

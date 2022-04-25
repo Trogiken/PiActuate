@@ -1,22 +1,19 @@
 import RPi.GPIO as GPIO
 import time
-import yaml
-
-with open('config.yaml', 'r') as file:
-    config = yaml.safe_load(file)
 
 
 class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
-    GPIO.setmode(GPIO.BCM)
-    RELAY1 = config['relay_1']
-    RELAY2 = config['relay_2']
-    TOP_SWITCH = config['top_switch']  # Change to correct pin
-    BOTTOM_SWITCH = config['bottom_switch']  # Change to correct pin
-    LIGHT_SENSOR = config['light_sensor']  # Change to correct pin
-    max_travel_time = config['maximum_travel_time']
-    GPIO.setup(RELAY1, GPIO.OUT, initial=0)
-    GPIO.setup(RELAY2, GPIO.OUT, initial=0)
-    # GPIO.setup(0, GPIO.IN, pull_up_down=GPIO.PUD_UP) Change zero to what ever pin switch is attached to
+    def __init__(self, relay1, relay2, top_switch, bottom_switch, light_sensor, max_travel_time):
+        GPIO.setmode(GPIO.BCM)
+        self.RELAY1 = relay1
+        self.RELAY2 = relay2
+        self.TOP_SWITCH = top_switch  # Change to correct pin
+        self.BOTTOM_SWITCH = bottom_switch  # Change to correct pin
+        self.LIGHT_SENSOR = light_sensor  # Change to correct pin
+        self.max_travel_time = max_travel_time
+        GPIO.setup(self.RELAY1, GPIO.OUT, initial=0)
+        GPIO.setup(self.RELAY2, GPIO.OUT, initial=0)
+        # GPIO.setup(0, GPIO.IN, pull_up_down=GPIO.PUD_UP) Change zero to what ever pin switch is attached to
 
     def status(self):
         top = GPIO.input(self.TOP_SWITCH)
@@ -38,7 +35,7 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
 
         return status
 
-    def move(self, direction):
+    def move(self, direction):  # TRY TO INCORPORATE STATUS FUNCTION FOR CHECKS
         directions = ['up', 'down']
         if direction in directions:
             if direction == 'up':

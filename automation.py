@@ -1,18 +1,18 @@
-from door import Door
 from datetime import date, datetime
 from pytz import timezone
 from solartime import SolarTime
 from time import sleep
-import schedule
-import yaml
 import re
 
 
 class Auto:
-    with open('config.yaml') as f:
-        config = yaml.safe_load(f)
+    def __init__(self, door, zone, longitude, latitude):
+        self.longitude = longitude
+        self.latitude = latitude
+        self.zone = zone
+        self.door = door
 
-    door = Door()
+        self.is_running = False
 
     def get_world(self):
         today = datetime.today()
@@ -22,8 +22,8 @@ class Auto:
         day = today.day
 
         today = date(year, month, day)
-        localtz = timezone(self.config['timezone'])
-        lat, lon = self.config['latitude'], self.config['longitude']
+        localtz = timezone(self.zone)
+        lat, lon = self.latitude, self.longitude
 
         sun = SolarTime()
         schedule_ = sun.sun_utc(today, lat, lon)
@@ -37,30 +37,28 @@ class Auto:
 
         return {'today': today, 'sunset': sunset, 'sunrise': sunrise}
 
-    def up(self):
-        response = self.door.move('up')
-        if response['check']:
-            print(f"[Automation] Door INFO: {response['msg']}")
-        elif not response['check']:
-            print(f"[Automation] Door ERROR: {response['msg']}")
-
-    def down(self):
-        response = self.door.move('down')
-        if response['check']:
-            print(f"[Automation] Door INFO: {response['msg']}")
-        elif not response['check']:
-            print(f"[Automation] Door ERROR: {response['msg']}")
-
     def scheduler(self, sunrise, sunset):
+        sunrise = sunrise[:len(sunrise) - 3]
+        sunset = sunset[:len(sunset) - 3]
+        current = datetime.now().strftime("%H:%M")
 
-        schedule.every().at(sunrise).do(self.up())  # check if it needs number:number instead of number:number:number
-        schedule.every().at(sunset).do(self.down())  # check if it needs number:number instead of number:number:number
-
-        while True:
-            schedule.run_pending()
-            sleep(60)  # wait one minute
+        try:
+            while True:
+                self.is_running = True
+                if current >= sunrise:  # Check if comparison works
+                    if not self.door.status()['position'] == 'up':
+                        self.door.move('up')
+                        break
+                elif current >= sunset:  # Check if comparison works
+                    if not self.door.status()['position'] == 'down':
+                        self.door.move('down')
+                        break
+                sleep(1)
+        except Exception as err:
+            self.is_running = False
+            print(f"[Automation] Scheduler Error: {err}")
 
     def run(self):
-        sun_data = self.get_world()
-
-        self.scheduler(sunrise=sun_data['sunrise'], sunset=sun_data['sunset'])
+        while True:
+            sun_data = self.get_world()
+            self.scheduler(sunrise=sun_data['sunrise'], sunset=sun_data['sunset'])
