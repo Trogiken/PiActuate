@@ -40,16 +40,16 @@ class Auto:
     def up(self):
         response = self.door.move('up')
         if response['check']:
-            print(f"Door INFO: {response['msg']}")
+            print(f"[Automation] Door INFO: {response['msg']}")
         elif not response['check']:
-            print(f"Door ERROR: {response['msg']}")
+            print(f"[Automation] Door ERROR: {response['msg']}")
 
     def down(self):
         response = self.door.move('down')
         if response['check']:
-            print(f"Door INFO: {response['msg']}")
+            print(f"[Automation] Door INFO: {response['msg']}")
         elif not response['check']:
-            print(f"Door ERROR: {response['msg']}")
+            print(f"[Automation] Door ERROR: {response['msg']}")
 
     def scheduler(self, sunrise, sunset):
 
