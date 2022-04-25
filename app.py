@@ -1,5 +1,5 @@
-from door import Door
-from automation import Auto
+# from door import Door
+# from automation import Auto
 import anvil.server
 import os
 import yaml
@@ -7,10 +7,10 @@ import yaml
 with open('config.yaml') as f:
     loaded_config = yaml.safe_load(f)
 
-door = Door(relay1=loaded_config['relay_1'], relay2=loaded_config['relay_2'], top_switch=loaded_config['top_switch'],
-            bottom_switch=loaded_config['bottom_switch'], light_sensor=loaded_config['light_sensor'],
-            max_travel_time=loaded_config['max_travel_time'])
-auto = Auto(door=door, zone=loaded_config['timezone'], latitude=loaded_config['latitude'], longitude=loaded_config['longitude'])
+# door = Door(relay1=loaded_config['relay_1'], relay2=loaded_config['relay_2'], top_switch=loaded_config['top_switch'],
+#             bottom_switch=loaded_config['bottom_switch'], light_sensor=loaded_config['light_sensor'],
+#             max_travel_time=loaded_config['max_travel_time'])
+# auto = Auto(door=door, zone=loaded_config['timezone'], latitude=loaded_config['latitude'], longitude=loaded_config['longitude'])
 
 
 try:
@@ -28,12 +28,12 @@ try:
 
     anvil.server.connect("V5QNUE3PMZD42P7RSPOVDGL5-PTAOXCGWB7VCBPZK")
 
-    @anvil.server.background_task
-    def run_auto():
-        auto.run()
-
-    if loaded_config['automation']:
-        anvil.server.launch_background_task('run_auto')
+    # @anvil.server.background_task
+    # def run_auto():
+    #     auto.run()
+    #
+    # if loaded_config['automation']:
+    #     anvil.server.launch_background_task('run_auto')
 
 
     def set_state(variable, value):
@@ -47,16 +47,25 @@ try:
 
 
     @anvil.server.callable
-    def get_current_state(variable):
+    def get_current_state(variable=None, get_all=False):
         with open('config.yaml') as file:
             data = yaml.safe_load(file)
 
-        return f"{variable} = {data[variable]}"
+        if get_all:
+            return list(data.values())
+        elif variable:
+            return f"{variable} = {data[variable]}"
+        else:
+            return None
 
     @anvil.server.callable
-    def get_loaded_state(variable):
-        return f"{variable} = {loaded_config[variable]}"
-
+    def get_loaded_state(variable=None, get_all=False):
+        if get_all:
+            return list(loaded_config.values())
+        elif variable:
+            return f"{variable} = {loaded_config[variable]}"
+        else:
+            return None
 
     @anvil.server.callable
     def test():  # used in status check
@@ -71,9 +80,9 @@ try:
 
 
     @anvil.server.callable
-    def change(variable, value):  # Restart required for changes
-        valid_variables = ['max_travel_time', 'relay_1', 'relay_2', 'automation', 'latitude', 'longitude',
-                           'top_switch', 'bottom_switch', 'timezone', 'light_sensor']
+    def change(variable, value):
+        valid_variables = list(loaded_config.keys())
+
         if variable in valid_variables:
             if variable == 'max_travel_time':
                 try:
@@ -136,7 +145,10 @@ try:
                     set_state('light_sensor', value)
                 except ValueError:
                     return '[Light Sensor] Must be an Integer'
+            else:
+                raise ValueError("Make sure config variables are the same as the variables in change()")
 
+            print(f"[WebApp] {variable} changed to {value}")
             return f'[{variable}] set to [{value}]'
         else:
             return 'Invalid Variable'
@@ -149,6 +161,5 @@ except Exception as err:
     else:
         print(f"**** CRITICAL ERROR: {err} ****")
         anvil.server.disconnect()
-        os.system('python restart.py')
 
     exit()
