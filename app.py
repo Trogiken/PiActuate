@@ -131,9 +131,9 @@ try:
 except Exception as err:
     if err == 'KeyboardInterrupt':
         anvil.server.disconnect()
-        exit()
     else:
         print(f"**** CRITICAL ERROR: {err} ****")
         anvil.server.disconnect()
         os.system('python restart.py')
-        exit()
+
+    exit()
