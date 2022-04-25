@@ -5,12 +5,12 @@ import os
 import yaml
 
 with open('config.yaml') as f:
-    config = yaml.safe_load(f)
+    loaded_config = yaml.safe_load(f)
 
-door = Door(relay1=config['relay_1'], relay2=config['relay_2'], top_switch=config['top_switch'],
-            bottom_switch=config['bottom_switch'], light_sensor=config['light_sensor'],
-            max_travel_time=config['max_travel_time'])
-auto = Auto(door=door, zone=config['timezone'], latitude=config['latitude'], longitude=config['longitude'])
+door = Door(relay1=loaded_config['relay_1'], relay2=loaded_config['relay_2'], top_switch=loaded_config['top_switch'],
+            bottom_switch=loaded_config['bottom_switch'], light_sensor=loaded_config['light_sensor'],
+            max_travel_time=loaded_config['max_travel_time'])
+auto = Auto(door=door, zone=loaded_config['timezone'], latitude=loaded_config['latitude'], longitude=loaded_config['longitude'])
 
 
 try:
@@ -32,7 +32,7 @@ try:
     def run_auto():
         auto.run()
 
-    if config['automation']:
+    if loaded_config['automation']:
         anvil.server.launch_background_task('run_auto')
 
 
@@ -48,10 +48,7 @@ try:
 
     @anvil.server.callable
     def get_state(variable):
-        with open('config.yaml') as file:
-            data = yaml.safe_load(file)
-
-        return f"{variable} = {data[variable]}"
+        return f"{variable} = {loaded_config[variable]}"
 
 
     @anvil.server.callable
