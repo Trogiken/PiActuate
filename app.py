@@ -47,7 +47,14 @@ try:
 
 
     @anvil.server.callable
-    def get_state(variable):
+    def get_current_state(variable):
+        with open('config.yaml') as file:
+            data = yaml.safe_load(file)
+
+        return f"{variable} = {data[variable]}"
+
+    @anvil.server.callable
+    def get_loaded_state(variable):
         return f"{variable} = {loaded_config[variable]}"
 
 
