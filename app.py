@@ -19,8 +19,6 @@ try:
     # Make a status timer that calls a function that returns the position
 
     # door = Door()
-    # auto = Auto()
-    #
 
     # @anvil.server.callable
     # def move(direction):
