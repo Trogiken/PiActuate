@@ -39,8 +39,9 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
     def move(self, direction):
         exceeded_limit = True
         door_blocked = False
+        already_at_position = False
 
-        if direction == 'up':  # If light sensor isn't blocked
+        if direction == 'up':
             if GPIO.input(self.TOP_SWITCH) is not True:  # If limit switch is not already triggered
                 GPIO.output(self.RELAY2, GPIO.HIGH)
 
@@ -56,7 +57,7 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
                 GPIO.output(self.RELAY2, GPIO.LOW)
                 self.in_motion = False
             else:
-                return f'Door already {direction}'
+                already_at_position = True
         elif direction == 'down':
             if GPIO.input(self.LIGHT_SENSOR) is not True:  # If not blocked
                 if GPIO.input(self.BOTTOM_SWITCH) is not True:  # If limit switch is not already triggered
@@ -77,15 +78,17 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
                     GPIO.output(self.RELAY1, GPIO.LOW)
                     self.in_motion = False
                 else:
-                    return f'Door already {direction}'
+                    already_at_position = True
             else:
                 door_blocked = True
         else:
             return 'Invalid Direction'
 
-        if door_blocked is True:
+        if door_blocked:
             self.move('up')
             return 'Door Blocked'
+        if already_at_position:
+            return f'Door already: [{direction}]'
         elif exceeded_limit:  # If movement took longer than set seconds
             return f'Exceeded movement limit of {self.max_travel_time} seconds: [{direction}]'
         return f'Door Moved Successfully: [{direction}]'  # If door hit switch within 5 seconds
