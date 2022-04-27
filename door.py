@@ -15,27 +15,28 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
         GPIO.setup(self.RELAY2, GPIO.OUT, initial=0)
         # GPIO.setup(0, GPIO.IN, pull_up_down=GPIO.PUD_UP) Change zero to what ever pin switch is attached to
 
+        self.in_motion = False
+
     def status(self):
         top = GPIO.input(self.TOP_SWITCH)
         bottom = GPIO.input(self.BOTTOM_SWITCH)
         sensor = GPIO.input(self.LIGHT_SENSOR)
 
-        status = {'position': None, 'path': None}
+        status = None
 
-        if top and bottom is False or True:
-            status['position'] = 'Incorrect'
-        if top is True and bottom is False:
-            status['position'] = 'Up'
+        if sensor is True:  # If sensor is blocked
+            status = 'blocked'
         else:
-            status['position'] = 'Down'
-        if sensor is True:
-            status['path'] = 'Blocked'
-        else:
-            status['path'] = 'Clear'
+            if top is True and bottom is False:
+                status = 'up'
+            elif top is False and bottom is True:
+                status = 'down'
+            else:
+                status = 'unknown'
 
         return status
 
-    def move(self, direction):  # TRY TO INCORPORATE STATUS FUNCTION FOR CHECKS
+    def move(self, direction):
         directions = ['up', 'down']
         if direction in directions:
             if direction == 'up':
@@ -47,16 +48,22 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
         else:
             return {'check': False, 'msg': 'Invalid Direction'}
 
-        start = time.time()
+        status = self.status()
         exceeded_limit = True
 
-        if GPIO.input(self.LIGHT_SENSOR) is False:  # If light sensor isn't blocked
-            GPIO.output(relay, GPIO.HIGH)
-            while time.time() < start + self.max_travel_time:  # Stops after at least max_travel_time
-                if GPIO.input(switch) is True:  # If limit switch is triggered
-                    exceeded_limit = False
-                    break
-            GPIO.output(relay, GPIO.LOW)
+        if status == 'blocked':  # If light sensor isn't blocked
+            if GPIO.input(switch) is not True:  # If limit switch is not already triggered
+                GPIO.output(relay, GPIO.HIGH)
+                self.in_motion = True
+                start = time.time()
+                while time.time() < start + self.max_travel_time:  # Stops after at least max_travel_time
+                    if GPIO.input(switch) is True:  # If limit switch is triggered
+                        exceeded_limit = False
+                        break
+                GPIO.output(relay, GPIO.LOW)
+                self.in_motion = False
+            else:
+                return f'Door already {direction}'
         else:
             return {'check': False, 'msg': 'Sensor Blocked'}  # Light sensor is blocked
 

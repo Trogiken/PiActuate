@@ -56,7 +56,7 @@ try:
             return None
 
     @anvil.server.callable
-    def test():  # used in status check
+    def rpi_status():  # used in status check
         return
 
     @anvil.server.callable
@@ -68,6 +68,10 @@ try:
     @anvil.server.callable
     def move(direction):
         return door.move(direction)
+
+    @anvil.server.callable
+    def door_status():
+        return door.status()
 
     @anvil.server.callable
     def change(variable, value):
