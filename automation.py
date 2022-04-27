@@ -47,11 +47,11 @@ class Auto:
                 self.is_running = True
                 if current >= sunrise:  # Check if comparison works
                     if not self.door.status()['position'] == 'up':
-                        self.door.move('up')
+                        print(self.door.move('up'))
                         break
                 elif current >= sunset:  # Check if comparison works
                     if not self.door.status()['position'] == 'down':
-                        self.door.move('down')
+                        print(self.door.move('down'))
                         break
                 sleep(1)
         except Exception as err:
