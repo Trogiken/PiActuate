@@ -22,8 +22,6 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
         bottom = GPIO.input(self.BOTTOM_SWITCH)
         sensor = GPIO.input(self.LIGHT_SENSOR)
 
-        status = None
-
         if sensor is True:  # If sensor is blocked
             status = 'blocked'
         elif self.in_motion is True:  # If the door is moving
@@ -47,6 +45,8 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
             elif direction == 'down':
                 relay = self.RELAY2
                 switch = self.BOTTOM_SWITCH
+            else:
+                raise ValueError('Direction was not detected as up nor down')
         else:
             return 'Invalid Direction'
 
