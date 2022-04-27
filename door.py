@@ -26,6 +26,8 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
 
         if sensor is True:  # If sensor is blocked
             status = 'blocked'
+        elif self.in_motion is True:  # If the door is moving
+            status = 'moving'
         else:
             if top is True and bottom is False:
                 status = 'up'
@@ -46,7 +48,7 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
                 relay = self.RELAY2
                 switch = self.BOTTOM_SWITCH
         else:
-            return {'check': False, 'msg': 'Invalid Direction'}
+            return 'Invalid Direction'
 
         status = self.status()
         exceeded_limit = True
@@ -65,8 +67,8 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
             else:
                 return f'Door already {direction}'
         else:
-            return {'check': False, 'msg': 'Sensor Blocked'}  # Light sensor is blocked
+            return 'Sensor Blocked'  # Light sensor is blocked
 
         if exceeded_limit:  # If movement took longer than set seconds
-            return {'check': False, 'msg': f'Exceeded movement limit of {self.max_travel_time} seconds: [{direction}]'}
-        return {'check': True, 'msg': f'Door Moved Successfully: [{direction}]'}  # If door hit switch within 5 seconds
+            return f'Exceeded movement limit of {self.max_travel_time} seconds: [{direction}]'
+        return f'Door Moved Successfully: [{direction}]'  # If door hit switch within 5 seconds
