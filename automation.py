@@ -55,7 +55,7 @@ class Auto:
                         msg = self.door.move('down')
                         print(f"[Automation] Door Movement: {msg}")
                         break
-                sleep(1)
+                sleep(300)
         except Exception as err:
             self.is_running = False
             print(f"[Automation] Scheduler Error: {err}")
