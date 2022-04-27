@@ -87,8 +87,9 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
         if door_blocked:
             self.move('up')
             return 'Door Blocked'
-        if already_at_position:
+        elif already_at_position:
             return f'Door already: [{direction}]'
         elif exceeded_limit:  # If movement took longer than set seconds
             return f'Exceeded movement limit of {self.max_travel_time} seconds: [{direction}]'
-        return f'Door Moved Successfully: [{direction}]'  # If door hit switch within 5 seconds
+        else:
+            return f'Door Moved Successfully: [{direction}]'  # If door hit limit switch within 5 seconds
