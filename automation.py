@@ -2,6 +2,7 @@ from datetime import date, datetime
 from pytz import timezone
 from solartime import SolarTime
 from time import sleep
+from configuration import Config
 import re
 
 
@@ -42,25 +43,26 @@ class Auto:
         sunset = sunset[:len(sunset) - 3]
         current = datetime.now().strftime("%H:%M")
 
-        try:
-            while True:
-                self.is_running = True
-                if current >= sunrise:  # Check if comparison works
-                    if not self.door.status()['position'] == 'up':
-                        msg = self.door.move('up')
-                        print(f"[Automation] Door Movement: {msg}")
-                        break
-                elif current >= sunset:  # Check if comparison works
-                    if not self.door.status()['position'] == 'down':
-                        msg = self.door.move('down')
-                        print(f"[Automation] Door Movement: {msg}")
-                        break
-                sleep(300)
-        except Exception as err:
-            self.is_running = False
-            print(f"[Automation] Scheduler Error: {err}")
+        while True:
+            self.is_running = True
+            if current >= sunrise:  # Check if comparison works
+                if not self.door.status()['position'] == 'up':
+                    msg = self.door.move('up')
+                    print(f"[Automation] Door Movement: {msg}")
+                    break
+            elif current >= sunset:  # Check if comparison works
+                if not self.door.status()['position'] == 'down':
+                    msg = self.door.move('down')
+                    print(f"[Automation] Door Movement: {msg}")
+                    break
+            sleep(300)
 
     def run(self):
         while True:
-            sun_data = self.get_world()
-            self.scheduler(sunrise=sun_data['sunrise'], sunset=sun_data['sunset'])
+            try:
+                sun_data = self.get_world()
+                self.scheduler(sunrise=sun_data['sunrise'], sunset=sun_data['sunset'])
+            except Exception as err:
+                print(f"[Automation] ERROR: {err}")
+                Config.set_state('automation', False)
+                return err
