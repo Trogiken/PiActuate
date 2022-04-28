@@ -114,3 +114,26 @@ class Config:
         else:
             return 'Invalid Variable'
 
+
+with open('config.yaml') as file:
+    data = yaml.safe_load(file)
+
+variables = list(data.items())
+print(variables)
+
+print()
+
+for key, value in variables:
+    print(f"[{key}]\nValue: {value['value']}\nType: {value['type']}\nInfo: {value['info']}", end='\n\n')
+
+print()
+print()
+
+print()
+print(data['automation']['value'])
+
+values = []
+for key, value in variables:
+    values.append(value['value'])
+
+print(values)

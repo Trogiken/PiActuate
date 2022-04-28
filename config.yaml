@@ -1,10 +1,41 @@
-automation: true
-bottom_switch: 0
-latitude: 42.9150336
-light_sensor: 0
-longitude: -84.6805442
-max_travel_time: 5
-relay_1: 26
-relay_2: 20
-timezone: US/Eastern
-top_switch: 0
+automation:
+  info: Should chicken door automatically Open and Close at Dawn and Dusk
+  type: boolean
+  value: true
+bottom_switch:
+  info: Used to identify if the door is Closed
+  type: integer
+  value: 0
+latitude:
+  info: Exact latitudinal coordinate
+  type: float
+  value: 42.9150336
+light_sensor:
+  info: Used to identify if there is an obstruction in the path of the door
+  type: integer
+  value: 0
+longitude:
+  info: Exact longitudinal coordinate
+  type: float
+  value: -84.6805442
+max_travel_time:
+  info: Seconds until the the movement function should stop if a limit switch isn't
+    triggered
+  type: integer
+  value: 20
+relay_1:
+  info: Forward actuator movement
+  type: integer
+  value: 26
+relay_2:
+  info: Backward actuator movement
+  type: integer
+  value: 20
+timezone:
+  info: Name of Timezone
+  type: string
+  value: US/Eastern
+top_switch:
+  info: Used to identify if the door is Open
+  type: integer
+  value: 0

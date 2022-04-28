@@ -11,7 +11,7 @@ class Config:
             data = yaml.safe_load(file)
 
         try:
-            data[f'{variable}'] = value
+            data[f'{variable}']['value'] = value
         except ValueError as err:
             return err
 
@@ -27,23 +27,43 @@ class Config:
                 data = yaml.safe_load(file)
 
             if get_all:
-                return list(data.values())
+                values = []
+                for _, value in list(data.items()):
+                    values.append(value['value'])
+                return values
             elif variable:
-                return f"{variable} = {data[variable]}"
+                return f"{variable} = {data[variable]['value']}"
             else:
                 return None
         elif state == 'loaded':
             if get_all:
-                return list(loaded_config.values())
+                values = []
+                for _, value in list(loaded_config.items()):
+                    values.append(value['value'])
+                return values
             elif variable:
-                return f"{variable} = {loaded_config[variable]}"
+                return f"{variable} = {loaded_config[variable]['value']}"
             else:
                 return None
         else:
             return f'Invalid State: {state}'
 
+    @staticmethod
+    def dump_config(state):
+        if state == 'current':
+            with open('config.yaml') as file:
+                data = yaml.safe_load(file)
+
+            return list(data.items())
+        elif state == 'loaded':
+            return list(loaded_config.items())
+        else:
+            return None
+
     def change(self, variable, value):
-        valid_variables = list(loaded_config.keys())
+        valid_variables = []
+        for key, _ in list(loaded_config.items()):
+            valid_variables.append(key)
 
         if variable in valid_variables:
             if variable == 'max_travel_time':
