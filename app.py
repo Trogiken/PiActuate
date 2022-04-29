@@ -1,45 +1,49 @@
-# from door import Door
-# from automation import Auto
-from configuration import Config
+from door import Door
+from automation import Auto
+from save import Save
 import anvil.server
 import os
-import yaml
 
 # Set static IP for RPI
-with open('config.yaml') as f:
-    loaded_config = yaml.safe_load(f)
+save = Save()
+loaded_save = save.load()
 
-# door = Door(relay1=loaded_config['relay_1']['value'], relay2=loaded_config['relay_2']['value'], top_switch=loaded_config['top_switch']['value'],
-#             bottom_switch=loaded_config['bottom_switch']['value'], light_sensor=loaded_config['light_sensor']['value'],
-#             max_travel_time=loaded_config['max_travel_time']['value'])
-#
-# auto = Auto(door=door, zone=loaded_config['timezone']['value'], latitude=loaded_config['latitude']['value'],
-#             longitude=loaded_config['longitude']['value'])
+sunrise_offset = 0
+sunset_offset = 0
+if loaded_save['sunrise_offset_enabled']:
+    sunrise_offset = loaded_save['sunrise_offset']
+if loaded_save['sunset_offset_enabled']:
+    sunset_offset = loaded_save['sunset_offset']
 
-config = Config()
+door = Door(relay1=26, relay2=20, top_switch=0, bottom_switch=0, light_sensor=0, max_travel_time=10)
+
+auto = Auto(door=door, zone=str(loaded_save['timezone']), latitude=float(loaded_save['lat']),
+            longitude=float(loaded_save['lon']), sunrise_offset=int(sunrise_offset), sunset_offset=int(sunset_offset))
 
 
 try:
     anvil.server.connect("V5QNUE3PMZD42P7RSPOVDGL5-PTAOXCGWB7VCBPZK")
 
-    # @anvil.server.background_task
-    # def run_auto():
-    #     auto.run()
-    #
-    # if loaded_config['automation']:
-    #     anvil.server.launch_background_task('run_auto')
+    @anvil.server.background_task
+    def run_auto():
+        auto.run()
+
+    if loaded_save['automation_enabled']:
+        anvil.server.launch_background_task('run_auto')
 
     @anvil.server.callable
-    def get_current_state(variable=None, get_all=False):
-        return config.get_state('current', variable, get_all)
+    def get_current_state(variable=None):
+        if variable is not None:
+            return save.load()[variable]
+        else:
+            return save.load().values()
 
     @anvil.server.callable
-    def get_loaded_state(variable=None, get_all=False):
-        return config.get_state('loaded', variable, get_all)
-
-    @anvil.server.callable
-    def dump_config(state):
-        return config.dump_config(state)
+    def get_loaded_state(variable=None):
+        if variable is not None:
+            return loaded_save[variable]
+        else:
+            return loaded_save.values()
 
     @anvil.server.callable
     def rpi_status():
@@ -63,7 +67,7 @@ try:
 
     @anvil.server.callable
     def change(variable, value):
-        config.change(variable, value)
+        return save.change(variable, value)
 
 
     anvil.server.wait_forever()

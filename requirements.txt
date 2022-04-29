@@ -1,9 +1,6 @@
 pip install anvil-uplink
 RPi.GPIO
-python 10.2
-pyyaml
 pytz
 solartime
-requests
 anvil
 pip install schedule
