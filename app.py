@@ -22,7 +22,7 @@ auto = Auto(door=door, zone=str(loaded_save['timezone']), latitude=float(loaded_
 
 
 try:
-    anvil.server.connect("V5QNUE3PMZD42P7RSPOVDGL5-PTAOXCGWB7VCBPZK")
+    anvil.server.connect("")
 
     @anvil.server.background_task
     def run_auto():
@@ -77,5 +77,7 @@ except Exception as err:
     else:
         print(f"**** CRITICAL ERROR: {err} ****")
         anvil.server.disconnect()
+        save.reset()
+        os.system('python restart.py')
 
     exit()
