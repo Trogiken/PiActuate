@@ -67,6 +67,6 @@ class Auto:
             try:
                 sun_data = self.get_world()
                 self.scheduler(sunrise=sun_data['sunrise'], sunset=sun_data['sunset'])
-            except Exception as err:
+            except Exception as err:  # Set self.is_running to False
                 print(f"[Automation] ERROR: {err}")
                 return err
