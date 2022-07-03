@@ -50,13 +50,13 @@ class Auto:
 
         while True:
             self.is_running = True
-            if current >= sunrise:  # Check if comparison works
-                if not self.door.status()['position'] == 'up':
+            if sunrise <= current < sunset:  # Check if comparison works
+                if not self.door.status() == 'up':
                     msg = self.door.move('up')
                     print(f"[Automation] Door Movement: {msg}")
                     break
-            elif current >= sunset:  # Check if comparison works
-                if not self.door.status()['position'] == 'down':
+            else:  # Check if comparison works
+                if not self.door.status() == 'down':
                     msg = self.door.move('down')
                     print(f"[Automation] Door Movement: {msg}")
                     break
