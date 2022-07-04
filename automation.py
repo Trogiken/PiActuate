@@ -2,6 +2,7 @@ from datetime import date, datetime, timedelta
 from pytz import timezone
 from solartime import SolarTime
 from time import sleep
+from base_logger import log
 import re
 
 
@@ -48,17 +49,19 @@ class Auto:
         sunset = sunset[:len(sunset) - 3]
         current = datetime.now().strftime("%H:%M")
 
+        log.info(f"Sunrise set to [{sunrise}], Sunset set to [{sunset}]")
+
         while True:
             self.is_running = True
             if sunrise <= current < sunset:  # Check if comparison works
                 if not self.door.status() == 'up':
-                    msg = self.door.move('up')
-                    print(f"[Automation] Door Movement: {msg}")
+                    self.door.move('up')
+                    log.info("Door Called Up")
                     break
-            else:  # Check if comparison works
+            else:
                 if not self.door.status() == 'down':
-                    msg = self.door.move('down')
-                    print(f"[Automation] Door Movement: {msg}")
+                    self.door.move('down')
+                    log.info("Door Called Down")
                     break
             sleep(300)
 
@@ -67,6 +70,8 @@ class Auto:
             try:
                 sun_data = self.get_world()
                 self.scheduler(sunrise=sun_data['sunrise'], sunset=sun_data['sunset'])
-            except Exception as err:  # Set self.is_running to False
-                print(f"[Automation] ERROR: {err}")
-                return err
+                if self.is_running is True:
+                    log.info("Scheduler is Running")
+            except Exception:
+                self.is_running = False
+                log.exception("Scheduler Has Stopped Running")

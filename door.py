@@ -1,3 +1,4 @@
+from base_logger import log
 import RPi.GPIO as GPIO
 import time
 
@@ -41,9 +42,12 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
         door_blocked = False
         already_at_position = False
 
+        log.info("Movement Operation Startup...")
+
         if direction == 'up':
             if GPIO.input(self.TOP_SWITCH) is not True:  # If limit switch is not already triggered
                 GPIO.output(self.RELAY2, GPIO.HIGH)
+                log.info(f"Door moving {direction}")
 
                 self.in_motion = True
                 start = time.time()
@@ -55,6 +59,7 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
                         continue
 
                 GPIO.output(self.RELAY2, GPIO.LOW)
+                log.info(f"Door stopped moving {direction}")
                 self.in_motion = False
             else:
                 already_at_position = True
@@ -62,6 +67,7 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
             if GPIO.input(self.LIGHT_SENSOR) is not True:  # If not blocked
                 if GPIO.input(self.BOTTOM_SWITCH) is not True:  # If limit switch is not already triggered
                     GPIO.output(self.RELAY1, GPIO.HIGH)
+                    log.info(f"Door moving {direction}")
 
                     self.in_motion = True
                     start = time.time()
@@ -76,20 +82,21 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
                             continue
 
                     GPIO.output(self.RELAY1, GPIO.LOW)
+                    log.info(f"Door stopped moving {direction}")
                     self.in_motion = False
                 else:
                     already_at_position = True
             else:
                 door_blocked = True
         else:
-            return 'Invalid Direction'
+            log.error("Invalid Direction")
 
         if door_blocked:
             self.move('up')
-            return 'Door Blocked'
+            log.warning("Door is Blocked")
         elif already_at_position:
-            return f'Door already: [{direction}]'
+            log.info("Door already at requested position")
         elif exceeded_limit:  # If movement took longer than set seconds
-            return f'Exceeded movement limit of {self.max_travel_time} seconds: [{direction}]'
+            log.critical(f'Exceeded movement limit of {self.max_travel_time} seconds: [{direction}]')
         else:
-            return f'Door Moved Successfully: [{direction}]'  # If door hit limit switch within allowed time
+            log.info(f'Door Moved Successfully: [{direction}]')  # If door hit limit switch within allowed time
