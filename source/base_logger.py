@@ -1,5 +1,6 @@
 import os
 import logging.config
+from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 from datetime import datetime
 
@@ -12,8 +13,9 @@ if not os.path.exists(logdir):
 logging.config.fileConfig('logger_config.conf')
 log = logging.getLogger('MainLogger')
 
-fh = logging.FileHandler('{}\\{:%Y-%m-%d}.log'.format(logdir, datetime.now()))
-formatter = logging.Formatter('%(asctime)s | %(levelname)-8s | %(filename)s-%(funcName)s-%(lineno)04d | %(message)s', datefmt='%H:%M:%S')
+fh = TimedRotatingFileHandler('{}\\chicken_door.log'.format(logdir), when='midnight', interval=1, backupCount=10)
+fh.suffix = "%Y-%m-%d"
+formatter = logging.Formatter('%(asctime)s | %(levelname)-8s | %(filename)s-%(funcName)s-%(lineno)04d | %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 fh.setFormatter(formatter)
 
 log.addHandler(fh)
