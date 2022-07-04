@@ -6,7 +6,7 @@ logdir = "logs"
 if not os.path.exists(logdir):
     os.mkdir(logdir)
 
-logging.config.fileConfig('aaa.conf')
+logging.config.fileConfig('logger_config.conf')
 log = logging.getLogger('MainLogger')
 
 fh = logging.FileHandler('{}\\{:%Y-%m-%d}.log'.format(logdir, datetime.now()))
