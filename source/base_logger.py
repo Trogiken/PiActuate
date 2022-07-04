@@ -1,8 +1,11 @@
 import os
 import logging.config
+from pathlib import Path
 from datetime import datetime
 
-logdir = "logs"
+path = Path(os.getcwd())
+main_path = path.parents[0]
+logdir = f"{main_path}\\logs"
 if not os.path.exists(logdir):
     os.mkdir(logdir)
 
