@@ -2,7 +2,6 @@ import os
 import logging.config
 from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
-from datetime import datetime
 
 path = Path(os.getcwd())
 main_path = path.parents[0]
