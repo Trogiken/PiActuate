@@ -1,12 +1,17 @@
-from door import Door
-from automation import Auto
-from save import Save
+from source.door import Door
+from source.automation import Auto
+from source.save import Save
+from source.base_logger import log
 import anvil.server
 import os
+
+log.info("App Startup...")
 
 # Set static IP for RPI
 save = Save()
 loaded_save = save.load()
+
+log.info(f"Save Loaded - {loaded_save}")
 
 sunrise_offset = 0
 sunset_offset = 0
@@ -16,13 +21,15 @@ if loaded_save['sunset_offset_enabled']:
     sunset_offset = loaded_save['sunset_offset']
 
 door = Door(relay1=26, relay2=20, top_switch=0, bottom_switch=0, light_sensor=0, max_travel_time=10)
+log.info("Door object created")
 
 auto = Auto(door=door, zone=str(loaded_save['timezone']), latitude=float(loaded_save['lat']),
             longitude=float(loaded_save['lon']), sunrise_offset=int(sunrise_offset), sunset_offset=int(sunset_offset))
-
+log.info("Automation object created")
 
 try:
     anvil.server.connect("")
+    log.info("Server Connection Made")
 
     @anvil.server.background_task
     def run_auto():
@@ -30,6 +37,9 @@ try:
 
     if loaded_save['automation_enabled']:
         anvil.server.launch_background_task('run_auto')
+        log.info("Automation Enabled")
+    else:
+        log.info("Automation Disabled")
 
     @anvil.server.callable
     def get_current_state(variable=None):
@@ -75,7 +85,7 @@ except Exception as err:
     if err == 'KeyboardInterrupt':
         anvil.server.disconnect()
     else:
-        print(f"**** CRITICAL ERROR: {err} ****")
+        log.exception("Failure")
         anvil.server.disconnect()
         save.reset()
         os.system('python restart.py')

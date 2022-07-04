@@ -1,3 +1,4 @@
+from base_logger import log
 import os
 import pickle
 
@@ -16,17 +17,20 @@ class Save:
     if not os.path.exists(filename):
         with open(filename, 'wb') as f:
             pickle.dump(default_save, f)
+            log.info("Save Created")
 
     def load(self):
         """Return save data in dictionary format"""
         with open(self.filename, 'rb') as r:
             data = pickle.load(r)
+        log.info("Save Read")
         return data
 
     def reset(self):
         """Change save data to default state"""
         with open(self.filename, 'wb') as w:
             pickle.dump(self.default_save, w)
+            log.info("Save Reset")
 
     def change(self, variable, value):
         """Change variable value in saved data"""
@@ -41,7 +45,8 @@ class Save:
 
             save_data[variable] = value
         else:
-            return 'Invalid Variable'
+            log.error("Invalid Variable")
 
         with open(self.filename, 'wb') as w:
             pickle.dump(save_data, w)
+            log.info(f"[{variable}] changed to [{value}]")
