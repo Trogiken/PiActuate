@@ -15,6 +15,8 @@ class Auto:
         self.zone = zone
         self.door = door
 
+        self.active_sunrise = None
+        self.active_sunset = None
         self.is_running = False
 
     def get_world(self):
@@ -48,6 +50,9 @@ class Auto:
         sunrise = sunrise[:len(sunrise) - 3]
         sunset = sunset[:len(sunset) - 3]
         current = datetime.now().strftime("%H:%M")
+
+        self.active_sunrise = sunrise
+        self.active_sunset = sunset
 
         log.info(f"Sunrise set to [{sunrise}], Sunset set to [{sunset}]")
 

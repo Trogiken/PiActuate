@@ -6,7 +6,7 @@ import pickle
 class Save:
     filename = "DATA.pkl"
     default_save = {
-                    'automation_enabled': True,
+                    'automation_enabled': False,
                     'lon': -84.6805442,
                     'lat': 42.9150336,
                     'timezone': 'US/Eastern',
