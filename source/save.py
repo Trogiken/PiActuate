@@ -23,7 +23,7 @@ class Save:
         """Return save data in dictionary format"""
         with open(self.filename, 'rb') as r:
             data = pickle.load(r)
-        log.info("Save Read")
+        log.debug("Save Read")
         return data
 
     def reset(self):

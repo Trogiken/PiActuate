@@ -55,8 +55,8 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
 
         if direction == 'up':
             if GPIO.input(self.TOP_SWITCH) is not True:  # If limit switch is not already triggered
-                GPIO.output(self.RELAY2, GPIO.HIGH)
                 log.debug(f"Relay 2 ON: pin-{self.RELAY2}")
+                GPIO.output(self.RELAY2, GPIO.HIGH)
                 log.info(f"In Motion [{direction}]")
 
                 self.in_motion = True

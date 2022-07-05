@@ -47,7 +47,7 @@ try:
 
     @anvil.server.callable
     def get_current_state(variable=None):
-        log.info("Called")
+        log.debug("Called")
         if variable is not None:
             return save.load()[variable]
         else:
@@ -55,7 +55,7 @@ try:
 
     @anvil.server.callable
     def get_loaded_state(variable=None):
-        log.info("Called")
+        log.debug("Called")
         if variable is not None:
             return loaded_save[variable]
         else:
@@ -68,14 +68,14 @@ try:
 
     @anvil.server.callable
     def restart():
-        log.info("Called")
+        log.debug("Called")
         anvil.server.disconnect()
         os.system('python restart.py')
         exit()
 
     @anvil.server.callable
     def move(direction):
-        log.info("Called")
+        log.debug("Called")
         # return door.move(direction)
         return
 
@@ -87,7 +87,7 @@ try:
 
     @anvil.server.callable
     def change(variable, value):
-        log.info("Called")
+        log.debug("Called")
         return save.change(variable, value)
 
     log.info("Startup Complete!")
