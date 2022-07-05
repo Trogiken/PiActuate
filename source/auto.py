@@ -24,6 +24,9 @@ class Auto:
         rise_offset = timedelta(minutes=self.sunrise_offset)
         set_offset = timedelta(minutes=self.sunset_offset)
 
+        log.debug(f"Sunrise Offset: {self.sunrise_offset} minutes")
+        log.debug(f"Sunset Offset: {self.sunset_offset} minutes")
+
         year = today.year
         month = today.month
         day = today.day
@@ -51,13 +54,15 @@ class Auto:
         sunset = sunset[:len(sunset) - 3]
         current = datetime.now().strftime("%H:%M")
 
+        log.info(f"Sunset set to [{sunset}]")
+        log.info(f"Sunrise set to [{sunrise}]")
+        log.info(f"Current time [{current}]")
+
         self.active_sunrise = sunrise
         self.active_sunset = sunset
-
-        log.info(f"Sunrise set to [{sunrise}], Sunset set to [{sunset}]")
+        self.is_running = True
 
         while True:
-            self.is_running = True
             if sunrise <= current < sunset:  # Check if comparison works
                 if not self.door.status() == 'up':
                     self.door.move('up')
@@ -71,12 +76,15 @@ class Auto:
             sleep(300)
 
     def run(self):
+        log.info("Scheduler is Running")
+        cycle = 1
         while True:
             try:
+                log.info(f"Cycle: {cycle}")
+                cycle += 1
+
                 sun_data = self.get_world()
                 self.scheduler(sunrise=sun_data['sunrise'], sunset=sun_data['sunset'])
-                if self.is_running is True:
-                    log.info("Scheduler is Running")
             except Exception:
                 self.is_running = False
                 log.exception("Scheduler Has Stopped Running")

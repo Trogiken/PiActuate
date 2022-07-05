@@ -1,4 +1,4 @@
-from base_logger import log
+from .base_logger import log
 import os
 import pickle
 
