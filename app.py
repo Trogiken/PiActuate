@@ -31,17 +31,13 @@ log.info("Automation object created")
 ID = "NJVUFM2IX4WAT5SEHECJLQZ7-CLDWHXPSURNV4EW5"
 
 try:
-    log.info(f"Connection ID: {ID}")
+    log.debug(f"Connection ID: {ID}")
     anvil.server.connect(f"{ID}")
     log.info("Server Connection Made")
 
-
-    def run_auto():
-        auto.run()
-
     if loaded_save['automation_enabled']:
-        # run_auto()  MAKE THIS RUN IN THE BACKGROUND
         log.info("Automation Enabled")
+        auto.run()
     else:
         log.info("Automation Disabled")
 
