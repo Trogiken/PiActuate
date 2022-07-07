@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta
 from pytz import timezone
 from solartime import SolarTime
 from time import sleep
-from base_logger import log
+from .base_logger import log
 import threading
 import re
 
@@ -53,36 +53,36 @@ class Scheduler(threading.Thread):
     def run(self, *args, **kwargs):
         cycle = 1
         while True:
-            log.debug(f"Cycle: {cycle}")
-            cycle += 1
+            log.info(f"Cycle: {cycle}")
+
+            sun_data = self.get_world()
+            sunrise = sun_data['sunrise']
+            sunset = sun_data['sunset']
+
+            sunrise = sunrise[:len(sunrise) - 3]
+            sunset = sunset[:len(sunset) - 3]
+            current = datetime.now().strftime("%H:%M")
+
+            self.active_sunrise = sunrise
+            self.active_sunset = sunset
+
+            log.info(f"Sunset set to [{sunset}]")
+            log.info(f"Sunrise set to [{sunrise}]")
+            log.info(f"Current time [{current}]")  # SEE IF IT GOES TO CYCLE THING
+
             while True:
-                sun_data = self.get_world()
-                sunrise = sun_data['sunrise']
-                sunset = sun_data['sunset']
-
-                sunrise = sunrise[:len(sunrise) - 3]
-                sunset = sunset[:len(sunset) - 3]
-                current = datetime.now().strftime("%H:%M")
-
-                self.active_sunrise = sunrise
-                self.active_sunset = sunset
-
-                log.info(f"Sunset set to [{sunset}]")
-                log.info(f"Sunrise set to [{sunrise}]")
-                log.info(f"Current time [{current}]")  # SEE IF IT GOES TO CYCLE THING
-
-                while True:
-                    if sunrise <= current < sunset:  # Check if comparison works
-                        if not self.door.status() == 'up':
-                            self.door.move('up')
-                            log.info("Door Called Up")
-                            break
-                    else:
-                        if not self.door.status() == 'down':
-                            self.door.move('down')
-                            log.info("Door Called Down")
-                            break
-                    sleep(300)
+                if sunrise <= current < sunset:  # Check if comparison works
+                    if not self.door.status() == 'up':
+                        self.door.move('up')
+                        log.info("Door Called Up")
+                        break
+                else:
+                    if not self.door.status() == 'down':
+                        self.door.move('down')
+                        log.info("Door Called Down")
+                        break
+                sleep(300)
+            cycle += 1
 
 
 class Auto:
@@ -97,17 +97,13 @@ class Auto:
         self.is_running = False
 
     def run(self):
-        cycle = 1
         try:
             b = Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
                           sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)
-            b.start()  # Check if this also runs get_world()
+            b.start()
 
             self.is_running = True
             log.info("Scheduler is Running")
-
-            log.info(f"Cycle: {cycle}")
-            cycle += 1
         except Exception:
             self.is_running = False
             log.exception("Scheduler Has Stopped Running")
