@@ -94,16 +94,33 @@ class Auto:
         self.zone = zone
         self.door = door
 
+        self.sch = None
+
         self.is_running = False
 
     def run(self):
         try:
-            b = Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
-                          sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)
-            b.start()
+            if self.is_running is False:
+                self.sch = Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
+                                     sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)
+                self.sch.start()
 
-            self.is_running = True
-            log.info("Scheduler is Running")
+                self.is_running = True
+                log.info("Scheduler is Running")
+            else:
+                log.warning("Scheduler is already Running")
         except Exception:
             self.is_running = False
-            log.exception("Scheduler Has Stopped Running")
+            log.exception("Scheduler has failed to Run")
+
+    def stop(self):
+        try:
+            if self.is_running is True:
+                self.sch.stop()
+
+                self.is_running = False
+                log.info("Scheduler has stopped Running")
+            else:
+                log.warning("Scheduler is not Running")
+        except Exception:
+            log.exception("Scheduler has failed to Stop")

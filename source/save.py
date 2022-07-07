@@ -10,8 +10,8 @@ class Save:
                     'lon': -84.6805442,
                     'lat': 42.9150336,
                     'timezone': 'US/Eastern',
-                    'sunrise_offset_enabled': False, 'sunrise_offset': 0,
-                    'sunset_offset_enabled': False, 'sunset_offset': 0
+                    'sunrise_offset': 0,
+                    'sunset_offset': 0
                     }
 
     if not os.path.exists(filename):

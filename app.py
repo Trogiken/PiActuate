@@ -13,12 +13,9 @@ loaded_save = save.load()
 log.info("Save Loaded")
 log.debug(f"Loaded Save Data: {loaded_save}")
 
-sunrise_offset = 0
-sunset_offset = 0
-if loaded_save['sunrise_offset_enabled']:
-    sunrise_offset = loaded_save['sunrise_offset']
-if loaded_save['sunset_offset_enabled']:
-    sunset_offset = loaded_save['sunset_offset']
+
+sunrise_offset = loaded_save['sunrise_offset']
+sunset_offset = loaded_save['sunset_offset']
 
 door = Door(relay1=26, relay2=20, top_switch=0, bottom_switch=0, sensor=0, max_travel_time=10)
 log.info("Door object created")
@@ -36,10 +33,17 @@ try:
     log.info("Server Connection Made")
 
     if loaded_save['automation_enabled']:
-        log.info("Automation Enabled")
         auto.run()
-    else:
-        log.info("Automation Disabled")
+
+    @anvil.server.callable
+    def run_auto():
+        log.debug("Called")
+        auto.run()
+
+    @anvil.server.callable
+    def stop_auto():
+        log.debug("Called")
+        auto.stop()
 
     @anvil.server.callable
     def get_current_state(variable=None):
@@ -59,7 +63,6 @@ try:
 
     @anvil.server.callable
     def rpi_status():
-        log.debug("Called")
         return
 
     @anvil.server.callable
