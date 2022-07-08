@@ -68,7 +68,7 @@ class Scheduler(threading.Thread):
 
             log.info(f"Sunset set to [{sunset}]")
             log.info(f"Sunrise set to [{sunrise}]")
-            log.info(f"Current time [{current}]")  # SEE IF IT GOES TO CYCLE THING
+            log.info(f"Current time [{current}]")
 
             while True:
                 if sunrise <= current < sunset:  # Check if comparison works
@@ -86,7 +86,7 @@ class Scheduler(threading.Thread):
 
 
 class Auto:
-    def __init__(self, door, zone, longitude, latitude, sunrise_offset=0, sunset_offset=0):
+    def __init__(self, door, zone, longitude, latitude, sunrise_offset, sunset_offset):
         self.longitude = longitude
         self.latitude = latitude
         self.sunrise_offset = sunrise_offset
@@ -118,9 +118,22 @@ class Auto:
             if self.is_running is True:
                 self.sch.stop()
 
+                self.sch = None
                 self.is_running = False
                 log.info("Scheduler has stopped Running")
             else:
                 log.warning("Scheduler is not Running")
         except Exception:
             log.exception("Scheduler has failed to Stop")
+
+    def active_sunrise(self):
+        if self.is_running is True:
+            return self.sch.active_sunrise  # DEBUG
+        else:
+            return None
+
+    def active_sunset(self):
+        if self.is_running is True:
+            return self.sch.active_sunset  # DEBUG
+        else:
+            return None
