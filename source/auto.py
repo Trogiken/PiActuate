@@ -19,6 +19,15 @@ class Scheduler(threading.Thread):
 
         self.active_sunrise = None
         self.active_sunset = None
+        self.active_current = None
+
+        self._stop_event = threading.Event()
+
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
 
     def get_world(self):
         today = datetime.today()
@@ -53,6 +62,9 @@ class Scheduler(threading.Thread):
     def run(self, *args, **kwargs):
         cycle = 1
         while True:
+            if self.stopped():
+                return
+
             log.info(f"Cycle: {cycle}")
 
             sun_data = self.get_world()
@@ -65,13 +77,14 @@ class Scheduler(threading.Thread):
 
             self.active_sunrise = sunrise
             self.active_sunset = sunset
+            self.active_current = current
 
             log.info(f"Sunset set to [{sunset}]")
             log.info(f"Sunrise set to [{sunrise}]")
             log.info(f"Current time [{current}]")
 
             while True:
-                if sunrise <= current < sunset:  # Check if comparison works
+                if sunrise <= current < sunset:
                     if not self.door.status() == 'up':
                         self.door.move('up')
                         log.info("Door Called Up")
@@ -128,12 +141,18 @@ class Auto:
 
     def active_sunrise(self):
         if self.is_running is True:
-            return self.sch.active_sunrise  # DEBUG
+            return self.sch.active_sunrise
         else:
             return None
 
     def active_sunset(self):
         if self.is_running is True:
-            return self.sch.active_sunset  # DEBUG
+            return self.sch.active_sunset
+        else:
+            return None
+
+    def active_current(self):
+        if self.is_running is True:
+            return self.sch.active_current
         else:
             return None

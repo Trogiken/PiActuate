@@ -48,27 +48,34 @@ def main():
             auto.stop()
 
         @anvil.server.callable
-        def change_sunrise_offset(offset):
+        def change_rise(offset):
             log.debug("CALLED")
             auto.sunrise_offset = offset
             save.change('sunrise_offset', offset)
 
         @anvil.server.callable
-        def change_sunset_offset(offset):
+        def change_set(offset):
             log.debug("CALLED")
             auto.sunset_offset = offset
             save.change('sunset_offset', offset)
 
         @anvil.server.callable
-        def get_current_state(variable=None):
+        def times():
+            log.debug("CALLED")
+            return {'sunrise': auto.active_sunrise(),
+                    'sunset': auto.active_sunset(),
+                    'current': auto.active_current()}
+
+        @anvil.server.callable
+        def c_state(variable=None):
             log.debug("CALLED")
             if variable is not None:
                 return save.load()[variable]
             else:
-                return save.load().values()
+                return save.load()
 
         @anvil.server.callable
-        def get_loaded_state(variable=None):
+        def l_state(variable=None):
             log.debug("CALLED")
             if variable is not None:
                 return loaded_save[variable]
@@ -78,6 +85,11 @@ def main():
         @anvil.server.callable
         def rpi_status():
             return
+
+        @anvil.server.callable
+        def door_status():
+            # return door.status()
+            pass
 
         @anvil.server.callable
         def restart():
@@ -90,12 +102,6 @@ def main():
         def move(direction):
             log.debug("CALLED")
             # return door.move(direction)
-            return
-
-        @anvil.server.callable
-        def door_status():
-            log.debug("CALLED")
-            # return door.status()
             return
 
         @anvil.server.callable
