@@ -89,7 +89,7 @@ def main():
         @anvil.server.callable
         def door_status():
             # return door.status()
-            pass
+            return 'up'  # Remove at runtime
 
         @anvil.server.callable
         def restart():

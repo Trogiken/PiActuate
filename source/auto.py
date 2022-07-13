@@ -62,9 +62,6 @@ class Scheduler(threading.Thread):
     def run(self, *args, **kwargs):
         cycle = 1
         while True:
-            if self.stopped():
-                return
-
             log.info(f"Cycle: {cycle}")
 
             sun_data = self.get_world()
@@ -94,7 +91,12 @@ class Scheduler(threading.Thread):
                         self.door.move('down')
                         log.info("Door Called Down")
                         break
-                sleep(300)
+                i = 0
+                while i != 300:  # Wait for some seconds, checking for stop event each second
+                    i += 1
+                    if self.stopped():
+                        return
+                    sleep(1)
             cycle += 1
 
 
@@ -130,6 +132,7 @@ class Auto:
         try:
             if self.is_running is True:
                 self.sch.stop()
+                self.sch.join()
 
                 self.sch = None
                 self.is_running = False
