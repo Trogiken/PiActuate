@@ -12,9 +12,11 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
         self.BOTTOM_SWITCH = bottom_switch  # Change to correct pin
         self.SENSOR = sensor  # Change to correct pin
         self.max_travel_time = max_travel_time
-        GPIO.setup(self.RELAY1, GPIO.OUT, initial=0)
-        GPIO.setup(self.RELAY2, GPIO.OUT, initial=0)
-        # GPIO.setup(0, GPIO.IN, pull_up_down=GPIO.PUD_UP) Change zero to what ever pin switch is attached to
+        GPIO.setup(self.RELAY1, GPIO.OUT, initial=True)
+        GPIO.setup(self.RELAY2, GPIO.OUT, initial=True)
+        GPIO.setup(self.TOP_SWITCH, GPIO.IN)
+        GPIO.setup(self.BOTTOM_SWITCH, GPIO.IN)
+        GPIO.setup(self.SENSOR, GPIO.IN)
 
         log.debug("GPIO: BCM")
         log.debug(f"Relay 1: {relay1}")
@@ -27,18 +29,14 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
         self.in_motion = False
 
     def status(self):
-        top = GPIO.input(self.TOP_SWITCH)
-        bottom = GPIO.input(self.BOTTOM_SWITCH)
-        sensor = GPIO.input(self.SENSOR)
-
-        if sensor is True:  # If sensor is blocked
+        if GPIO.input(self.SENSOR):  # If sensor is blocked
             status = 'blocked'
-        elif self.in_motion is True:  # If the door is moving
+        elif self.in_motion:  # If the door is moving
             status = 'moving'
         else:
-            if top is True and bottom is False:
+            if GPIO.input(self.TOP_SWITCH) is True and GPIO.input(self.BOTTOM_SWITCH) is False:
                 status = 'up'
-            elif top is False and bottom is True:
+            elif GPIO.input(self.TOP_SWITCH) is False and GPIO.input(self.BOTTOM_SWITCH) is True:
                 status = 'down'
             else:
                 status = 'unknown'
@@ -56,7 +54,7 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
         if direction == 'up':
             if GPIO.input(self.TOP_SWITCH) is not True:  # If limit switch is not already triggered
                 log.debug(f"Relay 2 ON: pin-{self.RELAY2}")
-                GPIO.output(self.RELAY2, GPIO.HIGH)
+                GPIO.output(self.RELAY2, GPIO.LOW)
                 log.info(f"In Motion [{direction}]")
 
                 self.in_motion = True
@@ -69,7 +67,7 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
                         continue
 
                 log.debug(f"Relay 2 OFF: pin-{self.RELAY2}")
-                GPIO.output(self.RELAY2, GPIO.LOW)
+                GPIO.output(self.RELAY2, GPIO.HIGH)
                 log.info(f"Halted Motion [{direction}]")
                 self.in_motion = False
             else:
@@ -78,7 +76,7 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
             if GPIO.input(self.SENSOR) is not True:  # If not blocked
                 if GPIO.input(self.BOTTOM_SWITCH) is not True:  # If limit switch is not already triggered
                     log.debug(f"Relay 1 ON: pin-{self.RELAY1}")
-                    GPIO.output(self.RELAY1, GPIO.HIGH)
+                    GPIO.output(self.RELAY1, GPIO.LOW)
                     log.info(f"In Motion [{direction}]")
 
                     self.in_motion = True
@@ -94,7 +92,7 @@ class Door:  # MAKE SURE PINS LOAD IN AS INTEGERS INSTEAD OF STRINGS
                             continue
 
                     log.debug(f"Relay 1 OFF: pin-{self.RELAY1}")
-                    GPIO.output(self.RELAY1, GPIO.LOW)
+                    GPIO.output(self.RELAY1, GPIO.HIGH)
                     log.info(f"Halted Motion [{direction}]")
                     self.in_motion = False
                 else:
