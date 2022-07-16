@@ -1,5 +1,5 @@
 from .base_logger import log
-import RPi.logger as GPIO
+import RPi.GPIO as GPIO
 import time
 
 
@@ -35,40 +35,59 @@ class Door:
         GPIO.setup(self.SW4, GPIO.IN)
         GPIO.setup(self.SW5, GPIO.IN)
 
+    def get_status(self):
+        if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
+            self.status = 'closed'
+        elif GPIO.input(self.SW1) == 0 and GPIO.input(self.SW2) == 1:
+            self.status = 'open'
+        elif GPIO.input(self.SW3) == 1:
+            self.status = 'blocked'
+        else:
+            self.status = 'unknown'
+
+        return self.status
+
     def move(self, opt):
         log.info("[Operation Start]")
 
         if opt == 1:
-            self.motion = 1
+            self.motion = 1  # close
         elif opt == 2:
-            self.motion = 2
+            self.motion = 2  # open
         else:
+            log.error('Invalid Option')
             return
+        log.debug(f"Motion = {self.motion}")
 
+        time_exceeded = True
+        blocked = False
         start = time.time()
-        while time.time() < start + self.max_travel:
-            if GPIO.input(self.SW3) == 1:
-                GPIO.output(self.RELAY1, True)
-                GPIO.output(self.RELAY2, True)
-                self.status = 'blocked'
-            elif self.motion == 1 and GPIO.input(self.SW1) == 0 and GPIO.input(self.SW3) == 0:
-                GPIO.output(self.RELAY1, False)
-                GPIO.output(self.RELAY2, True)
-                self.status = 'closing'
-            elif self.motion == 2 and GPIO.input(self.SW2) == 0 and GPIO.input(self.SW3) == 0:
+        while time.time() < start + self.max_travel:  # Timer
+            if self.motion == 1 and GPIO.input(self.SW1) == 0:
+                if GPIO.input(self.SW3) == 1:
+                    GPIO.output(self.RELAY1, True)
+                    GPIO.output(self.RELAY2, True)
+                    blocked = True
+                else:
+                    GPIO.output(self.RELAY1, False)
+                    GPIO.output(self.RELAY2, True)
+            elif self.motion == 2 and GPIO.input(self.SW2) == 0:
                 GPIO.output(self.RELAY1, True)
                 GPIO.output(self.RELAY2, False)
-                self.status = 'opening'
             else:
+                time_exceeded = False
+                blocked = False
                 break
         self.motion = 0
         GPIO.output(self.RELAY1, True)
         GPIO.output(self.RELAY2, True)
 
-        if GPIO.input(self.SW1) and not GPIO.input(self.SW2):
-            self.status = 'closed'
-        elif not GPIO.input(self.SW1) and GPIO.input(self.SW2):
-            self.status = 'open'
+        if time_exceeded:
+            log.critical(f'Exceeded travel time of {self.max_travel} seconds')
+        if blocked:
+            log.warning("Door blocked")
+            self.move(2)  # open door if blocked and timer exceeded
+            return
 
-        log.info(f'Door {self.status}')
+        log.info(f"Status: {self.get_status()}")
         log.info("[Operation Stop]")

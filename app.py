@@ -63,8 +63,7 @@ def main():
         def times():
             log.debug("CALLED")
             return {'sunrise': auto.active_sunrise(),
-                    'sunset': auto.active_sunset(),
-                    'current': auto.active_current()}
+                    'sunset': auto.active_sunset()}
 
         @anvil.server.callable
         def c_state(variable=None):
@@ -88,7 +87,7 @@ def main():
 
         @anvil.server.callable
         def door_status():
-            return door.status
+            return door.get_status()
 
         @anvil.server.callable
         def restart():
@@ -98,9 +97,9 @@ def main():
             exit()
 
         @anvil.server.callable
-        def move(direction):
+        def move(opt):
             log.debug("CALLED")
-            return door.move(direction)
+            return door.move(opt)
 
         @anvil.server.callable
         def change(variable, value):

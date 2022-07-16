@@ -70,29 +70,29 @@ class Scheduler(threading.Thread):
 
             sunrise = sunrise[:len(sunrise) - 3]
             sunset = sunset[:len(sunset) - 3]
-            current = datetime.now().strftime("%H:%M")
 
             self.active_sunrise = sunrise
             self.active_sunset = sunset
-            self.active_current = current
 
             log.info(f"Sunset set to [{sunset}]")
             log.info(f"Sunrise set to [{sunrise}]")
-            log.info(f"Current time [{current}]")
 
             while True:
+                current = datetime.now().strftime("%H:%M")
+                status = self.door.get_status()
+
                 if sunrise <= current < sunset:
-                    if not self.door.status() == 'up':
-                        self.door.move('up')
+                    if status == 'closed':
+                        self.door.move(2)
                         log.info("Door Called Up")
                         break
                 else:
-                    if not self.door.status() == 'down':
-                        self.door.move('down')
+                    if status == 'open':
+                        self.door.move(1)
                         log.info("Door Called Down")
                         break
                 i = 0
-                while i != 300:  # Wait for some seconds, checking for stop event each second
+                while i != 20:  # Wait for some seconds, checking for stop event each second
                     i += 1
                     if self.stopped():
                         return
@@ -151,11 +151,5 @@ class Auto:
     def active_sunset(self):
         if self.is_running is True:
             return self.sch.active_sunset
-        else:
-            return None
-
-    def active_current(self):
-        if self.is_running is True:
-            return self.sch.active_current
         else:
             return None
