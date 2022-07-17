@@ -85,7 +85,7 @@ class Door:
         if time_exceeded:
             log.critical(f'Exceeded travel time of {self.max_travel} seconds')
         if blocked:
-            log.warning("Door blocked")
+            log.warning("Door blocked; Opening Door")
             self.move(2)  # open door if blocked and timer exceeded
             return
 
