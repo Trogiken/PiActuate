@@ -83,13 +83,13 @@ class Scheduler(threading.Thread):
 
                 if sunrise <= current < sunset:
                     if status == 'closed':
-                        self.door.move(2)
                         log.info("Door Called Up")
+                        self.door.move(2)
                         break
                 else:
                     if status == 'open':
-                        self.door.move(1)
                         log.info("Door Called Down")
+                        self.door.move(1)
                         break
                 i = 0
                 while i != 60:  # Wait for some seconds, checking for stop event each second
