@@ -92,7 +92,7 @@ class Scheduler(threading.Thread):
                         log.info("Door Called Down")
                         break
                 i = 0
-                while i != 20:  # Wait for some seconds, checking for stop event each second
+                while i != 60:  # Wait for some seconds, checking for stop event each second
                     i += 1
                     if self.stopped():
                         return
