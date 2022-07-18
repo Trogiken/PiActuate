@@ -109,15 +109,14 @@ def main():
                 stop_aux()
                 stop_auto()
                 door.cleanup()
-                exit()
             elif parm == 'r':
                 log.warning("Restarting...")
                 anvil.server.disconnect()
                 stop_aux()
                 stop_auto()
                 door.cleanup()
-                os.system('python source/restart.py')
-                exit()
+
+            os.system(f'sudo shutdown -{parm} now')
 
         @anvil.server.callable
         def move(opt):
