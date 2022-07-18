@@ -4,7 +4,7 @@ import pickle
 
 
 class Save:
-    filename = "DATA.pkl"
+    filename = "/home/pi/scripts/chicken-door/DATA.pkl"
     default_save = {
                     'automation': False,
                     'auxiliary': False,

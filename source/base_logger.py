@@ -2,7 +2,7 @@ import os
 import logging.config
 from logging.handlers import TimedRotatingFileHandler
 
-path = os.getcwd()
+path = "/home/pi/scripts/chicken-door"
 logdir = f"{path}/logs"
 if not os.path.exists(logdir):
     os.mkdir(logdir)
