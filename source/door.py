@@ -84,7 +84,7 @@ class Door:
     def run_aux(self):
         try:
             if self.is_running is False:
-                self.aux = Auxiliary(aux_sw1=13, aux_sw2=24, aux_sw3=self.SW1, aux_sw4=self.SW2, aux_sw5=self.SW3,
+                self.aux = Auxiliary(aux_sw1=23, aux_sw2=24, aux_sw3=self.SW1, aux_sw4=self.SW2, aux_sw5=self.SW3,
                                      relay1=self.RELAY1, relay2=self.RELAY2)
                 self.aux.start()
 
