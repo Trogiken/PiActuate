@@ -34,7 +34,7 @@ def main():
         anvil.server.connect(f"{ID}")
         log.info("Server Connection Made")
 
-        if loaded_save['automation_enabled']:
+        if loaded_save['automation']:
             auto.run()
 
         @anvil.server.callable
