@@ -36,6 +36,8 @@ def main():
 
         if loaded_save['automation']:
             auto.run()
+        if loaded_save['auxiliary']:
+            door.run_aux()
 
         @anvil.server.callable
         def run_auto():
