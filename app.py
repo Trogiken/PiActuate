@@ -102,14 +102,22 @@ def main():
             return door.get_status()
 
         @anvil.server.callable
-        def restart():
-            log.warning("Restarting...")
-            anvil.server.disconnect()
-            stop_aux()
-            stop_auto()
-            door.cleanup()
-            os.system('python source/restart.py')
-            exit()
+        def shutdown(parm='h'):
+            if parm == 'h':
+                log.warning("Shutting Down...")
+                anvil.server.disconnect()
+                stop_aux()
+                stop_auto()
+                door.cleanup()
+                exit()
+            elif parm == 'r':
+                log.warning("Restarting...")
+                anvil.server.disconnect()
+                stop_aux()
+                stop_auto()
+                door.cleanup()
+                os.system('python source/restart.py')
+                exit()
 
         @anvil.server.callable
         def move(opt):
