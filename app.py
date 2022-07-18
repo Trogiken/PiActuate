@@ -3,39 +3,39 @@
 Install Location: /home/pi/scripts/chicken-door
 GitHub: https://github.com/Trogiken/chicken-door
 """
-from source.base_logger import log
-log.info("App Startup...")
-
-from source.door import Door
-from source.auto import Auto
-from source.save import Save
-import anvil.server
-import os
-
-save = Save()
-loaded_save = save.load()
-log.info("Save Loaded")
-log.debug(f"Loaded Save Data: {loaded_save}")
-
-
-sunrise_offset = loaded_save['sunrise_offset']
-sunset_offset = loaded_save['sunset_offset']
-
-door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, max_travel=10)
-log.info("Door object created")
-
-auto = Auto(door=door, zone=str(loaded_save['timezone']), latitude=float(loaded_save['lat']),
-            longitude=float(loaded_save['lon']), sunrise_offset=int(sunrise_offset), sunset_offset=int(sunset_offset))
-log.info("Automation object created")
-
-
-ID = "NJVUFM2IX4WAT5SEHECJLQZ7-CLDWHXPSURNV4EW5"
 
 
 def main():
+    from source.base_logger import log
+    log.info("App Startup...")
+
+    from source.door import Door
+    from source.auto import Auto
+    from source.save import Save
+    import anvil.server
+    import os
+
+    save = Save()
+    loaded_save = save.load()
+    log.info("Save Loaded")
+    log.debug(f"Loaded Save Data: {loaded_save}")
+
+    sunrise_offset = loaded_save['sunrise_offset']
+    sunset_offset = loaded_save['sunset_offset']
+
+    door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, max_travel=10)
+    log.info("Door object created")
+
+    auto = Auto(door=door, zone=str(loaded_save['timezone']),
+                latitude=float(loaded_save['lat']), longitude=float(loaded_save['lon']),
+                sunrise_offset=int(sunrise_offset), sunset_offset=int(sunset_offset))
+    log.info("Automation object created")
+
+    anvil_id = "NJVUFM2IX4WAT5SEHECJLQZ7-CLDWHXPSURNV4EW5"
+
     try:
-        log.debug(f"Connection ID: {ID}")
-        anvil.server.connect(f"{ID}")
+        log.debug(f"Connection ID: {anvil_id}")
+        anvil.server.connect(f"{anvil_id}")
         log.info("Server Connection Made")
 
         if loaded_save['automation']:

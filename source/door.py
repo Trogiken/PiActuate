@@ -11,7 +11,7 @@ class _Auxiliary(threading.Thread):
         self.AUX_SW2 = aux_sw2  # button 2
         self.AUX_SW3 = aux_sw3  # limit
         self.AUX_SW4 = aux_sw4  # limit
-        self.AUX_SW5 = aux_sw5  # sensor
+        self.AUX_SW5 = aux_sw5  # block
         self.RELAY1 = relay1
         self.RELAY2 = relay2
         self.motion = 0
@@ -195,6 +195,8 @@ class Door:
         """
         Movement operation
 
+        Relay outputs: True=Off, False=On
+
         Parameters
         ----------
         opt : int, required
@@ -223,10 +225,10 @@ class Door:
                 else:
                     GPIO.output(self.RELAY1, False)
                     GPIO.output(self.RELAY2, True)
-            elif self.motion == 2 and GPIO.input(self.SW2) == 0:  # Requested down and limit switch not triggered
+            elif self.motion == 2 and GPIO.input(self.SW2) == 0:  # Requested up and limit switch not triggered
                 GPIO.output(self.RELAY1, True)
                 GPIO.output(self.RELAY2, False)
-            else:  # Limit switch is triggered
+            else:  # Motion related limit switch is triggered
                 time_exceeded = False
                 blocked = False
                 break
