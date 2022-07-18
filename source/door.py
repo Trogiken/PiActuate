@@ -114,6 +114,7 @@ class Door:
         GPIO.output(self.RELAY1, True)
         GPIO.output(self.RELAY2, True)
         GPIO.cleanup()
+        log.info("GPIO Cleared")
 
     def get_status(self):
         if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
