@@ -108,7 +108,7 @@ def main():
             stop_aux()
             stop_auto()
             door.cleanup()
-            os.system('python restart.py')
+            os.system('python source/restart.py')
             exit()
 
         @anvil.server.callable
