@@ -1,3 +1,9 @@
+"""
+***Logger used throughout program***
+Creates "logs" directory at top of directory
+Current day log name "chicken_door.log"
+Every midnight the current log name gets a suffix (year-month-day)
+"""
 import os
 import logging.config
 from logging.handlers import TimedRotatingFileHandler

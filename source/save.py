@@ -4,6 +4,20 @@ import pickle
 
 
 class Save:
+    """
+    A class that manages save file
+
+    ...
+
+    Methods
+    -------
+    load():
+        read file data
+    reset():
+        dump default save data into file
+    change(variable="", value=""):
+        change variable in file to value given
+    """
     filename = "/home/pi/scripts/chicken-door/DATA.pkl"
     default_save = {
                     'automation': False,
@@ -21,20 +35,35 @@ class Save:
             log.info("Save Created")
 
     def load(self):
-        """Return save data in dictionary format"""
+        """
+        Read file data
+
+        returns
+        -------
+        data (dict): Read bytes and return
+        """
         with open(self.filename, 'rb') as r:
             data = pickle.load(r)
         log.debug("Save Read")
         return data
 
     def reset(self):
-        """Change save data to default state"""
+        """Dump default save data into file"""
         with open(self.filename, 'wb') as w:
             pickle.dump(self.default_save, w)
             log.info("Save Reset")
 
     def change(self, variable, value):
-        """Change variable value in saved data"""
+        """
+        Change variable in file to value given
+
+        Parameters
+        ----------
+        variable : str, required
+            key in file to be changed
+        value : (str, int, float, bool), required
+            value of changed key
+        """
         save_data = self.load()
         variable = variable.lower()
 

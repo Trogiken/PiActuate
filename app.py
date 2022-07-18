@@ -1,3 +1,8 @@
+"""
+***Door control with WebApp integration***
+Install Location: /home/pi/scripts/chicken-door
+GitHub: https://github.com/Trogiken/chicken-door
+"""
 from source.base_logger import log
 log.info("App Startup...")
 
@@ -7,7 +12,6 @@ from source.save import Save
 import anvil.server
 import os
 
-# Set static IP for RPI
 save = Save()
 loaded_save = save.load()
 log.info("Save Loaded")
@@ -41,44 +45,61 @@ def main():
 
         @anvil.server.callable
         def run_auto():
+            """Calls auto.run()"""
             log.debug("CALLED")
             auto.run()
 
         @anvil.server.callable
         def stop_auto():
+            """Calls auto.stop()"""
             log.debug("CALLED")
             auto.stop()
 
         @anvil.server.callable
         def run_aux():
+            """Calls door.run_aux()"""
             log.debug("CALLED")
             door.run_aux()
 
         @anvil.server.callable
         def stop_aux():
+            """Calls door.stop_aux()"""
             log.debug("CALLED")
             door.stop_aux()
 
         @anvil.server.callable
         def change_rise(offset):
+            """Takes a number, changes auto object variable and saves value"""
             log.debug("CALLED")
             auto.sunrise_offset = offset
             save.change('sunrise_offset', offset)
 
         @anvil.server.callable
         def change_set(offset):
+            """Takes a number, changes auto object variable and saves value"""
             log.debug("CALLED")
             auto.sunset_offset = offset
             save.change('sunset_offset', offset)
 
         @anvil.server.callable
         def times():
+            """Returns sunrise and sunset times in a dictionary"""
             log.debug("CALLED")
             return {'sunrise': auto.active_sunrise(),
                     'sunset': auto.active_sunset()}
 
         @anvil.server.callable
         def c_state(variable=None):
+            """
+            Read save file
+
+                Parameters:
+                    variable (str), optional: key in dictionary
+
+                Returns:
+                    save.load() (dict): func call
+                    save.load()[variable] (str, int, float, bool): value of key
+            """
             log.debug("CALLED")
             if variable is not None:
                 return save.load()[variable]
@@ -86,47 +107,51 @@ def main():
                 return save.load()
 
         @anvil.server.callable
-        def l_state(variable=None):
-            log.debug("CALLED")
-            if variable is not None:
-                return loaded_save[variable]
-            else:
-                return loaded_save.values()
-
-        @anvil.server.callable
         def rpi_status():
+            """Returns None"""
             return
 
         @anvil.server.callable
         def door_status():
+            """Returns func call door.get_status()"""
             return door.get_status()
 
         @anvil.server.callable
         def shutdown(parm='h'):
+            """
+            Shutdown or Restart system
+
+            If parm is changed to 'r' the system will restart
+
+                Parameters:
+                    parm (str), optional: Shutdown flag
+
+                Returns:
+                    None
+            """
             if parm == 'h':
                 log.warning("Shutting Down...")
-                anvil.server.disconnect()
-                stop_aux()
-                stop_auto()
-                door.cleanup()
             elif parm == 'r':
                 log.warning("Restarting...")
-                anvil.server.disconnect()
-                stop_aux()
-                stop_auto()
-                door.cleanup()
-
+            else:
+                return
+            anvil.server.disconnect()
+            stop_aux()
+            stop_auto()
+            door.cleanup()
             os.system(f'sudo shutdown -{parm} now')
 
         @anvil.server.callable
         def move(opt):
+            """Takes opt (1 or 2) and calls door.move(opt)"""
             log.debug("CALLED")
-            return door.move(opt)
+            door.move(opt)
 
         @anvil.server.callable
         def change(variable, value):
+            """Calls save.change(variable, value)"""
             log.debug("CALLED")
-            return save.change(variable, value)
+            save.change(variable, value)
 
         log.info("Startup Complete!")
         anvil.server.wait_forever()

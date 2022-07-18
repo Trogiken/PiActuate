@@ -7,7 +7,7 @@ import threading
 import re
 
 
-class Scheduler(threading.Thread):
+class _Scheduler(threading.Thread):
     def __init__(self, door, zone, longitude, latitude, sunrise_offset, sunset_offset):
         super().__init__()
         self.longitude = longitude
@@ -101,7 +101,56 @@ class Scheduler(threading.Thread):
 
 
 class Auto:
+    """
+    A class to open and close relays autonomously
+
+    ...
+
+    Attributes
+    ----------
+    door : object
+        door class object
+    zone : str
+        time zone
+    longitude : float
+        longitudinal coordinate
+    latitude : float
+        latitudinal coordinate
+    sunrise_offset : int
+        add or sub minutes from time
+    sunset_offset : int
+        add or sub minutes from time
+
+    Methods
+    -------
+    run():
+        start the scheduler thread
+    stop():
+        stop the scheduler thread
+    active_sunrise():
+        get sunrise time from scheduler
+    active_sunset():
+        get sunset time from scheduler
+    """
     def __init__(self, door, zone, longitude, latitude, sunrise_offset, sunset_offset):
+        """
+        Constructs all necessary attributes for the Auto object
+
+        Parameters
+        ----------
+        door : object
+            door class object
+        zone : str
+            time zone
+        longitude : float
+            longitudinal coordinate
+        latitude : float
+            latitudinal coordinate
+        sunrise_offset : int
+            add or sub minutes from time
+        sunset_offset : int
+            add or sub minutes from time
+        """
         self.longitude = longitude
         self.latitude = latitude
         self.sunrise_offset = sunrise_offset
@@ -114,10 +163,11 @@ class Auto:
         self.is_running = False
 
     def run(self):
+        """Creates a scheduler object and starts the thread"""
         try:
             if self.is_running is False:
-                self.sch = Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
-                                     sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)
+                self.sch = _Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
+                                      sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)
                 self.sch.start()
 
                 self.is_running = True
@@ -129,6 +179,7 @@ class Auto:
             log.exception("Scheduler has failed to Run")
 
     def stop(self):
+        """Stops the scheduler thread and destroys the object"""
         try:
             if self.is_running is True:
                 self.sch.stop()
@@ -143,12 +194,26 @@ class Auto:
             log.exception("Scheduler has failed to Stop")
 
     def active_sunrise(self):
+        """
+        Get sunrise time from scheduler
+
+        Returns:
+        -------
+        sch.active_sunrise (str): 00:00 string format
+        """
         if self.is_running is True:
             return self.sch.active_sunrise
         else:
             return None
 
     def active_sunset(self):
+        """
+        Get sunset time from scheduler
+
+        Returns:
+        -------
+        sch.active_sunset (str): 00:00 string format
+        """
         if self.is_running is True:
             return self.sch.active_sunset
         else:
