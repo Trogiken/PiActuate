@@ -17,7 +17,7 @@ log.debug(f"Loaded Save Data: {loaded_save}")
 sunrise_offset = loaded_save['sunrise_offset']
 sunset_offset = loaded_save['sunset_offset']
 
-door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, sw4=13, sw5=24, max_travel=10)
+door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, max_travel=10)
 log.info("Door object created")
 
 auto = Auto(door=door, zone=str(loaded_save['timezone']), latitude=float(loaded_save['lat']),
@@ -46,6 +46,16 @@ def main():
         def stop_auto():
             log.debug("CALLED")
             auto.stop()
+
+        @anvil.server.callable
+        def run_aux():
+            log.debug("CALLED")
+            door.run_aux()
+
+        @anvil.server.callable
+        def stop_aux():
+            log.debug("CALLED")
+            door.stop_aux()
 
         @anvil.server.callable
         def change_rise(offset):
