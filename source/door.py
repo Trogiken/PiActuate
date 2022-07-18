@@ -110,6 +110,11 @@ class Door:
         except Exception:
             log.exception("Auxiliary has failed to Stop")
 
+    def cleanup(self):
+        GPIO.output(self.RELAY1, True)
+        GPIO.output(self.RELAY2, True)
+        GPIO.cleanup()
+
     def get_status(self):
         if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
             self.status = 'closed'

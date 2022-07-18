@@ -103,8 +103,11 @@ def main():
 
         @anvil.server.callable
         def restart():
-            log.debug("CALLED")
+            log.warning("Restarting...")
             anvil.server.disconnect()
+            stop_aux()
+            stop_auto()
+            door.cleanup()
             os.system('python restart.py')
             exit()
 
