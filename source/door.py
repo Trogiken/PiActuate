@@ -211,9 +211,10 @@ class Door:
         """
         log.info("[Operation Start]")
 
-        if self.aux.in_motion:  # If an auxiliary button is being pressed
-            log.error("Auxiliary Active; Canceling Operation")
-            return
+        if self.aux is not None:
+            if self.aux.in_motion:  # If an auxiliary button is being pressed
+                log.error("Auxiliary Active; Canceling Operation")
+                return
 
         if opt == 1:
             self.motion = 1  # close
