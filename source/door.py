@@ -7,10 +7,10 @@ door_in_motion = False
 
 
 class _Auxiliary(threading.Thread):
-    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
+    def __init__(self, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
         super().__init__()
-        self.AUX_SW1 = aux_sw1  # button 1
-        self.AUX_SW2 = aux_sw2  # button 2
+        self.AUX_SW1 = 23  # button 1
+        self.AUX_SW2 = 24  # button 2
         self.AUX_SW3 = aux_sw3  # limit
         self.AUX_SW4 = aux_sw4  # limit
         self.AUX_SW5 = aux_sw5  # block
@@ -151,7 +151,7 @@ class Door:
         """Creates an Auxiliary object and starts the thread"""
         try:
             if self.is_running is False:
-                self.aux = _Auxiliary(aux_sw1=23, aux_sw2=24, aux_sw3=self.SW1, aux_sw4=self.SW2, aux_sw5=self.SW3,
+                self.aux = _Auxiliary(aux_sw3=self.SW1, aux_sw4=self.SW2, aux_sw5=self.SW3,
                                       relay1=self.RELAY1, relay2=self.RELAY2)
                 self.aux.start()
 
