@@ -34,6 +34,8 @@ class _Auxiliary(threading.Thread):
     def run(self, *args, **kwargs):
         while True:
             if self.stopped():
+                GPIO.output(self.RELAY1, True)
+                GPIO.output(self.RELAY2, True)
                 return
             if GPIO.input(self.AUX_SW1) == 1:
                 self.motion = 1
@@ -165,8 +167,6 @@ class Door:
         """Stops the Auxiliary thread and destroys the object"""
         try:
             if self.is_running is True:
-                GPIO.output(self.RELAY1, True)
-                GPIO.output(self.RELAY2, True)
                 self.aux.stop()
                 self.aux.join()
 
