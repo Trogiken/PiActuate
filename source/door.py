@@ -3,6 +3,8 @@ import RPi.GPIO as GPIO
 import time
 import threading
 
+door_in_motion = False
+
 
 class _Auxiliary(threading.Thread):
     def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
@@ -42,7 +44,7 @@ class _Auxiliary(threading.Thread):
             else:
                 self.motion = 0
 
-            if self.in_motion:
+            if self.in_motion and not door_in_motion:
                 if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
                     self.in_motion = True
                     if GPIO.input(self.AUX_SW5) == 1:
@@ -126,6 +128,7 @@ class Door:
 
         self.status = None
         self.motion = 0
+        self.in_motion = False
         self.aux = None
         self.is_running = False
 
@@ -228,8 +231,10 @@ class Door:
 
         time_exceeded = True
         blocked = False
+        global door_in_motion
         start = time.time()
         while time.time() < start + self.max_travel:  # Timer
+            door_in_motion = True
             if self.motion == 1 and GPIO.input(self.SW1) == 0:  # Requested down and limit switch not triggered
                 if GPIO.input(self.SW3) == 1:  # Block switch triggered
                     GPIO.output(self.RELAY1, True)
@@ -244,6 +249,7 @@ class Door:
             else:  # Motion related limit switch is triggered
                 time_exceeded = False
                 blocked = False
+                door_in_motion = False
                 break
         # Reset motion and relays
         self.motion = 0
