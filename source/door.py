@@ -15,6 +15,9 @@ class _Auxiliary(threading.Thread):
         self.RELAY1 = relay1
         self.RELAY2 = relay2
         self.motion = 0
+
+        self.in_motion = False
+
         self._stop_event = threading.Event()
 
         GPIO.setup(self.AUX_SW1, GPIO.IN)
@@ -32,24 +35,28 @@ class _Auxiliary(threading.Thread):
                 return
             if GPIO.input(self.AUX_SW1) == 1:
                 self.motion = 1
+                self.in_motion = True
             elif GPIO.input(self.AUX_SW2) == 1:
                 self.motion = 2
+                self.in_motion = True
             else:
-                self.motion = 0
+                self.in_motion = False
 
-            if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
-                if GPIO.input(self.AUX_SW5) == 1:
+            if self.in_motion:
+                if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
+                    self.in_motion = True
+                    if GPIO.input(self.AUX_SW5) == 1:
+                        GPIO.output(self.RELAY1, True)
+                        GPIO.output(self.RELAY2, True)
+                    else:
+                        GPIO.output(self.RELAY1, False)
+                        GPIO.output(self.RELAY2, True)
+                elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
+                    GPIO.output(self.RELAY1, True)
+                    GPIO.output(self.RELAY2, False)
+                else:
                     GPIO.output(self.RELAY1, True)
                     GPIO.output(self.RELAY2, True)
-                else:
-                    GPIO.output(self.RELAY1, False)
-                    GPIO.output(self.RELAY2, True)
-            elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
-                GPIO.output(self.RELAY1, True)
-                GPIO.output(self.RELAY2, False)
-            else:
-                GPIO.output(self.RELAY1, True)
-                GPIO.output(self.RELAY2, True)
 
 
 class Door:
@@ -203,6 +210,10 @@ class Door:
             opt=1 (close), opt=2 (open)
         """
         log.info("[Operation Start]")
+
+        if self.aux.is_running:  # If an auxiliary button is being pressed
+            log.error("Auxiliary Active; Canceling Operation")
+            return
 
         if opt == 1:
             self.motion = 1  # close
