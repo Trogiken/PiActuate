@@ -40,7 +40,7 @@ class _Auxiliary(threading.Thread):
                 self.motion = 2
                 self.in_motion = True
             else:
-                self.in_motion = False
+                self.motion = 0
 
             if self.in_motion:
                 if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
@@ -57,6 +57,7 @@ class _Auxiliary(threading.Thread):
                 else:
                     GPIO.output(self.RELAY1, True)
                     GPIO.output(self.RELAY2, True)
+                    self.in_motion = False
 
 
 class Door:
