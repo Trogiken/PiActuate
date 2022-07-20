@@ -17,16 +17,16 @@ def main():
     import os
 
     save = Save()
+    log.info("Save object created")
+    door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, max_travel=10)
+    log.info("Door object created")
+
     loaded_save = save.load()
     log.info("Save Loaded")
     log.debug(f"Loaded Save Data: {loaded_save}")
 
     sunrise_offset = loaded_save['sunrise_offset']
     sunset_offset = loaded_save['sunset_offset']
-
-    door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, max_travel=10)
-    log.info("Door object created")
-
     auto = Auto(door=door, zone=str(loaded_save['timezone']),
                 latitude=float(loaded_save['lat']), longitude=float(loaded_save['lon']),
                 sunrise_offset=int(sunrise_offset), sunset_offset=int(sunset_offset))
