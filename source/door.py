@@ -165,6 +165,8 @@ class Door:
         """Stops the Auxiliary thread and destroys the object"""
         try:
             if self.is_running is True:
+                GPIO.output(self.RELAY1, True)
+                GPIO.output(self.RELAY2, True)
                 self.aux.stop()
                 self.aux.join()
 
