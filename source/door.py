@@ -249,12 +249,12 @@ class Door:
             else:  # Motion related limit switch is triggered
                 time_exceeded = False
                 blocked = False
-                door_in_motion = False
                 break
         # Reset motion and relays
         self.motion = 0
         GPIO.output(self.RELAY1, True)
         GPIO.output(self.RELAY2, True)
+        door_in_motion = False
 
         if time_exceeded:
             log.critical(f'Exceeded travel time of {self.max_travel} seconds')
