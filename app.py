@@ -118,6 +118,16 @@ def main():
             return door.get_status()
 
         @anvil.server.callable
+        def update():
+            log.warning("Update script starting!")
+            anvil.server.disconnect()
+            stop_aux()
+            stop_auto()
+            door.cleanup()
+            os.system('python /home/pi/scripts/update.py')
+            exit("Update")
+
+        @anvil.server.callable
         def shutdown(parm='h'):
             """
             Shutdown or Restart system
@@ -157,10 +167,10 @@ def main():
         log.info("Startup Complete!")
         anvil.server.wait_forever()
     except Exception:
-        log.exception("FAILURE")
+        log.exception("EXCEPTION")
         anvil.server.disconnect()
 
-        exit()
+        return
 
 
 if __name__ == '__main__':
