@@ -125,7 +125,7 @@ def main():
             stop_auto()
             door.cleanup()
             os.system('python /home/pi/scripts/sync.py')
-            exit("Syncing Repository")
+            os.system('sudo systemctl stop chicken_door')
 
         @anvil.server.callable
         def reset_config():
