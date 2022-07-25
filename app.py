@@ -124,8 +124,7 @@ def main():
             stop_aux()
             stop_auto()
             door.cleanup()
-            os.system('python /home/pi/scripts/sync.py')
-            os.system('sudo systemctl stop chicken_door')
+            os.system('sudo python /home/pi/scripts/sync.py && sudo systemctl stop chicken_door')
 
         @anvil.server.callable
         def reset_config():
