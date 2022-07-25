@@ -118,15 +118,6 @@ def main():
             return door.get_status()
 
         @anvil.server.callable
-        def sync():
-            log.warning("Sync script starting!")
-            anvil.server.disconnect()
-            stop_aux()
-            stop_auto()
-            door.cleanup()
-            os.system('python /home/pi/scripts/sync.py ; sudo systemctl stop chicken_door')
-
-        @anvil.server.callable
         def reset_config():
             save.reset()
             return
