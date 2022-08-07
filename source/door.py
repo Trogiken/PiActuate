@@ -194,7 +194,7 @@ class Door:
 
         Returns
         -------
-        status (str): closed, open, blocked, or unknown
+        status (str): closed, open, blocked, moving or unknown
         """
         if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
             self.status = 'closed'
@@ -276,6 +276,7 @@ class Door:
         log.info("[Operation Stop]")
 
     def move(self, opt):
+        """creates _move_op thread if there isn't one"""
         if not door_in_motion:
             self._move_op_thread = threading.Thread(target=self._move_op, args=(opt,))
             self._move_op_thread.start()
