@@ -6,7 +6,7 @@ import threading
 door_in_motion = False
 
 
-class _Auxiliary(threading.Thread):
+class _Auxiliary(threading.Thread):  # DEBUG use door class for switches
     def __init__(self, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
         super().__init__()
         self.AUX_SW1 = 23  # button 1
@@ -130,9 +130,9 @@ class Door:
 
         self.status = None
         self.motion = 0
-        self.in_motion = False
         self.aux = None
-        self.is_running = False
+        self.aux_is_running = False
+        self._move_op_thread = threading.Thread()
 
         log.debug(f"RELAY1: {self.RELAY1}")
         log.debug(f"RELAY2: {self.RELAY2}")
@@ -150,28 +150,28 @@ class Door:
     def run_aux(self):
         """Creates an Auxiliary object and starts the thread"""
         try:
-            if self.is_running is False:
+            if self.aux_is_running is False:
                 self.aux = _Auxiliary(aux_sw3=self.SW1, aux_sw4=self.SW2, aux_sw5=self.SW3,
                                       relay1=self.RELAY1, relay2=self.RELAY2)
                 self.aux.start()
 
-                self.is_running = True
+                self.aux_is_running = True
                 log.info("Auxiliary is Running")
             else:
                 log.warning("Auxiliary is already Running")
         except Exception:
-            self.is_running = False
+            self.aux_is_running = False
             log.exception("Auxiliary has failed to Run")
 
     def stop_aux(self):
         """Stops the Auxiliary thread and destroys the object"""
         try:
-            if self.is_running is True:
+            if self.aux_is_running is True:
                 self.aux.stop()
                 self.aux.join()
 
                 self.aux = None
-                self.is_running = False
+                self.aux_is_running = False
                 log.info("Auxiliary has stopped Running")
             else:
                 log.warning("Auxiliary is not Running")
@@ -180,6 +180,9 @@ class Door:
 
     def cleanup(self):
         """Resets relays and clears GPIO pins"""
+        self.stop_aux()
+        if self._move_op_thread.is_alive():
+            self._move_op_thread.join()  # wait for thread to complete
         GPIO.output(self.RELAY1, True)
         GPIO.output(self.RELAY2, True)
         GPIO.cleanup()
@@ -191,7 +194,7 @@ class Door:
 
         Returns
         -------
-        status (str): closed, open, blocked, or unknown
+        status (str): closed, open, blocked, moving or unknown
         """
         if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
             self.status = 'closed'
@@ -199,12 +202,16 @@ class Door:
             self.status = 'open'
         elif GPIO.input(self.SW3) == 1:
             self.status = 'blocked'
+        elif door_in_motion:
+            self.status = 'moving'
+        elif door_in_motion or self.aux is not None and self.aux.in_motion:
+            self.status = 'moving'
         else:
             self.status = 'unknown'
 
         return self.status
 
-    def move(self, opt):
+    def _move_op(self, opt):
         """
         Movement operation
 
@@ -262,8 +269,17 @@ class Door:
             log.critical(f'Exceeded travel time of {self.max_travel} seconds')
         if blocked:  # Open door if blocked=True and timer exceeded
             log.warning("Door blocked; Opening door")
-            self.move(2)
+            self._move_op(2)
             return
 
         log.info(f"Status: {self.get_status()}")
         log.info("[Operation Stop]")
+
+    def move(self, opt):
+        """creates _move_op thread if there isn't one"""
+        if not door_in_motion:
+            self._move_op_thread = threading.Thread(target=self._move_op, args=(opt,))
+            self._move_op_thread.start()
+            log.info("Movement thread started")
+        else:
+            log.warning("Door already in motion")
