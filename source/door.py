@@ -132,7 +132,7 @@ class Door:
         self.motion = 0
         self.aux = None
         self.aux_is_running = False
-        self._move_op_thread = None
+        self._move_op_thread = threading.Thread()
 
         log.debug(f"RELAY1: {self.RELAY1}")
         log.debug(f"RELAY2: {self.RELAY2}")
@@ -202,7 +202,9 @@ class Door:
             self.status = 'open'
         elif GPIO.input(self.SW3) == 1:
             self.status = 'blocked'
-        elif self.aux.in_motion or door_in_motion:
+        elif door_in_motion:
+            self.status = 'moving'
+        elif door_in_motion or self.aux is not None and self.aux.in_motion:
             self.status = 'moving'
         else:
             self.status = 'unknown'
@@ -274,8 +276,8 @@ class Door:
         log.info("[Operation Stop]")
 
     def move(self, opt):
-        if not self._move_op_thread.is_alive():
-            self._move_op_thread = threading.Thread(target=self._move_op, args=opt)
+        if not door_in_motion:
+            self._move_op_thread = threading.Thread(target=self._move_op, args=(opt,))
             self._move_op_thread.start()
             log.info("Movement thread started")
         else:
