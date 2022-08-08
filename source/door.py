@@ -6,7 +6,7 @@ import threading
 door_in_motion = False
 
 
-class _Auxiliary(threading.Thread):  # DEBUG use door class for switches
+class _Auxiliary(threading.Thread):
     def __init__(self, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
         super().__init__()
         self.AUX_SW1 = 23  # button 1
