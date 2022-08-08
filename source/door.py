@@ -277,7 +277,7 @@ class Door:
 
     def move(self, opt):
         """creates _move_op thread if there isn't one"""
-        if not door_in_motion:
+        if not self._move_op_thread.is_alive():
             self._move_op_thread = threading.Thread(target=self._move_op, args=(opt,))
             self._move_op_thread.start()
             log.info("Movement thread started")
