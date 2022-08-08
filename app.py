@@ -132,9 +132,6 @@ def main():
 
                 Parameters:
                     parm (str), optional: Shutdown flag
-
-                Returns:
-                    None
             """
             if parm == 'h':
                 log.warning("Shutting Down...")
@@ -165,7 +162,6 @@ def main():
     except Exception:
         log.exception("EXCEPTION")
         anvil.server.disconnect()
-
         return
 
 

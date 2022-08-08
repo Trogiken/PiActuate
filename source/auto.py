@@ -30,6 +30,7 @@ class _Scheduler(threading.Thread):
         return self._stop_event.is_set()
 
     def get_world(self):
+        """Gets sunrise and sunset times and current date"""
         today = datetime.today()
         rise_offset = timedelta(minutes=self.sunrise_offset)
         set_offset = timedelta(minutes=self.sunset_offset)
@@ -60,6 +61,7 @@ class _Scheduler(threading.Thread):
         return {'today': str(today), 'sunset': sunset, 'sunrise': sunrise}
 
     def run(self, *args, **kwargs):
+        """Automation loop"""
         cycle = 1
         while True:
             log.info(f"Cycle: {cycle}")
@@ -133,24 +135,7 @@ class Auto:
         get sunset time from scheduler
     """
     def __init__(self, door, zone, longitude, latitude, sunrise_offset, sunset_offset):
-        """
-        Constructs all necessary attributes for the Auto object
-
-        Parameters
-        ----------
-        door : object
-            door class object
-        zone : str
-            time zone
-        longitude : float
-            longitudinal coordinate
-        latitude : float
-            latitudinal coordinate
-        sunrise_offset : int
-            add or sub minutes from time
-        sunset_offset : int
-            add or sub minutes from time
-        """
+        """Constructs all necessary attributes for the Auto object"""
         self.longitude = longitude
         self.latitude = latitude
         self.sunrise_offset = sunrise_offset

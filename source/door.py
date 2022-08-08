@@ -101,24 +101,7 @@ class Door:
         move door open or closed
     """
     def __init__(self, relay1, relay2, sw1, sw2, sw3, max_travel):
-        """
-        Constructs all the necessary attributes for the Door object
-
-        Parameters
-        ----------
-        relay1 : int
-            pin of channel 1 relay
-        relay2 : int
-            pin of channel 2 relay
-        sw1 : int
-            pin of limit switch
-        sw2 : int
-            pin of limit switch
-        sw3 : int
-            pint of block switch
-        max_travel : int
-            maximum seconds relays remain triggered
-        """
+        """Constructs all the necessary attributes for the Door object"""
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         self.RELAY1 = relay1
