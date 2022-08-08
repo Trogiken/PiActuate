@@ -18,12 +18,13 @@ def main():
 
     save = Save()
     log.info("Save object created")
-    door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, max_travel=10)
-    log.info("Door object created")
 
     loaded_save = save.load()
     log.info("Save Loaded")
     log.debug(f"Loaded Save Data: {loaded_save}")
+
+    door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, max_travel=10)
+    log.info("Door object created")
 
     sunrise_offset = loaded_save['sunrise_offset']
     sunset_offset = loaded_save['sunset_offset']
