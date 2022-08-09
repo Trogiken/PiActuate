@@ -40,7 +40,7 @@ class Save:
 
         returns
         -------
-        data (dict): Read bytes and return
+        data (dict)
         """
         with open(self.filename, 'rb') as r:
             data = pickle.load(r)

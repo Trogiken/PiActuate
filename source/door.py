@@ -6,7 +6,7 @@ import threading
 door_in_motion = False
 
 
-class _Auxiliary(threading.Thread):  # DEBUG use door class for switches
+class _Auxiliary(threading.Thread):
     def __init__(self, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
         super().__init__()
         self.AUX_SW1 = 23  # button 1
@@ -101,24 +101,7 @@ class Door:
         move door open or closed
     """
     def __init__(self, relay1, relay2, sw1, sw2, sw3, max_travel):
-        """
-        Constructs all the necessary attributes for the Door object
-
-        Parameters
-        ----------
-        relay1 : int
-            pin of channel 1 relay
-        relay2 : int
-            pin of channel 2 relay
-        sw1 : int
-            pin of limit switch
-        sw2 : int
-            pin of limit switch
-        sw3 : int
-            pint of block switch
-        max_travel : int
-            maximum seconds relays remain triggered
-        """
+        """Constructs all the necessary attributes for the Door object"""
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         self.RELAY1 = relay1
@@ -268,7 +251,7 @@ class Door:
         if time_exceeded:
             log.critical(f'Exceeded travel time of {self.max_travel} seconds')
         if blocked:  # Open door if blocked=True and timer exceeded
-            log.warning("Door blocked; Opening door")
+            log.warning("Door blocked; Opening Door")
             self._move_op(2)
             return
 
@@ -277,7 +260,7 @@ class Door:
 
     def move(self, opt):
         """creates _move_op thread if there isn't one"""
-        if not door_in_motion:
+        if not self._move_op_thread.is_alive():
             self._move_op_thread = threading.Thread(target=self._move_op, args=(opt,))
             self._move_op_thread.start()
             log.info("Movement thread started")
