@@ -71,14 +71,14 @@ def main():
 
         @anvil.server.callable
         def change_rise(offset):
-            """Takes a number, changes auto object variable and saves value"""
+            """Changes auto object variable (sunrise_offset) to (offset) and saves the new value"""
             log.debug("CALLED")
             auto.sunrise_offset = offset
             save.change('sunrise_offset', offset)
 
         @anvil.server.callable
         def change_set(offset):
-            """Takes a number, changes auto object variable and saves value"""
+            """Changes auto object variable (sunset_offset) to (offset) and saves the new value"""
             log.debug("CALLED")
             auto.sunset_offset = offset
             save.change('sunset_offset', offset)
@@ -99,8 +99,8 @@ def main():
                     variable (str), optional: key in dictionary
 
                 Returns:
-                    save.load() (dict): func call
-                    save.load()[variable] (str, int, float, bool): value of key
+                    save.load() (dict): all data
+                    save.load()[variable] (str, int, float, bool): value of specified key
             """
             log.debug("CALLED")
             if variable is not None:
@@ -110,7 +110,7 @@ def main():
 
         @anvil.server.callable
         def rpi_status():
-            """Returns None"""
+            """Called by WebApp to check if it still has connection to this program, Returns None"""
             return
 
         @anvil.server.callable
@@ -120,6 +120,7 @@ def main():
 
         @anvil.server.callable
         def reset_config():
+            """"Calls save.reset()"""
             save.reset()
             return
 
