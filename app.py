@@ -37,7 +37,7 @@ def main():
 
     try:
         log.debug(f"Connection ID: {anvil_id}")
-        anvil.server.connect(f"{anvil_id}")
+        anvil.server.connect(anvil_id)
         log.info("Server Connection Made")
 
         if loaded_save['automation']:
