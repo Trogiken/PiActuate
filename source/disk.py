@@ -80,3 +80,8 @@ class Save:
         with open(self.filename, 'wb') as w:
             pickle.dump(save_data, w)
             log.info(f"[{variable}] changed to [{value}]")
+
+
+class Config:
+    def load(self):
+        pass
