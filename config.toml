@@ -1,15 +1,16 @@
 [environment]
 install = ''  # use this location instead of hardcoding absolute paths
+debug = false
 
 [gpio]
-relay1 = 0
-relay2 = 0
-switch1 = 0
-switch2 = 0
-switch3 = 0
-aux_switch1 = 0
-aux_switch2 = 0
+relay1 = 0  # extend
+relay2 = 0  # retract
+switch1 = 0  # extend limit
+switch2 = 0  # retract limit
+switch3 = 0  # block
+aux_switch1 = 0  # extend
+aux_switch2 = 0  # retract
 
 [properties]
 max_tavel_time = 10
-debug = false
+anvil_id = ''
