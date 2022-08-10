@@ -1,6 +1,13 @@
 # Chicken Door Project
 Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCLEB6FN5WL) integration
 
+### Requirements
+- RPi.GPIO
+- pytz
+- solartime
+- anvil uplink
+- tomli
+
 ## Config File
 |Variable|Purpose|
 |--------|--------|
