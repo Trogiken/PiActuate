@@ -1,6 +1,42 @@
 from .base_logger import log
 import os
 import pickle
+import toml
+from pathlib import Path
+
+os.chdir(os.path.dirname(__file__))
+cwd = os.getcwd()
+home = str(Path(cwd).parents[0])
+
+
+class Config:
+    """
+    A class that manages config file
+
+    ...
+
+    Methods
+    -------
+    load():
+        read file data
+    """
+    path = os.path.join(home, 'config.toml')
+
+    # validate config data
+    _values = toml.load(path)
+    match _values:
+        case {
+            'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(), 'aux_switch1': int(), 'aux_switch2': int()},
+            'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'max_travel_time': int(), 'anvil_id': str()}
+        }:
+            pass
+        case _:
+            log.critical(f'Invalid Config Data {_values}')
+            raise ValueError('Config Error')
+
+    def load(self):
+        """Read file data, return (dict)"""
+        return toml.load(self.path)
 
 
 class Save:
@@ -18,16 +54,13 @@ class Save:
     change(variable="", value=""):
         change variable in file to value given
     """
-    filename = "/home/pi/scripts/chicken-door/DATA.pkl"
+    filename = os.path.join(home, 'DATA.pkl')
     default_save = {
-                    'automation': False,
-                    'auxiliary': False,
-                    'lon': -84.6805442,
-                    'lat': 42.9150336,
-                    'timezone': 'US/Eastern',
-                    'sunrise_offset': 0,
-                    'sunset_offset': 0
-                    }
+        'automation': False,
+        'auxiliary': False,
+        'sunrise_offset': 0,
+        'sunset_offset': 0
+    }
 
     if not os.path.exists(filename):
         with open(filename, 'wb') as f:
@@ -35,13 +68,7 @@ class Save:
             log.info("Save Created")
 
     def load(self):
-        """
-        Read file data
-
-        returns
-        -------
-        data (dict)
-        """
+        """Read file data, return data (dict)"""
         with open(self.filename, 'rb') as r:
             data = pickle.load(r)
         log.debug("Save Read")
@@ -80,8 +107,3 @@ class Save:
         with open(self.filename, 'wb') as w:
             pickle.dump(save_data, w)
             log.info(f"[{variable}] changed to [{value}]")
-
-
-class Config:
-    def load(self):
-        pass

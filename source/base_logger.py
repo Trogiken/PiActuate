@@ -6,17 +6,19 @@ Every midnight the current log name gets a suffix (year-month-day)
 """
 import os
 import logging.config
+import disk
 from logging.handlers import TimedRotatingFileHandler
 
-path = "/home/pi/scripts/chicken-door"
-logdir = f"{path}/logs"
+home = disk.home
+
+logdir = os.path.join(home, 'logs')
 if not os.path.exists(logdir):
     os.mkdir(logdir)
 
-logging.config.fileConfig(f'{path}/source/logger_config.conf')
+logging.config.fileConfig((os.path.join(home, 'source', 'logger_config.conf')))
 log = logging.getLogger('MainLogger')
 
-fh = TimedRotatingFileHandler('{}/chicken_door.log'.format(logdir), when='midnight', interval=1, backupCount=10)
+fh = TimedRotatingFileHandler(os.path.join(logdir, 'chicken_door.log'), when='midnight', interval=1, backupCount=10)
 fh.suffix = "%Y-%m-%d"
 
 asc = "%(asctime)s"
