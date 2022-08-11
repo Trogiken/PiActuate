@@ -1,7 +1,5 @@
 """
 ***Door control with WebApp integration***
-Install Location: /home/pi/scripts/chicken-door
-Boot Start: /usr/lib/systemd/system/chicken_door.service (sudo systemctl status chicken_door)
 GitHub: https://github.com/Trogiken/chicken-door
 """
 
@@ -12,30 +10,38 @@ def main():
 
     from source.door import Door
     from source.auto import Auto
-    from source.save import Save
+    import source.disk as disk
     import anvil.server
     import os
 
-    save = Save()
+    save = disk.Save()
     log.info("Save object created")
+    config = disk.Config()
+    log.info("Config object created")
 
     loaded_save = save.load()
     log.info("Save Loaded")
     log.debug(f"Loaded Save Data: {loaded_save}")
 
-    door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, max_travel=10)
+    loaded_config = config.load()
+    io = loaded_config['gpio']
+    prop = loaded_config['properties']
+    log.info("Config Loaded")
+    log.debug(f"Loaded Config Data: {loaded_config}")
+
+    door = Door(relay1=io['relay1'], relay2=io['relay2'],
+                sw1=io['switch1'], sw2=io['switch2'], sw3=io['switch3'], max_travel=prop['max_travel'])
     log.info("Door object created")
 
     sunrise_offset = loaded_save['sunrise_offset']
     sunset_offset = loaded_save['sunset_offset']
-    auto = Auto(door=door, zone=str(loaded_save['timezone']),
-                latitude=float(loaded_save['lat']), longitude=float(loaded_save['lon']),
+    auto = Auto(door=door, zone=str(prop['timezone']),
+                latitude=float(prop['latitude']), longitude=float(prop['longitude']),
                 sunrise_offset=int(sunrise_offset), sunset_offset=int(sunset_offset))
     log.info("Automation object created")
 
-    anvil_id = "NJVUFM2IX4WAT5SEHECJLQZ7-CLDWHXPSURNV4EW5"
-
     try:
+        anvil_id = prop['anvil_id']
         log.debug(f"Connection ID: {anvil_id}")
         anvil.server.connect(anvil_id)
         log.info("Server Connection Made")
