@@ -1,7 +1,5 @@
 """
 ***Door control with WebApp integration***
-Install Location: /home/pi/scripts/chicken-door
-Boot Start: /usr/lib/systemd/system/chicken_door.service (sudo systemctl status chicken_door)
 GitHub: https://github.com/Trogiken/chicken-door
 """
 

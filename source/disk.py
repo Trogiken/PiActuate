@@ -102,9 +102,8 @@ class Save:
                 value = False
 
             save_data[variable] = value
+            with open(self.filename, 'wb') as w:
+                pickle.dump(save_data, w)
+                log.info(f"[{variable}] changed to [{value}]")
         else:
             log.error("Invalid Variable")
-
-        with open(self.filename, 'wb') as w:
-            pickle.dump(save_data, w)
-            log.info(f"[{variable}] changed to [{value}]")

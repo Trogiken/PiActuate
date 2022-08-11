@@ -72,11 +72,10 @@ datefmt=%Y-%m-%d %H:%M:%S"""
 config = disk.Config()
 home = disk.home
 log_conf = os.path.join(home, 'source', 'logger_config.conf')
-if config.load()['environment']['debug']:
-    with open(log_conf, 'w') as f:
+with open(log_conf, 'w') as f:
+    if config.load()['environment']['debug']:
         f.write(debug_level)
-else:
-    with open(log_conf, 'w') as f:
+    else:
         f.write(info_level)
 
 logdir = os.path.join(home, 'logs')
