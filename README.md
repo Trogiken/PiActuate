@@ -26,6 +26,13 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 |   max_travel_time[^3] | Allowed time for the door to be in motion |
 |   anvil_id        | Anvil Uplink ID |
 
+## Creating a Service
+### Linux
+1. sudo nano /usr/lib/systemd/system/SERVICE_NAME.service
+2. ```enter script``` Save File
+3. sudo systemctl enable SERVICE_NAME
+4. sudo systemctl start SERVICE_NAME
+
 [^1]: Program will lower logging levels from **info** to **debug**
 [^2]: US/Eastern, Europe/Amsterdam
 [^3]: Find the movement rate of door and the distance it must travel. Add an additional 4 - 6 seconds
