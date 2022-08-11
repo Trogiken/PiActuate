@@ -5,8 +5,8 @@ import toml
 from pathlib import Path
 
 os.chdir(os.path.dirname(__file__))
-cwd = os.getcwd()
-home = str(Path(cwd).parents[0])
+_cwd = os.getcwd()
+home = str(Path(_cwd).parents[0])
 
 
 class Config:
@@ -26,6 +26,7 @@ class Config:
     _values = toml.load(path)
     match _values:
         case {
+            'environment': {'debug': bool()},
             'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(), 'aux_switch1': int(), 'aux_switch2': int()},
             'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'max_travel_time': int(), 'anvil_id': str()}
         }:
