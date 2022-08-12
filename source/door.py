@@ -1,7 +1,7 @@
 from .base_logger import log
 try:
     import RPi.GPIO as GPIO
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     log.exception("Failed to import RPi.GPIO")
     raise ImportError
 import time
