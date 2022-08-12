@@ -1,5 +1,9 @@
 from .base_logger import log
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except ImportError:
+    log.exception("Failed to import RPi.GPIO")
+    raise ImportError
 import time
 import threading
 

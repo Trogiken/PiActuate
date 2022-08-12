@@ -1,7 +1,7 @@
 from .base_logger import log
 import os
 import pickle
-import toml
+from .packages.tomli import toml
 from pathlib import Path
 
 os.chdir(os.path.dirname(__file__))

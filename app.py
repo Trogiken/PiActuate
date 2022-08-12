@@ -11,7 +11,7 @@ def main():
     from source.door import Door
     from source.auto import Auto
     import source.disk as disk
-    import anvil.server
+    import source.packages.anvil as anvil
     import os
 
     save = disk.Save()

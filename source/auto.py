@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
-from pytz import timezone
-from solartime import SolarTime
+from .packages.pytz import timezone
+from .packages.solartime import SolarTime
 from time import sleep
 from .base_logger import log
 import threading
