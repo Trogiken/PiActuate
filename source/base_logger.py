@@ -2,80 +2,84 @@
 ***Logger used throughout program***
 Creates "logs" directory at top of directory
 Current day log name "chicken_door.log"
-Every midnight the current log name gets a suffix (year-month-day)
+Every midnight the current log name gets a suffix
 """
 import os
 import logging.config
 import disk
 from logging.handlers import TimedRotatingFileHandler
 
-debug_level = """\
-[loggers]
-keys=root,MainLogger
-
-[handlers]
-keys=consoleHandler
-
-[formatters]
-keys=consoleFormatter
-
-[logger_root]
-level=DEBUG
-handlers=consoleHandler
-
-[logger_MainLogger]
-level=DEBUG
-handlers=consoleHandler
-qualname=MainLogger
-propagate=0
-
-[handler_consoleHandler]
-class=StreamHandler
-level=DEBUG
-formatter=consoleFormatter
-args=(sys.stdout,)
-
-[formatter_consoleFormatter]
-format=%(asctime)s | %(levelname)-8s | %(filename)-7s %(funcName)-10s %(lineno)04d | %(message)s
-datefmt=%Y-%m-%d %H:%M:%S"""
-
-info_level = """\
-[loggers]
-keys=root,MainLogger
-
-[handlers]
-keys=consoleHandler
-
-[formatters]
-keys=consoleFormatter
-
-[logger_root]
-level=INFO
-handlers=consoleHandler
-
-[logger_MainLogger]
-level=INFO
-handlers=consoleHandler
-qualname=MainLogger
-propagate=0
-
-[handler_consoleHandler]
-class=StreamHandler
-level=INFO
-formatter=consoleFormatter
-args=(sys.stdout,)
-
-[formatter_consoleFormatter]
-format=%(asctime)s | %(levelname)-8s | %(filename)-7s %(funcName)-10s %(lineno)04d | %(message)s
-datefmt=%Y-%m-%d %H:%M:%S"""
-
 config = disk.Config()
+data = config.load()
+lg = data['logging']
+formatting = data['logging']['formatting']
+
+debug_level = f"""\
+[loggers]
+keys=root,MainLogger
+
+[handlers]
+keys=consoleHandler
+
+[formatters]
+keys=consoleFormatter
+
+[logger_root]
+level=DEBUG
+handlers=consoleHandler
+
+[logger_MainLogger]
+level=DEBUG
+handlers=consoleHandler
+qualname=MainLogger
+propagate=0
+
+[handler_consoleHandler]
+class=StreamHandler
+level=DEBUG
+formatter=consoleFormatter
+args=(sys.stdout,)
+
+[formatter_consoleFormatter]
+format={formatting['format']}
+datefmt={formatting['date']}"""
+
+info_level = f"""\
+[loggers]
+keys=root,MainLogger
+
+[handlers]
+keys=consoleHandler
+
+[formatters]
+keys=consoleFormatter
+
+[logger_root]
+level=INFO
+handlers=consoleHandler
+
+[logger_MainLogger]
+level=INFO
+handlers=consoleHandler
+qualname=MainLogger
+propagate=0
+
+[handler_consoleHandler]
+class=StreamHandler
+level=INFO
+formatter=consoleFormatter
+args=(sys.stdout,)
+
+[formatter_consoleFormatter]
+format={formatting['format']}
+datefmt={formatting['date']}"""
+
 home = disk.home
 config_name = 'logger_config.conf'
 
 config_path = os.path.join(home, 'source', config_name)
 with open(config_path, 'w') as f:
-    if config.load()['environment']['debug']:
+    if lg['debug']:
         f.write(debug_level)
     else:
         f.write(info_level)
@@ -87,16 +91,10 @@ if not os.path.exists(logdir):
 logging.config.fileConfig(config_path)
 log = logging.getLogger('MainLogger')
 
-fh = TimedRotatingFileHandler(os.path.join(logdir, 'chicken_door.log'), when='midnight', interval=1, backupCount=10)
-fh.suffix = "%Y-%m-%d"
+fh = TimedRotatingFileHandler(os.path.join(logdir, lg['filename']), when='midnight', interval=1, backupCount=lg['backups'])
+fh.suffix = lg['suffix']
 
-asc = "%(asctime)s"
-levelname = "%(levelname)-8s"
-filename = "%(filename)-8s"
-funcname = "%(funcName)-10s"
-linenum = "%(lineno)04d"
-message = "%(message)s"
-formatter = logging.Formatter(f'{asc} | {levelname} | {filename} {funcname} {linenum} | {message}', datefmt='%Y-%m-%d %H:%M:%S')
+formatter = logging.Formatter(formatting['format'], datefmt=formatting['date'])
 fh.setFormatter(formatter)
 
 log.addHandler(fh)

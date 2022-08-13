@@ -1,5 +1,11 @@
-[environment]
+[logging]
 debug = false
+filename = 'chicken_door.log'
+suffix = '%Y-%m-%d'
+backups = 10
+[logging.formatting]
+format = '%(asctime)s | %(levelname)-8s | %(filename)-8s %(funcName)-10s %(lineno)04d | %(message)s'
+date = '%Y-%m-%d %H:%M:%S'
 
 [gpio]
 relay1 = 0
