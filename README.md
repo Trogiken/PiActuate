@@ -15,6 +15,8 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
   - Shutdown, Restart, and Reset (Restart requires the program to start at boot)
 
 ## Config File
+**Program uses the "BCM" pin layout**
+
 |Variable|Purpose|
 |--------|--------|
 |   debug[^1]           | Debug Mode |
