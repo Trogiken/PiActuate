@@ -1,17 +1,22 @@
 # Chicken Door Project
 Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCLEB6FN5WL) integration
 
-### Requirements
-- [RPi.GPIO](https://pypi.org/project/RPi.GPIO/)
-- [pytz](https://pypi.org/project/pytz/)
-- [solartime](https://pypi.org/project/solartime/)
-- [anvil](https://pypi.org/project/anvil-uplink/)
-- [tomli](https://pypi.org/project/toml/)
+**Requires Python 3.10+**
+
+## Features
+- Automated Operation
+  - Time Offsets
+- Auxiliary Control Buttons
+- Safety Switch To Hault Movement
+- Online Program Controls
+  - Enable/Disable Automation
+  - Enable/Disable Auxiliary Buttons
+  - Open and Close Buttons
+  - Shutdown, Restart, and Reset (Shutdown and Restart requires the program to start at boot)
 
 ## Config File
 |Variable|Purpose|
 |--------|--------|
-|   install         | Path to program folder |
 |   debug[^1]           | Debug Mode |
 |   relay1          | Extending Motion |
 |   relay2          | Retracting Motion |

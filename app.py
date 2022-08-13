@@ -10,8 +10,8 @@ def main():
 
     from source.door import Door
     from source.auto import Auto
+    from source.packages import anvil
     import source.disk as disk
-    import anvil.server
     import os
 
     save = disk.Save()
