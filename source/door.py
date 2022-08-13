@@ -3,7 +3,7 @@ try:
     import RPi.GPIO as GPIO
 except (ImportError, ModuleNotFoundError):
     log.exception("Failed to import RPi.GPIO")
-    raise ImportError
+    raise
 import time
 import threading
 
@@ -11,10 +11,10 @@ door_in_motion = False
 
 
 class _Auxiliary(threading.Thread):
-    def __init__(self, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
+    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
         super().__init__()
-        self.AUX_SW1 = 23  # button 1
-        self.AUX_SW2 = 24  # button 2
+        self.AUX_SW1 = aux_sw1  # trigger relay1
+        self.AUX_SW2 = aux_sw2  # trigger relay2
         self.AUX_SW3 = aux_sw3  # limit
         self.AUX_SW4 = aux_sw4  # limit
         self.AUX_SW5 = aux_sw5  # block
@@ -87,7 +87,11 @@ class Door:
     sw2 : int
         pin of limit switch
     sw3 : int
-        pint of block switch
+        pin of block switch
+    sw4 : int
+        pin of aux_switch1
+    sw5 : int
+        pint of aux_switch2
     max_travel : int
         maximum seconds relays remain triggered
 
@@ -104,7 +108,7 @@ class Door:
     move(opt=int):
         move door open or closed
     """
-    def __init__(self, relay1, relay2, sw1, sw2, sw3, max_travel):
+    def __init__(self, relay1, relay2, sw1, sw2, sw3, sw4, sw5, max_travel):
         """Constructs all the necessary attributes for the Door object"""
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -113,6 +117,8 @@ class Door:
         self.SW1 = sw1
         self.SW2 = sw2
         self.SW3 = sw3
+        self.SW4 = sw4
+        self.SW5 = sw5
         self.max_travel = max_travel
 
         self.status = None
@@ -126,6 +132,8 @@ class Door:
         log.debug(f"SW1: {self.SW1}")
         log.debug(f"SW2: {self.SW2}")
         log.debug(f"SW3: {self.SW3}")
+        log.debug(f"SW4: {self.SW4}")
+        log.debug(f"SW5: {self.SW5}")
         log.debug(f"max_travel: {self.max_travel}")
 
         GPIO.setup(self.RELAY1, GPIO.OUT, initial=True)
@@ -138,8 +146,8 @@ class Door:
         """Creates an Auxiliary object and starts the thread"""
         try:
             if self.aux_is_running is False:
-                self.aux = _Auxiliary(aux_sw3=self.SW1, aux_sw4=self.SW2, aux_sw5=self.SW3,
-                                      relay1=self.RELAY1, relay2=self.RELAY2)
+                self.aux = _Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
+                                      aux_sw5=self.SW3, relay1=self.RELAY1, relay2=self.RELAY2)
                 self.aux.start()
 
                 self.aux_is_running = True

@@ -8,16 +8,48 @@ def main():
     from source.base_logger import log
     log.info("App Startup...")
 
-    from source.door import Door
-    from source.auto import Auto
-    from source.packages import anvil
-    import source.disk as disk
-    import os
+    log.info("Importing Modules...")
+    try:
+        log.debug("Importing 'disk' Module")
+        import source.disk as disk
+        log.debug("Imported 'disk'")
+    except (ImportError, ModuleNotFoundError):
+        log.exception("Failed to import 'disk' Module")
+        raise
+    try:
+        log.debug("Importing 'door' Module")
+        from source.door import Door
+        log.debug("Imported 'door'")
+    except (ImportError, ModuleNotFoundError):
+        log.exception("Failed to import 'door' Module")
+        raise
+    try:
+        log.debug("Importing 'auto' Module")
+        from source.auto import Auto
+        log.debug("Imported 'auto'")
+    except (ImportError, ModuleNotFoundError):
+        log.exception("Failed to import 'auto' Module")
+        raise
+    try:
+        log.debug("Importing 'anvil' Package")
+        from source.packages import anvil
+        log.debug("Imported 'anvil'")
+    except (ImportError, ModuleNotFoundError):
+        log.exception("Failed to import 'anvil' Package")
+        raise
+    try:
+        log.debug("Importing 'os' Module")
+        import os
+        log.debug("Imported 'os'")
+    except (ImportError, ModuleNotFoundError):
+        log.exception("Failed to import 'os' Module")
+        raise
+    log.info("Modules Imported Successfully")
 
     save = disk.Save()
-    log.info("Save object created")
+    log.debug("Save object created")
     config = disk.Config()
-    log.info("Config object created")
+    log.debug("Config object created")
 
     loaded_save = save.load()
     log.info("Save Loaded")
@@ -29,20 +61,20 @@ def main():
     log.info("Config Loaded")
     log.debug(f"Loaded Config Data: {loaded_config}")
 
-    door = Door(relay1=io['relay1'], relay2=io['relay2'],
-                sw1=io['switch1'], sw2=io['switch2'], sw3=io['switch3'], max_travel=prop['max_travel'])
-    log.info("Door object created")
+    door = Door(relay1=io['relay1'], relay2=io['relay2'], sw1=io['switch1'], sw2=io['switch2'],
+                sw3=io['switch3'], sw4=io['switch4'], sw5=io['switch5'], max_travel=prop['max_travel'])
+    log.debug("Door object created")
 
     sunrise_offset = loaded_save['sunrise_offset']
     sunset_offset = loaded_save['sunset_offset']
     auto = Auto(door=door, zone=str(prop['timezone']),
                 latitude=float(prop['latitude']), longitude=float(prop['longitude']),
                 sunrise_offset=int(sunrise_offset), sunset_offset=int(sunset_offset))
-    log.info("Automation object created")
+    log.debug("Automation object created")
 
     try:
         anvil_id = prop['anvil_id']
-        log.debug(f"Connection ID: {anvil_id}")
+        log.info(f"Connection ID: {anvil_id}")
         anvil.server.connect(anvil_id)
         log.info("Server Connection Made")
 

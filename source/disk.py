@@ -27,7 +27,7 @@ class Config:
     match _values:
         case {
             'logging': {'debug': bool(), 'filename': str(), 'suffix': str(), 'backups': int(), 'formatting': {'format': str(), 'date': str()}},
-            'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(), 'aux_switch1': int(), 'aux_switch2': int()},
+            'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(), 'switch4': int(), 'switch5': int()},
             'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'max_travel_time': int(), 'anvil_id': str()}
         }:
             pass
