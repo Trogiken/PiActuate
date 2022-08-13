@@ -28,8 +28,8 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 |   switch1         | Extend Limit |
 |   switch2         | Retract Limit |
 |   switch3         | Path of door is blocked |
-|   aux_switch1     | Trigger `relay1` |
-|   aux_switch2     | Trigger `relay2` |
+|   switch4         | Aux switch for `relay1` |
+|   switch5         | Aux switch for `relay2` |
 |   timezone[^2]       | Time zone of hardware |
 |   longitude       | Longitudinal location of hardware |
 |   latitude        | Latitudinal location of hardware |
