@@ -71,8 +71,10 @@ datefmt=%Y-%m-%d %H:%M:%S"""
 
 config = disk.Config()
 home = disk.home
-log_conf = os.path.join(home, 'source', 'logger_config.conf')
-with open(log_conf, 'w') as f:
+config_name = 'logger_config.conf'
+
+config_path = os.path.join(home, 'source', config_name)
+with open(config_path, 'w') as f:
     if config.load()['environment']['debug']:
         f.write(debug_level)
     else:
@@ -82,7 +84,7 @@ logdir = os.path.join(home, 'logs')
 if not os.path.exists(logdir):
     os.mkdir(logdir)
 
-logging.config.fileConfig((os.path.join(home, 'source', 'logger_config.conf')))
+logging.config.fileConfig(config_path)
 log = logging.getLogger('MainLogger')
 
 fh = TimedRotatingFileHandler(os.path.join(logdir, 'chicken_door.log'), when='midnight', interval=1, backupCount=10)
