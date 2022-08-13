@@ -18,6 +18,11 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 |Variable|Purpose|
 |--------|--------|
 |   debug[^1]           | Debug Mode |
+|   filename        | Name of logging file name |
+|   suffix          | Added at the end of `filename` when backed up |
+|   backups         | Number of backups before oldest is deleted |
+|   format          | How logging events are displayed |
+|   date            | Date and Time format before `format` |
 |   relay1          | Extending Motion |
 |   relay2          | Retracting Motion |
 |   switch1         | Extend Limit |
