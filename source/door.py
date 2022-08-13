@@ -3,7 +3,7 @@ try:
     import RPi.GPIO as GPIO
 except (ImportError, ModuleNotFoundError):
     log.exception("Failed to import RPi.GPIO")
-    raise ImportError
+    raise
 import time
 import threading
 
@@ -132,6 +132,8 @@ class Door:
         log.debug(f"SW1: {self.SW1}")
         log.debug(f"SW2: {self.SW2}")
         log.debug(f"SW3: {self.SW3}")
+        log.debug(f"SW4: {self.SW4}")
+        log.debug(f"SW5: {self.SW5}")
         log.debug(f"max_travel: {self.max_travel}")
 
         GPIO.setup(self.RELAY1, GPIO.OUT, initial=True)

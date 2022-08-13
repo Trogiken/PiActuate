@@ -62,7 +62,7 @@ def main():
     log.debug(f"Loaded Config Data: {loaded_config}")
 
     door = Door(relay1=io['relay1'], relay2=io['relay2'], sw1=io['switch1'], sw2=io['switch2'],
-                sw3=io['switch3'], sw4=io['aux_switch1'], sw5=io['aux_switch2'], max_travel=prop['max_travel'])
+                sw3=io['switch3'], sw4=io['switch4'], sw5=io['switch5'], max_travel=prop['max_travel'])
     log.debug("Door object created")
 
     sunrise_offset = loaded_save['sunrise_offset']
