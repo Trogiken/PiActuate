@@ -8,43 +8,29 @@ def main():
     from source.base_logger import log
     log.info("App Startup...")
 
-    log.info("Importing Modules...")
     try:
+        log.info("Importing Modules...")
+
         log.debug("Importing 'disk' Module")
         import source.disk as disk
         log.debug("Imported 'disk'")
-    except (ImportError, ModuleNotFoundError):
-        log.exception("Failed to import 'disk' Module")
-        raise
-    try:
         log.debug("Importing 'door' Module")
         from source.door import Door
         log.debug("Imported 'door'")
-    except (ImportError, ModuleNotFoundError):
-        log.exception("Failed to import 'door' Module")
-        raise
-    try:
         log.debug("Importing 'auto' Module")
         from source.auto import Auto
         log.debug("Imported 'auto'")
-    except (ImportError, ModuleNotFoundError):
-        log.exception("Failed to import 'auto' Module")
-        raise
-    try:
         log.debug("Importing 'anvil' Package")
         from source.packages import anvil
         log.debug("Imported 'anvil'")
-    except (ImportError, ModuleNotFoundError):
-        log.exception("Failed to import 'anvil' Package")
-        raise
-    try:
         log.debug("Importing 'os' Module")
         import os
         log.debug("Imported 'os'")
     except (ImportError, ModuleNotFoundError):
-        log.exception("Failed to import 'os' Module")
+        log.exception("Failed to import Module!")
         raise
-    log.info("Modules Imported Successfully")
+    else:
+        log.info("Modules Imported Successfully")
 
     save = disk.Save()
     log.debug("Save object created")
