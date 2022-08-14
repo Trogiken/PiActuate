@@ -12,13 +12,13 @@ def main():
         log.info("Importing Modules...")
 
         log.debug("Importing 'disk' Module")
-        import source.disk as disk
+        from source import disk
         log.debug("Imported 'disk'")
         log.debug("Importing 'door' Module")
-        from source.door import Door
+        from source import Door
         log.debug("Imported 'door'")
         log.debug("Importing 'auto' Module")
-        from source.auto import Auto
+        from source import Auto
         log.debug("Imported 'auto'")
         log.debug("Importing 'anvil' Package")
         from source.packages import anvil
