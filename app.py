@@ -95,17 +95,23 @@ def main():
 
         @anvil.server.callable
         def change_rise(offset):
-            """Changes auto object variable (sunrise_offset) to (offset) and saves the new value"""
+            """Calls auto.set_sunrise(offset), saves the new value"""
             log.debug("CALLED")
-            auto.sunrise_offset = offset
+            auto.set_sunrise(offset)
             save.change('sunrise_offset', offset)
 
         @anvil.server.callable
         def change_set(offset):
-            """Changes auto object variable (sunset_offset) to (offset) and saves the new value"""
+            """Calls auto.set_sunset(offset), saves the new value"""
             log.debug("CALLED")
-            auto.sunset_offset = offset
+            auto.set_sunset(offset)
             save.change('sunset_offset', offset)
+
+        @anvil.server.callable
+        def refresh_auto():
+            """Calls auto.refresh()"""
+            log.debug("CALLED")
+            auto.refresh()
 
         @anvil.server.callable
         def times():
