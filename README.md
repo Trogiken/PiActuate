@@ -40,10 +40,28 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 
 ## Creating a Service
 ### Linux
-1. sudo nano /usr/lib/systemd/system/SERVICE_NAME.service
-2. ```enter script``` Save File
-3. sudo systemctl enable SERVICE_NAME
-4. sudo systemctl start SERVICE_NAME
+
+#### 1. Create a service file
+``sudo nano /usr/lib/systemd/system/SERVICE_NAME.service``
+
+#### 2. Create scrpit
+```
+[Unit]
+Description=Control door via webapp
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/path/to/bin/python /path/to/app.py
+
+[Install]
+WantedBy=multi-user.target
+```
+#### 3. Enable the service
+``sudo systemctl enable SERVICE_NAME``
+
+#### 4. Start the service
+``sudo systemctl start SERVICE_NAME``
 
 [^1]: Program will lower logging levels from **info** to **debug**
 [^2]: US/Eastern, Europe/Amsterdam
