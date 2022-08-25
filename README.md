@@ -44,7 +44,7 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 #### 1. Create a service file
 ``sudo nano /usr/lib/systemd/system/SERVICE_NAME.service``
 
-#### 2. Create scrpit
+#### 2. Create Script
 ```
 [Unit]
 Description=Control door via webapp
