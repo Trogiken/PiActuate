@@ -6,7 +6,7 @@ Every midnight the current log name gets a suffix
 """
 import os
 import logging.config
-import disk  # DEBUG: from . import disk
+from . import disk  # DEBUG: from . import disk
 from logging.handlers import TimedRotatingFileHandler
 
 config = disk.Config()
