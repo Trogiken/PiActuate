@@ -4,6 +4,10 @@ GitHub: https://github.com/Trogiken/chicken-door
 """
 
 
+def initiate_logger():
+    pass  # Return true if everything works
+
+
 def main():
     from source.base_logger import log
     log.info("App Startup...")
@@ -197,4 +201,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    if initiate_logger():
+        main()
