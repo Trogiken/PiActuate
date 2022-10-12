@@ -12,14 +12,13 @@ loggingConfig = {
         'default': {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'standard',
-            'filename': 'f',
-            'when': 'f',
-            'interval': 'f',
-            'backupCount': 'f'
+            'filename': 'logconfig',
+            'maxBytes': 1024,
+            'backupCount': '5'
         },
     },
     'loggers': {
-        '': {  # root logger
+        'root': {
             'handlers': ['default'],
             'level': 'INFO',
             'propagate': False
@@ -27,11 +26,10 @@ loggingConfig = {
     }
 }
 
-
 """
-How to modify suffix of class within config, Check if handler is created by config alone
+Have root use a handler that uses the SteamHandler class and then add a timed rotating handler in code
 
-fh = TimedRotatingFileHandler(filename=os.path.join(logdir, lg['filename']), when='midnight', interval=1, backupCount=lg['backups'])
+fh = TimedRotatingFileHandler(os.path.join(logdir, lg['filename']), when='midnight', interval=1, backupCount=lg['backups'])
 fh.suffix = lg['suffix']
 
 formatter = logging.Formatter(formatting['format'], datefmt=formatting['date'])
@@ -42,4 +40,4 @@ log.addHandler(fh)
 
 logging.config.dictConfig(loggingConfig)
 
-log = logging.getLogger('')
+log = logging.getLogger('root')

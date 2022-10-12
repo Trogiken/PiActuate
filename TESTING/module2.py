@@ -1,3 +1,3 @@
-import logging.config
+import logging
 
-log = logging.getLogger('')
+log = logging.getLogger('root')
