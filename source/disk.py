@@ -1,8 +1,10 @@
-from .base_logger import log
 from .packages import toml
 from pathlib import Path
 import os
 import pickle
+import logging
+
+log = logging.getLogger('root')
 
 os.chdir(os.path.dirname(__file__))
 _cwd = os.getcwd()
@@ -20,13 +22,12 @@ class Config:
     load():
         read file data
     """
-    path = os.path.join(home, 'config.toml')
+    path = os.path.join(home, 'appConfig.conf')
 
     # validate config data
     _values = toml.load(path)
     match _values:
         case {
-            'logging': {'debug': bool(), 'filename': str(), 'suffix': str(), 'backups': int(), 'formatting': {'format': str(), 'date': str()}},
             'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(), 'switch4': int(), 'switch5': int()},
             'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'max_travel_time': int(), 'anvil_id': str()}
         }:
@@ -79,7 +80,7 @@ class Save:
         """Dump default save data into file"""
         with open(self.filename, 'wb') as w:
             pickle.dump(self.default_save, w)
-            log.info("Save Reset")
+            log.debug("Save Reset")
 
     def change(self, variable, value):
         """

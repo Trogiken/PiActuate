@@ -1,11 +1,14 @@
-from .base_logger import log
+import time
+import threading
+import logging
+
+log = logging.getLogger('root')
+
 try:
     import RPi.GPIO as GPIO
 except (ImportError, ModuleNotFoundError):
     log.exception("Failed to import RPi.GPIO")
     raise
-import time
-import threading
 
 door_in_motion = False
 

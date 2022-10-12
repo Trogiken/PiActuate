@@ -2,10 +2,41 @@
 ***Door control with WebApp integration***
 GitHub: https://github.com/Trogiken/chicken-door
 """
+import ast
+import logging.config
+
+
+def initiate_logger():
+    import os
+    os.chdir(os.path.dirname(__file__))
+    cwd = os.getcwd()
+    logdir = os.path.join(cwd, 'logs')
+    config = os.path.join(cwd, 'loggingConfig.conf')
+
+    with open(config) as c:
+        data = c.read()
+        try:
+            dict_config = ast.literal_eval(data)  # reconstruct into dictionary
+        except BaseException as convertError:
+            raise ValueError(f'Logging config format is invalid | {convertError}')
+
+    if not os.path.exists(logdir):
+        os.mkdir(logdir)
+
+    try:
+        filename = dict_config['handlers']['file']['filename']
+        dict_config['handlers']['file']['filename'] = os.path.join(logdir, filename)
+    except KeyError as keyError:
+        raise KeyError(f"Could not find 'filename' | {keyError}")
+
+    try:
+        logging.config.dictConfig(dict_config)
+    except BaseException as setupError:
+        raise Exception(f"Logging setup failed | {setupError}")
 
 
 def main():
-    from source.base_logger import log
+    log = logging.getLogger('root')
     log.info("App Startup...")
 
     try:
@@ -197,4 +228,5 @@ def main():
 
 
 if __name__ == '__main__':
+    initiate_logger()
     main()
