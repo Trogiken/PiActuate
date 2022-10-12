@@ -80,7 +80,7 @@ class Save:
         """Dump default save data into file"""
         with open(self.filename, 'wb') as w:
             pickle.dump(self.default_save, w)
-            log.info("Save Reset")
+            log.debug("Save Reset")
 
     def change(self, variable, value):
         """

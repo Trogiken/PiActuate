@@ -24,10 +24,10 @@ def initiate_logger():
         os.mkdir(logdir)
 
     try:
-        filename = dict_config['handlers']['default']['filename']
-        dict_config['handlers']['default']['filename'] = os.path.join(logdir, filename)
+        filename = dict_config['handlers']['file']['filename']
+        dict_config['handlers']['file']['filename'] = os.path.join(logdir, filename)
     except KeyError as keyError:
-        raise KeyError(f"Could not find 'filename' key | {keyError}")
+        raise KeyError(f"Could not find 'filename' | {keyError}")
 
     try:
         logging.config.dictConfig(dict_config)
