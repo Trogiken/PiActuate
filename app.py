@@ -7,13 +7,32 @@ import logging.config
 
 
 def initiate_logger():
+    import os
+    os.chdir(os.path.dirname(__file__))
+    cwd = os.getcwd()
+    logdir = os.path.join(cwd, 'logs')
+    config = os.path.join(cwd, 'loggingConfig.conf')
+
+    with open(config) as c:
+        data = c.read()
+        try:
+            dict_config = ast.literal_eval(data)  # reconstruct into dictionary
+        except BaseException as convertError:
+            raise f'Logging config format is invalid | {convertError}'
+
+    if not os.path.exists(logdir):
+        os.mkdir(logdir)
+
     try:
-        with open('loggingConfig.conf') as c:
-            lg = c.read()
-        lg = ast.literal_eval(lg)  # reconstruct into dictionary
-        logging.config.dictConfig(lg)
-    except BaseException as e:
-        raise f'Failed to initiate logger | {e}'
+        filename = dict_config['handlers']['default']['filename']
+        dict_config['handlers']['default']['filename'] = os.path.join(logdir, filename)
+    except KeyError as keyError:
+        raise f"Could not find 'filename' key | {keyError}"
+
+    try:
+        logging.config.dictConfig(dict_config)
+    except BaseException as setupError:
+        raise f"Logging setup failed | {setupError}"
 
 
 def main():

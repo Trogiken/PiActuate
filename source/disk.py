@@ -22,13 +22,12 @@ class Config:
     load():
         read file data
     """
-    path = os.path.join(home, 'config.toml')
+    path = os.path.join(home, 'appConfig.conf')
 
     # validate config data
     _values = toml.load(path)
     match _values:
         case {
-            'logging': {'debug': bool(), 'filename': str(), 'suffix': str(), 'backups': int(), 'formatting': {'format': str(), 'date': str()}},
             'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(), 'switch4': int(), 'switch5': int()},
             'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'max_travel_time': int(), 'anvil_id': str()}
         }:
