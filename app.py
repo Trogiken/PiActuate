@@ -18,7 +18,7 @@ def initiate_logger():
         try:
             dict_config = ast.literal_eval(data)  # reconstruct into dictionary
         except BaseException as convertError:
-            raise f'Logging config format is invalid | {convertError}'
+            raise ValueError(f'Logging config format is invalid | {convertError}')
 
     if not os.path.exists(logdir):
         os.mkdir(logdir)
@@ -27,12 +27,12 @@ def initiate_logger():
         filename = dict_config['handlers']['default']['filename']
         dict_config['handlers']['default']['filename'] = os.path.join(logdir, filename)
     except KeyError as keyError:
-        raise f"Could not find 'filename' key | {keyError}"
+        raise KeyError(f"Could not find 'filename' key | {keyError}")
 
     try:
         logging.config.dictConfig(dict_config)
     except BaseException as setupError:
-        raise f"Logging setup failed | {setupError}"
+        raise Exception(f"Logging setup failed | {setupError}")
 
 
 def main():
