@@ -1,4 +1,6 @@
-from .base_logger import log
+import logging
+
+log = logging.getLogger('root')
 try:
     import RPi.GPIO as GPIO
 except (ImportError, ModuleNotFoundError):

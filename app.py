@@ -2,14 +2,22 @@
 ***Door control with WebApp integration***
 GitHub: https://github.com/Trogiken/chicken-door
 """
+import ast
+import logging.config
 
 
 def initiate_logger():
-    pass  # Return true if everything works
+    try:
+        with open('loggingConfig.conf') as c:
+            lg = c.read()
+        lg = ast.literal_eval(lg)  # reconstruct into dictionary
+        logging.config.dictConfig(lg)
+    except BaseException as e:
+        raise f'Failed to initiate logger | {e}'
 
 
 def main():
-    from source.base_logger import log
+    log = logging.getLogger('root')
     log.info("App Startup...")
 
     try:
@@ -201,5 +209,5 @@ def main():
 
 
 if __name__ == '__main__':
-    if initiate_logger():
-        main()
+    initiate_logger()
+    main()

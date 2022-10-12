@@ -1,10 +1,12 @@
-from .base_logger import log
 from .packages import timezone
 from .packages import SolarTime
 from datetime import date, datetime, timedelta
 from time import sleep
 import threading
 import re
+import logging
+
+log = logging.getLogger('root')
 
 
 class _Scheduler(threading.Thread):

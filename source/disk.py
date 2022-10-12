@@ -1,8 +1,10 @@
-from .base_logger import log
 from .packages import toml
 from pathlib import Path
 import os
 import pickle
+import logging
+
+log = logging.getLogger('root')
 
 os.chdir(os.path.dirname(__file__))
 _cwd = os.getcwd()
