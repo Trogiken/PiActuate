@@ -52,7 +52,7 @@ def main():
         from source import Auto
         log.debug("Imported 'auto'")
         log.debug("Importing 'anvil' Package")
-        from source.packages import anvil
+        import anvil
         log.debug("Imported 'anvil'")
         log.debug("Importing 'os' Module")
         import os
