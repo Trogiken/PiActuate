@@ -82,11 +82,9 @@ def main():
                 sw3=io['switch3'], sw4=io['switch4'], sw5=io['switch5'], max_travel=prop['max_travel'])
     log.debug("Door object created")
 
-    sunrise_offset = loaded_save['sunrise_offset']
-    sunset_offset = loaded_save['sunset_offset']
     auto = Auto(door=door, zone=str(prop['timezone']),
                 latitude=float(prop['latitude']), longitude=float(prop['longitude']),
-                sunrise_offset=int(sunrise_offset), sunset_offset=int(sunset_offset))
+                sunrise_offset=int(loaded_save['sunrise_offset']), sunset_offset=int(loaded_save['sunset_offset']))
     log.debug("Automation object created")
 
     try:
