@@ -12,13 +12,13 @@ import sys
 import datetime
 import os.path
 
-from pytz.exceptions import AmbiguousTimeError
-from pytz.exceptions import InvalidTimeError
-from pytz.exceptions import NonExistentTimeError
-from pytz.exceptions import UnknownTimeZoneError
-from pytz.lazy import LazyDict, LazyList, LazySet  # noqa
-from pytz.tzinfo import unpickler, BaseTzInfo
-from pytz.tzfile import build_tzinfo
+from .exceptions import AmbiguousTimeError
+from .exceptions import InvalidTimeError
+from .exceptions import NonExistentTimeError
+from .exceptions import UnknownTimeZoneError
+from .lazy import LazyDict, LazyList, LazySet  # noqa
+from .tzinfo import unpickler, BaseTzInfo
+from .tzfile import build_tzinfo
 
 
 # The IANA (nee Olson) database is updated several times a year.

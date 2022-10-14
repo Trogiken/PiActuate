@@ -2,14 +2,14 @@
 # Used in uplink, downlink and pypy-sandbox.
 import importlib
 
-import anvil
+from .. import anvil
 import traceback
 import numbers
 import sys
 import re
 import json
 import math
-import anvil.tz
+from . import tz
 
 _do_call = None
 

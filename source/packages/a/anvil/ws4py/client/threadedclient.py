@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import threading
 
-from ws4py.client import WebSocketBaseClient
+from ..client import WebSocketBaseClient
 
 __all__ = ['WebSocketClient']
 

@@ -3,7 +3,7 @@ import threading, time, json, random, string, logging
 
 from .ws4py.client.threadedclient import WebSocketClient
 
-import anvil
+from .. import anvil
 from . import _server, _serialise, _threaded_server
 from ._threaded_server import live_object_backend, LazyMedia, _switch_session, call_context as context
 try:

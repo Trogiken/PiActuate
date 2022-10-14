@@ -1,7 +1,8 @@
 # Helpers for implementing anvil.server on an (optionally threaded) Real Python process.
 # Used in uplink and downlink, and now even in the PyPy sandbox.
 
-import random, string, json, re, sys, time, importlib, anvil
+import random, string, json, re, sys, time, importlib
+from .. import anvil
 
 
 # For single-threaded implementations, re-entrant calls occupy the same thread,

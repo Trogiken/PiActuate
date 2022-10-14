@@ -2,9 +2,8 @@ __author__ = 'meredydd'
 
 import random, string
 
-import anvil
+from .. import anvil
 from . import _server
-
 
 
 def _gen_id():

@@ -7,8 +7,8 @@ try:
 except NameError:
     from sets import Set as set
 
-import pytz
-from pytz.exceptions import AmbiguousTimeError, NonExistentTimeError
+from .. import pytz
+from .exceptions import AmbiguousTimeError, NonExistentTimeError
 
 __all__ = []
 

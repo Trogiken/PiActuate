@@ -13,12 +13,12 @@ except ImportError:
     class pyOpenSSLError(Exception):
         pass
 
-from ws4py import WS_KEY, WS_VERSION
-from ws4py.exc import HandshakeError, StreamClosed
-from ws4py.streaming import Stream
-from ws4py.messaging import Message, PingControlMessage,\
+from . import WS_KEY, WS_VERSION
+from .exc import HandshakeError, StreamClosed
+from .streaming import Stream
+from .messaging import Message, PingControlMessage,\
     PongControlMessage
-from ws4py.compat import basestring, unicode
+from .compat import basestring, unicode
 
 DEFAULT_READING_SIZE = 2
 

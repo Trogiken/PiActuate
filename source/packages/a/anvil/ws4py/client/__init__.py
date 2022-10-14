@@ -5,10 +5,10 @@ import os
 import socket
 import ssl
 
-from ws4py import WS_KEY, WS_VERSION
-from ws4py.exc import HandshakeError
-from ws4py.websocket import WebSocket
-from ws4py.compat import urlsplit
+from .. import WS_KEY, WS_VERSION
+from ..exc import HandshakeError
+from ..websocket import WebSocket
+from ..compat import urlsplit
 
 __all__ = ['WebSocketBaseClient']
 

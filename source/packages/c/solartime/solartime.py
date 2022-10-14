@@ -29,9 +29,7 @@ import sys
 from math import cos, sin, tan, acos, asin, floor, radians, degrees
 
 try:
-    root_folder = r'{}'.format(pathlib.Path(pathlib.Path(__file__).parent.absolute().parent))
-    sys.path.append(root_folder)
-    import pytz
+    from source.packages.b import pytz
 except ImportError:
     raise ImportError('The solartime module requires the pytz module to be available.')
 
