@@ -29,7 +29,7 @@ class Config:
     match _values:
         case {
             'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(), 'switch4': int(), 'switch5': int()},
-            'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'max_travel_time': int(), 'anvil_id': str()}
+            'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'travel_time': int(), 'anvil_id': str()}
         }:
             pass
         case _:
