@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import threading, time, json, random, string, logging
 
-from ws4py.client.threadedclient import WebSocketClient
+from .ws4py.client.threadedclient import WebSocketClient
 
 import anvil
 from . import _server, _serialise, _threaded_server
