@@ -65,6 +65,7 @@ class Save:
     }
 
     if not os.path.exists(filename):
+        log.info("No save found, Creating one...")
         with open(filename, 'wb') as f:
             pickle.dump(default_save, f)
             log.info("Save Created")
@@ -73,14 +74,13 @@ class Save:
         """Read file data, return data (dict)"""
         with open(self.filename, 'rb') as r:
             data = pickle.load(r)
-        log.debug("Save Read")
         return data
 
     def reset(self):
         """Dump default save data into file"""
         with open(self.filename, 'wb') as w:
             pickle.dump(self.default_save, w)
-            log.debug("Save Reset")
+            log.info("Save Reset")
 
     def change(self, variable, value):
         """

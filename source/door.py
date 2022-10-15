@@ -95,7 +95,7 @@ class Door:
         pin of aux_switch1
     sw5 : int
         pint of aux_switch2
-    max_travel : int
+    travel_time : int
         maximum seconds relays remain triggered
 
     Methods
@@ -111,7 +111,7 @@ class Door:
     move(opt=int):
         move door open or closed
     """
-    def __init__(self, relay1, relay2, sw1, sw2, sw3, sw4, sw5, max_travel):
+    def __init__(self, relay1, relay2, sw1, sw2, sw3, sw4, sw5, travel_time):
         """Constructs all the necessary attributes for the Door object"""
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -122,7 +122,7 @@ class Door:
         self.SW3 = sw3
         self.SW4 = sw4
         self.SW5 = sw5
-        self.max_travel = max_travel
+        self.travel_time = travel_time
 
         self.status = None
         self.motion = 0
@@ -137,7 +137,7 @@ class Door:
         log.debug(f"SW3: {self.SW3}")
         log.debug(f"SW4: {self.SW4}")
         log.debug(f"SW5: {self.SW5}")
-        log.debug(f"max_travel: {self.max_travel}")
+        log.debug(f"max_travel: {self.travel_time}")
 
         GPIO.setup(self.RELAY1, GPIO.OUT, initial=True)
         GPIO.setup(self.RELAY2, GPIO.OUT, initial=True)
@@ -240,7 +240,7 @@ class Door:
         blocked = False
         global door_in_motion
         start = time.time()
-        while time.time() < start + self.max_travel:  # Timer
+        while time.time() < start + self.travel_time:  # Timer
             door_in_motion = True
             if self.motion == 1 and GPIO.input(self.SW1) == 0:  # Requested down and limit switch not triggered
                 if GPIO.input(self.SW3) == 1:  # Block switch triggered
@@ -264,7 +264,7 @@ class Door:
         door_in_motion = False
 
         if time_exceeded:
-            log.critical(f'Exceeded travel time of {self.max_travel} seconds')
+            log.warning(f'Exceeded travel time of {self.travel_time} seconds')
         if blocked:  # Open door if blocked=True and timer exceeded
             log.warning("Door blocked; Opening Door")
             self._move_op(2)
