@@ -1,16 +1,23 @@
-from .base_logger import log
-import RPi.GPIO as GPIO
 import time
 import threading
+import logging
+
+log = logging.getLogger('root')
+
+try:
+    import RPi.GPIO as GPIO
+except (ImportError, ModuleNotFoundError):
+    log.exception("Failed to import RPi.GPIO")
+    raise
 
 door_in_motion = False
 
 
 class _Auxiliary(threading.Thread):
-    def __init__(self, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
+    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
         super().__init__()
-        self.AUX_SW1 = 23  # button 1
-        self.AUX_SW2 = 24  # button 2
+        self.AUX_SW1 = aux_sw1  # trigger relay1
+        self.AUX_SW2 = aux_sw2  # trigger relay2
         self.AUX_SW3 = aux_sw3  # limit
         self.AUX_SW4 = aux_sw4  # limit
         self.AUX_SW5 = aux_sw5  # block
@@ -83,8 +90,12 @@ class Door:
     sw2 : int
         pin of limit switch
     sw3 : int
-        pint of block switch
-    max_travel : int
+        pin of block switch
+    sw4 : int
+        pin of aux_switch1
+    sw5 : int
+        pint of aux_switch2
+    travel_time : int
         maximum seconds relays remain triggered
 
     Methods
@@ -100,7 +111,7 @@ class Door:
     move(opt=int):
         move door open or closed
     """
-    def __init__(self, relay1, relay2, sw1, sw2, sw3, max_travel):
+    def __init__(self, relay1, relay2, sw1, sw2, sw3, sw4, sw5, travel_time):
         """Constructs all the necessary attributes for the Door object"""
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -109,7 +120,9 @@ class Door:
         self.SW1 = sw1
         self.SW2 = sw2
         self.SW3 = sw3
-        self.max_travel = max_travel
+        self.SW4 = sw4
+        self.SW5 = sw5
+        self.travel_time = travel_time
 
         self.status = None
         self.motion = 0
@@ -122,7 +135,9 @@ class Door:
         log.debug(f"SW1: {self.SW1}")
         log.debug(f"SW2: {self.SW2}")
         log.debug(f"SW3: {self.SW3}")
-        log.debug(f"max_travel: {self.max_travel}")
+        log.debug(f"SW4: {self.SW4}")
+        log.debug(f"SW5: {self.SW5}")
+        log.debug(f"max_travel: {self.travel_time}")
 
         GPIO.setup(self.RELAY1, GPIO.OUT, initial=True)
         GPIO.setup(self.RELAY2, GPIO.OUT, initial=True)
@@ -134,8 +149,8 @@ class Door:
         """Creates an Auxiliary object and starts the thread"""
         try:
             if self.aux_is_running is False:
-                self.aux = _Auxiliary(aux_sw3=self.SW1, aux_sw4=self.SW2, aux_sw5=self.SW3,
-                                      relay1=self.RELAY1, relay2=self.RELAY2)
+                self.aux = _Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
+                                      aux_sw5=self.SW3, relay1=self.RELAY1, relay2=self.RELAY2)
                 self.aux.start()
 
                 self.aux_is_running = True
@@ -225,7 +240,7 @@ class Door:
         blocked = False
         global door_in_motion
         start = time.time()
-        while time.time() < start + self.max_travel:  # Timer
+        while time.time() < start + self.travel_time:  # Timer
             door_in_motion = True
             if self.motion == 1 and GPIO.input(self.SW1) == 0:  # Requested down and limit switch not triggered
                 if GPIO.input(self.SW3) == 1:  # Block switch triggered
@@ -249,7 +264,7 @@ class Door:
         door_in_motion = False
 
         if time_exceeded:
-            log.critical(f'Exceeded travel time of {self.max_travel} seconds')
+            log.warning(f'Exceeded travel time of {self.travel_time} seconds')
         if blocked:  # Open door if blocked=True and timer exceeded
             log.warning("Door blocked; Opening Door")
             self._move_op(2)
@@ -265,4 +280,4 @@ class Door:
             self._move_op_thread.start()
             log.info("Movement thread started")
         else:
-            log.warning("Door already in motion")
+            log.info("Door already in motion")

@@ -1,10 +1,12 @@
+from .packages import timezone
+from .packages import SolarTime
 from datetime import date, datetime, timedelta
-from pytz import timezone
-from solartime import SolarTime
 from time import sleep
-from .base_logger import log
 import threading
 import re
+import logging
+
+log = logging.getLogger('root')
 
 
 class _Scheduler(threading.Thread):
@@ -21,13 +23,14 @@ class _Scheduler(threading.Thread):
         self.active_sunset = None
         self.active_current = None
 
+        self._refresh_event = threading.Event()
         self._stop_event = threading.Event()
+
+    def refresh(self):
+        self._refresh_event.set()
 
     def stop(self):
         self._stop_event.set()
-
-    def stopped(self):
-        return self._stop_event.is_set()
 
     def get_world(self):
         """Gets sunrise and sunset times and current date"""
@@ -64,7 +67,7 @@ class _Scheduler(threading.Thread):
         """Automation loop"""
         cycle = 1
         while True:
-            log.info(f"Cycle: {cycle}")
+            log.debug(f"Cycle: {cycle}")
 
             sun_data = self.get_world()
             sunrise = sun_data['sunrise']
@@ -76,10 +79,15 @@ class _Scheduler(threading.Thread):
             self.active_sunrise = sunrise
             self.active_sunset = sunset
 
-            log.info(f"Sunset set to [{sunset}]")
-            log.info(f"Sunrise set to [{sunrise}]")
+            log.debug(f"Sunset set to [{sunset}]")
+            log.debug(f"Sunrise set to [{sunrise}]")
 
+            request_refresh = False
             while True:
+                if request_refresh:
+                    log.debug("Refreshing...")
+                    self._refresh_event.clear()
+                    break
                 current = datetime.now().strftime("%H:%M")
                 status = self.door.get_status()
 
@@ -96,8 +104,12 @@ class _Scheduler(threading.Thread):
                 i = 0
                 while i != 60:  # Wait for some seconds, checking for stop event each second
                     i += 1
-                    if self.stopped():
+                    if self._stop_event.is_set():
+                        log.debug("Stopping...")
                         return
+                    if self._refresh_event.is_set():
+                        request_refresh = True
+                        break
                     sleep(1)
             cycle += 1
 
@@ -143,18 +155,18 @@ class Auto:
         self.zone = zone
         self.door = door
 
-        self.sch = None
+        self.sch = _Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
+                              sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)  # init variable
 
-        self.is_running = False
+        self.is_running = False  # can be used externally to check scheduler thread status
 
     def run(self):
         """Creates a scheduler object and starts the thread"""
         try:
-            if self.is_running is False:
+            if not self.sch.is_alive():
                 self.sch = _Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
                                       sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)
                 self.sch.start()
-
                 self.is_running = True
                 log.info("Scheduler is Running")
             else:
@@ -164,19 +176,35 @@ class Auto:
             log.exception("Scheduler has failed to Run")
 
     def stop(self):
-        """Stops the scheduler thread and destroys the object"""
+        """Stops the scheduler thread"""
         try:
-            if self.is_running is True:
+            if self.sch.is_alive():
                 self.sch.stop()
                 self.sch.join()
 
-                self.sch = None
                 self.is_running = False
                 log.info("Scheduler has stopped Running")
             else:
                 log.warning("Scheduler is not Running")
         except Exception:
             log.exception("Scheduler has failed to Stop")
+
+    def set_sunrise(self, value):
+        """Changes Auto() and (if running) _Scheduler() attribute "sunrise_offset" to (value)"""
+        self.sunrise_offset = value
+        if self.sch.is_alive():
+            self.sch.sunrise_offset = value
+
+    def set_sunset(self, value):
+        """Changes Auto() and (if running) _Scheduler() attribute "sunset_offset" to (value)"""
+        self.sunset_offset = value
+        if self.sch.is_alive():
+            self.sch.sunset_offset = value
+
+    def refresh(self):
+        """Calls scheduler thread event 'refresh()'"""
+        if self.sch.is_alive():
+            self.sch.refresh()
 
     def active_sunrise(self):
         """
@@ -186,7 +214,7 @@ class Auto:
         -------
         sch.active_sunrise (str): 00:00 string format
         """
-        if self.is_running is True:
+        if self.sch.is_alive():
             return self.sch.active_sunrise
         else:
             return None
@@ -199,7 +227,7 @@ class Auto:
         -------
         sch.active_sunset (str): 00:00 string format
         """
-        if self.is_running is True:
+        if self.sch.is_alive():
             return self.sch.active_sunset
         else:
             return None
