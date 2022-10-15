@@ -1,5 +1,5 @@
 # Chicken Door Project
-Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCLEB6FN5WL) integration
+Automatic door with WebApp
 
 **Requires Python 3.10+**
 
