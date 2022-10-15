@@ -1,42 +1,95 @@
 """
 ***Door control with WebApp integration***
-Install Location: /home/pi/scripts/chicken-door
-Boot Start: /usr/lib/systemd/system/chicken_door.service (sudo systemctl status chicken_door)
 GitHub: https://github.com/Trogiken/chicken-door
 """
+import ast
+import logging.config
+
+
+def initiate_logger():
+    import os
+    os.chdir(os.path.dirname(__file__))
+    cwd = os.getcwd()
+    logdir = os.path.join(cwd, 'logs')
+    config = os.path.join(cwd, 'loggingConfig.conf')
+
+    with open(config) as c:
+        data = c.read()
+        try:
+            dict_config = ast.literal_eval(data)  # reconstruct into dictionary
+        except BaseException as convertError:
+            raise ValueError(f'Logging config format is invalid | {convertError}')
+
+    if not os.path.exists(logdir):
+        os.mkdir(logdir)
+
+    try:
+        filename = dict_config['handlers']['file']['filename']
+        dict_config['handlers']['file']['filename'] = os.path.join(logdir, filename)
+    except KeyError as keyError:
+        raise KeyError(f"Could not find 'filename' | {keyError}")
+
+    try:
+        logging.config.dictConfig(dict_config)
+    except BaseException as setupError:
+        raise Exception(f"Logging setup failed | {setupError}")
 
 
 def main():
-    from source.base_logger import log
+    log = logging.getLogger('root')
     log.info("App Startup...")
 
-    from source.door import Door
-    from source.auto import Auto
-    from source.save import Save
-    import anvil.server
-    import os
+    try:
+        log.info("Importing Modules...")
 
-    save = Save()
-    log.info("Save object created")
+        log.debug("Importing 'disk' Module")
+        from source import disk
+        log.debug("Imported 'disk'")
+        log.debug("Importing 'door' Module")
+        from source import Door
+        log.debug("Imported 'door'")
+        log.debug("Importing 'auto' Module")
+        from source import Auto
+        log.debug("Imported 'auto'")
+        log.debug("Importing 'anvil' Package")
+        from source.packages import anvil
+        log.debug("Imported 'anvil'")
+        log.debug("Importing 'os' Module")
+        import os
+        log.debug("Imported 'os'")
+    except (ImportError, ModuleNotFoundError):
+        log.exception("Failed to import Module!")
+        raise
+    else:
+        log.info("Modules Imported Successfully")
+
+    save = disk.Save()
+    log.debug("Save object created")
+    config = disk.Config()
+    log.debug("Config object created")
 
     loaded_save = save.load()
     log.info("Save Loaded")
     log.debug(f"Loaded Save Data: {loaded_save}")
 
-    door = Door(relay1=26, relay2=20, sw1=6, sw2=13, sw3=19, max_travel=10)
-    log.info("Door object created")
+    loaded_config = config.load()
+    io = loaded_config['gpio']
+    prop = loaded_config['properties']
+    log.info("Config Loaded")
+    log.debug(f"Loaded Config Data: {loaded_config}")
 
-    sunrise_offset = loaded_save['sunrise_offset']
-    sunset_offset = loaded_save['sunset_offset']
-    auto = Auto(door=door, zone=str(loaded_save['timezone']),
-                latitude=float(loaded_save['lat']), longitude=float(loaded_save['lon']),
-                sunrise_offset=int(sunrise_offset), sunset_offset=int(sunset_offset))
-    log.info("Automation object created")
+    door = Door(relay1=io['relay1'], relay2=io['relay2'], sw1=io['switch1'], sw2=io['switch2'],
+                sw3=io['switch3'], sw4=io['switch4'], sw5=io['switch5'], max_travel=prop['travel_time'])
+    log.debug("Door object created")
 
-    anvil_id = "NJVUFM2IX4WAT5SEHECJLQZ7-CLDWHXPSURNV4EW5"
+    auto = Auto(door=door, zone=str(prop['timezone']),
+                latitude=float(prop['latitude']), longitude=float(prop['longitude']),
+                sunrise_offset=int(loaded_save['sunrise_offset']), sunset_offset=int(loaded_save['sunset_offset']))
+    log.debug("Automation object created")
 
     try:
-        log.debug(f"Connection ID: {anvil_id}")
+        anvil_id = prop['anvil_id']
+        log.info(f"Connection ID: {anvil_id}")
         anvil.server.connect(anvil_id)
         log.info("Server Connection Made")
 
@@ -71,17 +124,23 @@ def main():
 
         @anvil.server.callable
         def change_rise(offset):
-            """Changes auto object variable (sunrise_offset) to (offset) and saves the new value"""
+            """Calls auto.set_sunrise(offset), saves the new value"""
             log.debug("CALLED")
-            auto.sunrise_offset = offset
+            auto.set_sunrise(offset)
             save.change('sunrise_offset', offset)
 
         @anvil.server.callable
         def change_set(offset):
-            """Changes auto object variable (sunset_offset) to (offset) and saves the new value"""
+            """Calls auto.set_sunset(offset), saves the new value"""
             log.debug("CALLED")
-            auto.sunset_offset = offset
+            auto.set_sunset(offset)
             save.change('sunset_offset', offset)
+
+        @anvil.server.callable
+        def refresh_auto():
+            """Calls auto.refresh()"""
+            log.debug("CALLED")
+            auto.refresh()
 
         @anvil.server.callable
         def times():
@@ -167,4 +226,5 @@ def main():
 
 
 if __name__ == '__main__':
+    initiate_logger()
     main()
