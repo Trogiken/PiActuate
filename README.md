@@ -32,6 +32,11 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 |   travel_time[^2] | Allowed time for the door to be in motion |
 |   anvil_id        | Anvil Uplink ID |
 
+## Logging Config
+See the offical python documentation [here](https://docs.python.org/3/library/logging.config.html)
+
+When editing the logging config be sure to use correct syntax and formatting to avoid crashing
+
 ## Creating a Service
 ### Linux
 
