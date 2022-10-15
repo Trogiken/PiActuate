@@ -280,4 +280,4 @@ class Door:
             self._move_op_thread.start()
             log.info("Movement thread started")
         else:
-            log.warning("Door already in motion")
+            log.info("Door already in motion")

@@ -143,7 +143,7 @@ def main():
             auto.refresh()
 
         @anvil.server.callable
-        def times():
+        def get_times():
             """Returns sunrise and sunset times in a dictionary"""
             log.debug("CALLED")
             return {'sunrise': auto.active_sunrise(),
