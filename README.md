@@ -14,7 +14,7 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
   - Open and Close Buttons
   - Shutdown, Restart, and Reset (Restart requires the program to start at boot)
 
-## Config File
+## App Config
 **Program uses the "BCM" pin layout**
 
 |Variable|Purpose|
