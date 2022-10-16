@@ -62,6 +62,5 @@ WantedBy=multi-user.target
 #### 4. Start the service
 ``sudo systemctl start SERVICE_NAME``
 
-[^1]: Program will lower logging levels from **info** to **debug**
-[^2]: US/Eastern, Europe/Amsterdam
-[^3]: Find the movement rate of door and the distance it must travel. Add an additional 4 - 6 seconds
+[^1]: US/Eastern, Europe/Amsterdam
+[^2]: Find the movement rate of door and the distance it must travel. Add an additional 4 - 6 seconds
