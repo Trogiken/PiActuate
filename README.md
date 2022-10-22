@@ -6,7 +6,7 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 ## Features
 - Automated Operation
 - Auxiliary Control Buttons
-- Safety Switch To Hault Movement
+- Safety Switch To Halt Movement
 - Online Program Controls
   - Enable/Disable Automation
   - Enable/Disable Auxiliary Buttons
@@ -33,7 +33,7 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 |   anvil_id        | Anvil Uplink ID |
 
 ## Logging Config
-See the offical python documentation [here](https://docs.python.org/3/library/logging.config.html)
+See the official python documentation [here](https://docs.python.org/3/library/logging.config.html)
 
 When editing the logging config be sure to use correct syntax and formatting to avoid crashing
 

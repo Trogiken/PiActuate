@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="LocalPackages" pattern="file[chicken-door]:source/packages//*&amp;&amp;!file:source/packages/__init__.py" />
+</component>
