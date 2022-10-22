@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Owned" pattern="file[chicken-door]:*||file[chicken-door]:source/*" />
+</component>
