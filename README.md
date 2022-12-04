@@ -30,7 +30,6 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 |   longitude       | Longitudinal location of hardware |
 |   latitude        | Latitudinal location of hardware |
 |   travel_time[^2] | Allowed time for the door to be in motion |
-|   anvil_id        | Anvil Uplink ID |
 
 ## Logging Config
 See the official python documentation [here](https://docs.python.org/3/library/logging.config.html)
