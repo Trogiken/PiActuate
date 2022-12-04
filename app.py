@@ -12,7 +12,7 @@ from source import Door
 from source import Auto
 
 
-class Initialization:
+class _Initialization:
     def __init__(self):
         os.chdir(os.path.dirname(__file__))
         _cwd = os.getcwd()
@@ -55,15 +55,17 @@ class Initialization:
         self.log = logging.getLogger('root')
 
     @staticmethod
-    def _is_rpi():
+    def _is_rpi():  # DEBUG Method of identifying OS is untested
         """Check if system is running on an RPI (Load 2)"""
         import io
         try:
             with io.open('/sys/firmware/devicetree/base/model', 'r') as model:
-                if 'raspberry pi' not in model.read().lower():
-                    OSError('Program made for RPI only')
+                if 'raspberry pi' in model.read().lower():
+                    return True
+                else:
+                    return False
         except IOError:
-            OSError('Program made for RPI only')
+            return False
 
     def _app_config_check(self):
         """Validate and Store Config Data (Load 3)"""
@@ -118,16 +120,18 @@ class Initialization:
         self._logging_config_load()
         self.log.info("Startup...")
 
-        self._is_rpi()
-        self.load_objects()
+        if self._is_rpi():
+            self.load_objects()
+        else:
+            raise OSError('Program is designed for RPI only!')
 
         self.log.info("Startup Complete!")
 
 
-class App(Initialization):
+class App(_Initialization):
     def __init__(self):
         super().__init__()
-        init = Initialization()
+        init = _Initialization()
         init.run()
 
     def run(self):

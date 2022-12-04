@@ -22,7 +22,7 @@ def _std_string(s):
 
 
 def build_tzinfo(zone, fp):
-    head_fmt = '>4s c 15x 6l'  # DEBUG Refactored name from c to b folder
+    head_fmt = '>4s c 15x 6l'
     head_size = calcsize(head_fmt)
     (magic, format, ttisgmtcnt, ttisstdcnt, leapcnt, timecnt,
         typecnt, charcnt) = unpack(head_fmt, fp.read(head_size))
