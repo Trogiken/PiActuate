@@ -7,9 +7,6 @@ import ast
 import logging.config
 import toml
 from pathlib import Path
-from source import disk
-from source import Door
-from source import Auto
 
 
 class _Initialization:
@@ -27,7 +24,7 @@ class _Initialization:
         self.app_config = None
 
     def _logging_config_load(self):
-        """Init logging config (Load 1)"""
+        """Init logging config (Load First)"""
         logdir = os.path.join(self.home, 'logs')
         config = os.path.join(self.home, 'loggingConfig.conf')
 
@@ -56,7 +53,7 @@ class _Initialization:
 
     @staticmethod
     def _is_rpi():  # DEBUG Method of identifying OS is untested
-        """Check if system is running on an RPI (Load 2)"""
+        """Check if system is running on an RPI"""
         import io
         try:
             with io.open('/sys/firmware/devicetree/base/model', 'r') as model:
@@ -67,53 +64,87 @@ class _Initialization:
         except IOError:
             return False
 
-    def _app_config_check(self):
-        """Validate and Store Config Data (Load 3)"""
+    def _app_config_load(self):
+        """Validate and return config data"""
         values = toml.load(self.app_config_path)
+        # TODO Check for empty elements
         match values:
             case {
                 'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(),
                          'switch4': int(), 'switch5': int()},
                 'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'travel_time': int()}
             }:
-                self.app_config = values
+                return values
             case _:
                 self.log.critical(f'Invalid Config Data {values}')
                 raise ValueError('Config Error')
 
-        return values
-
     def load_objects(self):
-        """Load config and create objects, then run stored states (Load 2)"""
-        self._app_config_check()
+        """Load app config and create objects, then run stored states (Load Last)"""
+        io = None
+        prop = None
+        save_data = None
 
-        self.save = disk.Save(os.path.join(self.source, 'DATA.pkl'))
-        self.log.debug("Save object created")
+        try:  # Read AppConfig
+            self.log.debug('Reading App Config')
 
-        loaded_save = self.save.load()
-        self.log.info("Save Loaded")
-        self.log.debug(f"Loaded Save Data: {loaded_save}")
+            self.app_config = self._app_config_load()
+            io = self.app_config['gpio']
+            prop = self.app_config['properties']
+            self.log.info("Config Loaded")
+            self.log.debug(f"Loaded Config Data: {self.app_config}")
+        except BaseException:
+            self.log.exception('Problem Reading AppConfig!')
 
-        io = self.app_config['gpio']
-        prop = self.app_config['properties']
-        self.log.info("Config Loaded")
-        self.log.debug(f"Loaded Config Data: {self.app_config}")
+        try:  # Create Save Object
+            self.log.info('Creating Save Object')
 
-        self.door = Door(relay1=io['relay1'], relay2=io['relay2'], sw1=io['switch1'], sw2=io['switch2'],
-                         sw3=io['switch3'], sw4=io['switch4'], sw5=io['switch5'], travel_time=prop['travel_time'])
-        self.log.debug("Door object created")
+            from source import Save
+            self.save = Save(os.path.join(self.source, 'DATA.pkl'))
+            self.log.info("Save object created")
+        except BaseException:
+            self.log.exception('Problem Creating Save Object!')
 
-        self.auto = Auto(door=self.door, zone=str(prop['timezone']),
-                         latitude=float(prop['latitude']), longitude=float(prop['longitude']),
-                         sunrise_offset=int(loaded_save['sunrise_offset']),
-                         sunset_offset=int(loaded_save['sunset_offset']))
-        self.log.debug("Automation object created")
+        try:  # Read Save Data
+            self.log.info('Reading Save Data')
 
-        # Execute stored states
-        if loaded_save['automation']:
+            save_data = self.save.load()
+            self.log.info("Save Loaded")
+            self.log.debug(f"Loaded Save Data: {save_data}")
+        except BaseException:
+            self.log.exception('Problem Reading Save Data!')
+
+        try:  # Create Door Object
+            self.log.info('Creating Door Object')
+
+            from source import Door
+            self.door = Door(relay1=io['relay1'], relay2=io['relay2'], sw1=io['switch1'], sw2=io['switch2'],
+                             sw3=io['switch3'], sw4=io['switch4'], sw5=io['switch5'], travel_time=prop['travel_time'])
+            self.log.info("Door object created")
+        except BaseException:
+            self.log.exception('Problem Creating Door Object!')
+
+        try:  # Create Auto Object
+            self.log.info('Creating Auto Object')
+
+            from source import Auto
+            self.auto = Auto(door=self.door, zone=str(prop['timezone']),
+                             latitude=float(prop['latitude']), longitude=float(prop['longitude']),
+                             sunrise_offset=int(save_data['sunrise_offset']),
+                             sunset_offset=int(save_data['sunset_offset']))
+            self.log.info("Automation object created")
+        except BaseException:
+            self.log.exception('Problem Creating Auto Object!')
+
+        self.log.debug('Executing Saved States...')
+        if save_data['automation']:
+            self.log.debug('Running Automation')
             self.auto.run()
-        if loaded_save['auxiliary']:
+        elif save_data['auxiliary']:
+            self.log.debug('Running Auxiliary Switches')
             self.door.run_aux()
+        else:
+            self.log.debug('Nothing Executed!')
 
     def run(self):
         """Run Tests"""
@@ -123,7 +154,7 @@ class _Initialization:
         if self._is_rpi():
             self.load_objects()
         else:
-            raise OSError('Program is designed for RPI only!')
+            self.log.exception(OSError('Program is designed for RPI only!'))  # DEBUG Result Unknown
 
         self.log.info("Startup Complete!")
 
