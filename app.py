@@ -165,7 +165,7 @@ class App(_Initialization):
         init = _Initialization()
         init.run()
 
-    def run(self):
+    def run(self):  # DEBUG Might call _Initialization.run() instead
         # TODO Have this run anvil runtime command with properties form app_config
         pass
 
