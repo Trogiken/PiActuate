@@ -1,0 +1,218 @@
+is_package: true
+container:
+  type: HtmlTemplate
+  properties: {html: '@theme:dashboard.html'}
+components:
+- type: ColumnPanel
+  properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+    wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{}',
+    spacing_below: small, background: ''}
+  name: content_panel
+  layout_properties: {slot: default}
+  components:
+  - type: ColumnPanel
+    properties: {role: card, tooltip: '', border: dashed, foreground: maroon, visible: true,
+      wrap_on: never, col_spacing: tiny, spacing_above: small, col_widths: '{}', spacing_below: small,
+      background: yellow}
+    name: door_control_card
+    layout_properties: {grid_position: 'FSWRVF,ZHDLDC', full_width_row: false}
+    components:
+    - type: CheckBox
+      properties: {role: null, align: right, tooltip: '', border: '', enabled: true,
+        foreground: '', allow_indeterminate: false, visible: true, text: Auxiliary,
+        font_size: null, font: '', spacing_above: none, spacing_below: none, italic: false,
+        background: '', bold: false, checked: false, underline: false}
+      name: door_auxiliary_checkbox
+      layout_properties: {grid_position: 'VEKRGI,JAYEHP'}
+      event_bindings: {change: door_auxiliary_checkbox_change}
+    - type: RichText
+      properties: {role: null, align: center, tooltip: '', enable_slots: true, border: '',
+        foreground: '', visible: true, font_size: 18, content: Door Control, font: '',
+        spacing_above: none, spacing_below: none, data: null, background: '', format: markdown}
+      name: door_control_title
+      layout_properties: {grid_position: 'PBPIKP,DIMGMT', full_width_row: false}
+    - type: Button
+      properties: {role: null, align: center, tooltip: Up Position, border: '', enabled: true,
+        foreground: green, visible: true, text: '', font_size: null, font: '', spacing_above: small,
+        icon_align: left, spacing_below: small, italic: false, background: '', bold: false,
+        underline: false, icon: 'fa:arrow-up'}
+      name: door_up_button
+      layout_properties: {grid_position: 'TCHTMT,SDLKIP'}
+      event_bindings: {click: door_up_button_click}
+    - type: Button
+      properties: {role: null, align: center, tooltip: Down Position, border: '',
+        enabled: true, foreground: red, visible: true, text: '', font_size: null,
+        font: '', spacing_above: small, icon_align: left, spacing_below: small, italic: false,
+        background: '', bold: false, underline: false, icon: 'fa:arrow-down'}
+      name: door_down_button
+      layout_properties: {grid_position: 'YZDQYW,ISCRWE'}
+      event_bindings: {click: door_down_button_click}
+    - type: ColumnPanel
+      properties: {role: null, tooltip: '', border: solid, foreground: maroon, visible: true,
+        wrap_on: never, col_spacing: tiny, spacing_above: small, col_widths: '{}',
+        spacing_below: small, background: yellow}
+      name: door_status_card
+      layout_properties: {grid_position: 'HESFJI,EBTDVW'}
+      components:
+      - type: RichText
+        properties: {role: null, align: right, tooltip: '', enable_slots: true, border: '',
+          foreground: '', visible: true, font_size: 16, content: 'Door Status:', font: '',
+          spacing_above: small, spacing_below: small, data: null, background: '',
+          format: markdown}
+        name: door_status_title
+        layout_properties: {grid_position: 'QRZWVI,GLLMUK'}
+      - type: RichText
+        properties: {role: null, align: left, tooltip: '', enable_slots: true, border: '',
+          foreground: '', visible: true, font_size: 15, content: '', font: '', spacing_above: small,
+          spacing_below: small, data: null, background: '', format: markdown}
+        name: door_status_placeholder
+        layout_properties: {grid_position: 'QRZWVI,FMJIHS'}
+  - type: ColumnPanel
+    properties: {role: card, tooltip: '', border: solid, foreground: '', visible: true,
+      wrap_on: never, col_spacing: tiny, spacing_above: small, col_widths: '{}', spacing_below: small,
+      background: ''}
+    name: automation_card
+    layout_properties: {grid_position: 'NDGLZJ,BNRCWY'}
+    components:
+    - type: RichText
+      properties: {role: null, align: center, tooltip: '', enable_slots: true, border: '',
+        foreground: '', visible: true, font_size: 18, content: Automation, font: '',
+        spacing_above: small, spacing_below: small, data: null, background: '', format: markdown}
+      name: automation_title
+      layout_properties: {grid_position: 'AHKFFV,OPYIEV'}
+      components:
+      - type: CheckBox
+        properties: {role: null, align: center, tooltip: Run/Stop Scheduler; Disables door control,
+          border: '', enabled: true, foreground: '', allow_indeterminate: false, visible: true,
+          text: Enable, font_size: 16, font: '', spacing_above: small, spacing_below: small,
+          italic: false, background: '', bold: false, checked: false, underline: false}
+        name: automation_checkbox
+        layout_properties: {}
+        event_bindings: {change: automation_checkbox_change}
+      - type: ColumnPanel
+        properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+          wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{"MRFHWT":24}',
+          spacing_below: small, background: ''}
+        name: offset_card
+        layout_properties: {}
+        components:
+        - type: ColumnPanel
+          properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+            wrap_on: never, col_spacing: none, spacing_above: small, col_widths: '{"SNWCTC":15,"WFVNUQ":30,"RAKVKE":15}',
+            spacing_below: small, background: ''}
+          name: offset_set_rise_card
+          layout_properties: {grid_position: 'DSEDLG,KLWYIQ'}
+          components:
+          - type: Label
+            properties: {role: null, align: right, tooltip: '', border: '', foreground: '',
+              visible: true, text: '', font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: offset_time
+            layout_properties: {grid_position: 'TJWQSJ,SNWCTC'}
+          - type: DropDown
+            properties:
+              role: null
+              align: center
+              tooltip: ''
+              placeholder: Offset
+              border: ''
+              enabled: true
+              foreground: ''
+              items: [Sunrise, Sunset]
+              visible: true
+              font_size: null
+              font: ''
+              spacing_above: small
+              spacing_below: small
+              italic: false
+              background: ''
+              bold: false
+              underline: false
+              include_placeholder: false
+            name: offset_selection_dropdown
+            layout_properties: {grid_position: 'TJWQSJ,WFVNUQ'}
+            event_bindings: {change: offset_selection_dropdown_change}
+          - type: Label
+            properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: '', font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: current_time
+            layout_properties: {grid_position: 'TJWQSJ,RAKVKE'}
+        - type: ColumnPanel
+          properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+            wrap_on: never, col_spacing: medium, spacing_above: small, col_widths: '{"KTVUNP":25,"MBLCXN":30,"ICNRPW":25}',
+            spacing_below: small, background: ''}
+          name: offset_change_value_card
+          layout_properties: {grid_position: 'AYNLOX,MRFHWT'}
+          components:
+          - type: DropDown
+            properties:
+              role: null
+              align: right
+              tooltip: ''
+              placeholder: ''
+              border: ''
+              enabled: true
+              foreground: ''
+              items: [+, '-']
+              visible: true
+              font_size: null
+              font: ''
+              spacing_above: small
+              spacing_below: small
+              italic: false
+              background: ''
+              bold: false
+              underline: false
+              include_placeholder: false
+            name: offset_pos_neg_dropdown
+            layout_properties: {grid_position: 'DAALMF,KTVUNP'}
+            event_bindings: {}
+          - type: TextBox
+            properties: {role: null, align: left, hide_text: false, tooltip: '', placeholder: Minutes,
+              border: '', enabled: true, foreground: '', visible: true, text: '',
+              font_size: null, font: '', spacing_above: small, type: text, spacing_below: small,
+              italic: false, background: '', bold: false, underline: false}
+            name: offset_value_box
+            layout_properties: {grid_position: 'DAALMF,MBLCXN'}
+            event_bindings: {change: offset_value_box_change, pressed_enter: offset_value_box_pressed_enter}
+          - type: Button
+            properties: {role: null, align: left, tooltip: Save offset, border: '',
+              enabled: true, foreground: '', visible: true, text: set, font_size: null,
+              font: '', spacing_above: small, icon_align: left, spacing_below: small,
+              italic: false, background: '', bold: false, underline: false, icon: ''}
+            name: offset_set_button
+            layout_properties: {grid_position: 'DAALMF,ICNRPW'}
+            event_bindings: {click: offset_set_button_click}
+        - type: Button
+          properties: {role: null, align: center, tooltip: Load saved offset, border: '',
+            enabled: true, foreground: '', visible: true, text: Update, font_size: null,
+            font: '', spacing_above: medium, icon_align: left, spacing_below: small,
+            italic: false, background: '', bold: false, underline: false, icon: ''}
+          name: offset_update_button
+          layout_properties: {grid_position: 'YAAOYC,EJJORL'}
+          event_bindings: {click: offset_update_button_click}
+- type: RichText
+  properties: {role: null, align: left, tooltip: 2.0.1.1, enable_slots: true, border: '',
+    foreground: '', visible: true, font_size: null, content: Chicken Door 2.0, font: '',
+    spacing_above: small, spacing_below: small, data: null, background: '', format: markdown}
+  name: webpage_title
+  layout_properties: {slot: title}
+- type: Timer
+  properties: {interval: 1}
+  name: door_status_updater
+  event_bindings: {tick: door_status_updater_tick}
+- type: Timer
+  properties: {interval: 1}
+  name: rpi_status_check
+  event_bindings: {tick: rpi_status_check_tick}
+- type: Link
+  properties: {role: null, url: '', align: left, tooltip: '', border: '', foreground: '',
+    visible: true, text: advanced, font_size: null, wrap_on: mobile, font: '', col_spacing: medium,
+    spacing_above: small, icon_align: left, col_widths: '', spacing_below: small,
+    italic: false, background: '', bold: false, underline: false, icon: 'fa:cogs'}
+  name: form2_link
+  layout_properties: {slot: sidebar}
+  event_bindings: {click: form2_link_click}

@@ -1,0 +1,81 @@
+roles:
+- name: title
+  components: [Label]
+- name: card
+  components: [ColumnPanel]
+  display_in_toolbox: true
+  title: Card
+color_scheme:
+  preset_groups:
+  - name: Accent
+    options:
+    - name: Blue
+      colors:
+      - {name: Accent 1, color: '#2196F3'}
+      - {name: Accent 2, color: '#1976D2'}
+    - name: Orange
+      colors:
+      - {name: Accent 1, color: '#FF9800'}
+      - {name: Accent 2, color: '#F57C00'}
+    - name: Red
+      colors:
+      - {name: Accent 1, color: '#F44336'}
+      - {name: Accent 2, color: '#D32F2F'}
+    - name: Pink
+      colors:
+      - {name: Accent 1, color: '#E91E63'}
+      - {name: Accent 2, color: '#C2185B'}
+    - name: Purple
+      colors:
+      - {name: Accent 1, color: '#9C27B0'}
+      - {name: Accent 2, color: '#7B1FA2'}
+    - name: Deep Purple
+      colors:
+      - {name: Accent 1, color: '#673AB7'}
+      - {name: Accent 2, color: '#512DA8'}
+    - name: Indigo
+      colors:
+      - {name: Accent 1, color: '#3F51B5'}
+      - {name: Accent 2, color: '#303F9F'}
+    - name: Light Blue
+      colors:
+      - {name: Accent 1, color: '#03A9F4'}
+      - {name: Accent 2, color: '#0288D1'}
+    - name: Cyan
+      colors:
+      - {name: Accent 1, color: '#00BCD4'}
+      - {name: Accent 2, color: '#0097A7'}
+    - name: Teal
+      colors:
+      - {name: Accent 1, color: '#009688'}
+      - {name: Accent 2, color: '#00796B'}
+    - name: Green
+      colors:
+      - {name: Accent 1, color: '#4CAF50'}
+      - {name: Accent 2, color: '#388E3C'}
+    - name: Light Green
+      colors:
+      - {name: Accent 1, color: '#8BC34A'}
+      - {name: Accent 2, color: '#689F38'}
+    - name: Lime
+      colors:
+      - {name: Accent 1, color: '#CDDC39'}
+      - {name: Accent 2, color: '#AFB42B'}
+    - name: Deep orange
+      colors:
+      - {name: Accent 1, color: '#FF5722'}
+      - {name: Accent 2, color: '#E64A19'}
+    - name: Brown
+      colors:
+      - {name: Accent 1, color: '#795548'}
+      - {name: Accent 2, color: '#5D4037'}
+    - name: Grey
+      colors:
+      - {name: Accent 1, color: '#9E9E9E'}
+      - {name: Accent 2, color: '#616161'}
+  colors:
+  - {name: Accent 1, color: '#009688'}
+  - {name: Accent 2, color: '#00796B'}
+  - {name: Background, color: '#D7D7D7'}
+  - {name: Header Background, color: '#F5F5F5'}
+  - {name: Sidebar Background, color: '#333333'}

@@ -5,6 +5,7 @@ GitHub: https://github.com/Trogiken/chicken-door
 import os
 import ast
 import logging.config
+import anvil
 import toml
 from pathlib import Path
 
@@ -72,7 +73,8 @@ class _Initialization:
             case {
                 'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(),
                          'switch4': int(), 'switch5': int()},
-                'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'travel_time': int()}
+                'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'travel_time': int()},
+                'network': {'ipv4': str(), 'port': str(), 'key': str()}
             }:
                 return values
             case _:
@@ -169,6 +171,9 @@ class App(_Initialization):
         # TODO Have this run anvil runtime command with properties form app_config
         pass
 
+    # TODO Connect to uplink with key
+    # TODO Make anvil callable
+    # TODO Link shutdown program button from webapp
     def run_auto(self):
         """Calls auto.run()"""
         self.log.debug("CALLED")

@@ -1,7 +1,12 @@
 # Chicken Door Project
 Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCLEB6FN5WL) integration
 
+## Requirements
 **Requires Python 3.10+**
+- Anvil
+  - `pip install anvil`
+- Anvil Runtime
+  - `pip install anvil-app-server`
 
 ## Features
 - Automated Operation
@@ -17,19 +22,22 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
 ## App Config
 **Program uses the "BCM" pin layout**
 
-|Variable|Purpose|
-|--------|--------|
-|   relay1          | Extending Motion |
-|   relay2          | Retracting Motion |
-|   switch1         | Extend Limit |
-|   switch2         | Retract Limit |
-|   switch3         | Path of door is blocked |
-|   switch4         | Aux switch for `relay1` |
-|   switch5         | Aux switch for `relay2` |
-|   timezone[^1]       | Time zone of hardware |
-|   longitude       | Longitudinal location of hardware |
-|   latitude        | Latitudinal location of hardware |
-|   travel_time[^2] | Allowed time for the door to be in motion |
+| Variable        | Purpose                                      |
+|-----------------|----------------------------------------------|
+| relay1          | Extending Motion                             |
+| relay2          | Retracting Motion                            |
+| switch1         | Extend Limit                                 |
+| switch2         | Retract Limit                                |
+| switch3         | Path of door is blocked                      |
+| switch4         | Aux switch for `relay1`                      |
+| switch5         | Aux switch for `relay2`                      |
+| timezone[^1]    | Time zone of hardware                        |
+| longitude       | Longitudinal location of hardware            |
+| latitude        | Latitudinal location of hardware             |
+| travel_time[^2] | Allowed time for the door to be in motion    |
+| ipv4            | Ipv4 address of host system                  |
+| port[^3]        | Free port for webapp to run on               |
+| key             | Some what long string of numbers and letters |
 
 ## Logging Config
 See the official python documentation [here](https://docs.python.org/3/library/logging.config.html)
@@ -63,3 +71,4 @@ WantedBy=multi-user.target
 
 [^1]: US/Eastern, Europe/Amsterdam
 [^2]: Find the movement rate of door and the distance it must travel. Add an additional 4 - 6 seconds
+[^3]: Port forward this value on your router to expose it to the WAN
