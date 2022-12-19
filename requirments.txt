@@ -1,3 +1,2 @@
 anvil-uplink~=0.4.1
-anvil~=0.0.2
 toml~=0.10.2
