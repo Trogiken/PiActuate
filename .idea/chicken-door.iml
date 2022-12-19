@@ -3,9 +3,13 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/.anvil-data/db-bin/PG-3ecc125de4870fe95f7f29f11aba3613/lib" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (chicken-door)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="C:\Users\Owner\Pycharm\Projects\chicken-door\requirments.txt" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="format" value="GOOGLE" />
