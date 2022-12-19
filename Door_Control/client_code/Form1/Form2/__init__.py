@@ -40,8 +40,7 @@ class Form2(Form2Template):
     check = anvil.confirm('This will Shutdown the Program!', title='Shutdown Program', large=True)
     if check:
       try:
-        # anvil.server.call('FUNC', 'PARM')
-        pass
+        anvil.server.call('shutdown', 'program')
       except:
         return
 

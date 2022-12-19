@@ -283,6 +283,7 @@ class App:
             Shutdown or Restart system
 
             If parm is changed to 'r' the system will restart
+            If parm is changed to 'program' the program will exit
 
                 Parameters:
                     parm (str), optional: Shutdown flag
@@ -291,13 +292,19 @@ class App:
                 self.log.warning("Shutting Down...")
             elif parm == 'r':
                 self.log.warning("Restarting...")
+            elif parm == 'program':
+                self.log.warning("Program is shutting down...")
             else:
                 return
 
             self.runtime.door.stop_aux()
             self.runtime.auto.stop()
             self.runtime.door.cleanup()
-            os.system(f'sudo shutdown -{parm} now')
+
+            if parm == 'program':
+                exit()
+            else:
+                os.system(f'sudo shutdown -{parm} now')
 
         @anvil.server.callable()
         def move(opt):
