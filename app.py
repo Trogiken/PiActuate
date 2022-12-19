@@ -86,10 +86,6 @@ class _Initialization:
 
     def load_objects(self):
         """Load app config and create objects, then run stored states (Load Last)"""
-        io = None
-        prop = None
-        save_data = None
-
         try:  # Read AppConfig
             self.log.debug('Reading App Config')
 
@@ -252,7 +248,7 @@ class App(_Initialization):
                 return self.save.load()
 
         @anvil.server.callable()
-        def rpi_status(self):
+        def rpi_status():
             """Called by WebApp to check if it still has connection to this program, Returns None"""
             # DEBUG How would this work locally
             return

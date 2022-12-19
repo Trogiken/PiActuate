@@ -1,10 +1,13 @@
 # Chicken Door Project
-Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCLEB6FN5WL) integration
+**Automatic door with webapp integration**
+
+_Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) using a [relay hat](https://thepihut.com/products/raspberry-pi-relay-board)_
 
 ## Requirements
-**Requires Python 3.10+**
-- Anvil
-  - `pip install anvil`
+
+[Imported Files](requirments.txt)
+
+- Python 3.10+
 - Anvil Runtime
   - `pip install anvil-app-server`
 
@@ -17,27 +20,27 @@ Automatic door with [WebApp](https://CLDWHXPSURNV4EW5.anvil.app/YYX76UIW3FLUVCCL
   - Enable/Disable Auxiliary Buttons
   - Timing Offsets
   - Open and Close Buttons
-  - Shutdown, Restart, and Reset (Restart requires the program to start at boot)
+  - Shutdown, Restart, and Reset (Restart and Reset requires the program to [start at boot](#creating-a-service))
 
 ## App Config
 **Program uses the "BCM" pin layout**
 
-| Variable        | Purpose                                      |
-|-----------------|----------------------------------------------|
-| relay1          | Extending Motion                             |
-| relay2          | Retracting Motion                            |
-| switch1         | Extend Limit                                 |
-| switch2         | Retract Limit                                |
-| switch3         | Path of door is blocked                      |
-| switch4         | Aux switch for `relay1`                      |
-| switch5         | Aux switch for `relay2`                      |
-| timezone[^1]    | Time zone of hardware                        |
-| longitude       | Longitudinal location of hardware            |
-| latitude        | Latitudinal location of hardware             |
-| travel_time[^2] | Allowed time for the door to be in motion    |
-| ipv4            | Ipv4 address of host system                  |
-| port[^3]        | Free port for webapp to run on               |
-| key             | Some what long string of numbers and letters |
+| Variable        | Purpose                                   |
+|-----------------|-------------------------------------------|
+| relay1          | Extending Motion                          |
+| relay2          | Retracting Motion                         |
+| switch1         | Extend Limit                              |
+| switch2         | Retract Limit                             |
+| switch3         | Path of door is blocked                   |
+| switch4         | Aux switch for `relay1`                   |
+| switch5         | Aux switch for `relay2`                   |
+| timezone[^1]    | Time zone of hardware                     |
+| longitude       | Longitudinal location of hardware         |
+| latitude        | Latitudinal location of hardware          |
+| travel_time[^2] | Allowed time for the door to be in motion |
+| ipv4            | Ipv4 address of host system               |
+| port[^3]        | Free port for webapp to run on            |
+| key             | String of numbers and letters             |
 
 ## Logging Config
 See the official python documentation [here](https://docs.python.org/3/library/logging.config.html)
