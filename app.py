@@ -178,8 +178,8 @@ class App(_Initialization):
         init.start()
 
     @staticmethod
-    def connect(ipv4, port, key):  # DEBUG Untested
-        anvil.server.connect(key, url=f"ws://{ipv4}:{port}/_/uplink")
+    def connect(port, key):  # DEBUG Untested
+        anvil.server.connect(key, url=f"ws://localhost:{port}/_/uplink")
 
         # TODO Link shutdown program button from webapp
         @anvil.server.callable()
@@ -313,7 +313,7 @@ class App(_Initialization):
 
         os.system(f"anvil-app-server --app Door_Control --origin http://{ipv4}:{port}/ --uplink-key={key}")
         sleep(10)
-        self.connect(ipv4, port, key)
+        self.connect(port, key)
 
 
 if __name__ == '__main__':
