@@ -5,7 +5,7 @@ GitHub: https://github.com/Trogiken/chicken-door
 import os
 import ast
 import logging.config
-import anvil
+import anvil.server
 import toml
 from time import sleep
 
@@ -174,7 +174,7 @@ class App(_Initialization):
         init.start()
 
     @staticmethod
-    def connect(port, key):  # DEBUG Untested
+    def connect(port, key):  # DEBUG Anvil callable functions might not be referencing App() but instead connect() with 'self'
         anvil.server.connect(key, url=f"ws://localhost:{port}/_/uplink")
 
         # TODO Link shutdown program button from webapp
