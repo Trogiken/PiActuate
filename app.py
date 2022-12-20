@@ -190,7 +190,6 @@ class App:
         anvil.server.connect(self.key, url=f"ws://localhost:{self.port}/_/uplink")
         self.log.info(f"Webapp connected on '{self.ipv4}:{self.port}'")
 
-        # TODO Link shutdown program button from webapp
         @anvil.server.callable()
         def run_auto():
             """Calls auto.run()"""
