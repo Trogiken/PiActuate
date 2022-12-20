@@ -152,7 +152,7 @@ class _Initialization:
     def _start(self):
         """Run Tests"""
         self._logging_config_load()
-        self.log.info("Startup...")  # TODO Startup log messages are scattered
+        self.log.info("Startup...")
 
         try:
             self._is_rpi()
@@ -172,23 +172,21 @@ class App:
         self.runtime = _Initialization()
         self.log = logging.getLogger('root')
 
-        net = self.runtime.app_config['network']
-        self.ipv4 = net['ipv4']
-        self.port = net['port']
-        self.key = net['key']
-
-        self.log.debug(f"ipv4: {self.ipv4}")
-        self.log.debug(f"port: {self.port}")
-        self.log.debug(f"key: {self.key}")
-
-        os.system(f"anvil-app-server --app Door_Control --origin http://{self.ipv4}:{self.port}/ --uplink-key={self.key}")
-        sleep(10)
-
     def connect(self):
+        net = self.runtime.app_config['network']
+        ipv4 = net['ipv4']
+        port = net['port']
+        key = net['key']
+
+        self.log.debug(f"ipv4: {ipv4}")
+        self.log.debug(f"port: {port}")
+        self.log.debug(f"key: {key}")
 
         self.log.info("Connecting to WebApp...")
-        anvil.server.connect(self.key, url=f"ws://localhost:{self.port}/_/uplink")
-        self.log.info(f"Webapp connected on '{self.ipv4}:{self.port}'")
+        os.system(f"anvil-app-server --app Door_Control --origin http://{ipv4}:{port}/ --uplink-key={key}")
+        sleep(10)
+        anvil.server.connect(key, url=f"ws://localhost:{port}/_/uplink")
+        self.log.info(f"Webapp connected on '{ipv4}:{port}'")
 
         @anvil.server.callable()
         def run_auto():
