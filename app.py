@@ -168,76 +168,75 @@ class _Initialization:
 
 
 class App:
-    def __init__(self):
-        self.runtime = _Initialization()
-        self.log = logging.getLogger('root')
-
-    def connect(self):
-        net = self.runtime.app_config['network']
+    @staticmethod
+    def connect():
+        runtime = _Initialization()
+        log = logging.getLogger('root')
+        net = runtime.app_config['network']
         ipv4 = net['ipv4']
         port = net['port']
         key = net['key']
 
-        self.log.debug(f"ipv4: {ipv4}")
-        self.log.debug(f"port: {port}")
-        self.log.debug(f"key: {key}")
+        log.debug(f"ipv4: {ipv4}")
+        log.debug(f"port: {port}")
+        log.debug(f"key: {key}")
 
-        self.log.info("Connecting to WebApp...")
+        log.info("Connecting to WebApp...")
         os.system(f"anvil-app-server --app Door_Control --origin http://{ipv4}:{port}/ --uplink-key={key}")
         sleep(10)
         anvil.server.connect(key, url=f"ws://localhost:{port}/_/uplink")
-        self.log.info(f"Webapp connected on '{ipv4}:{port}'")
+        log.info(f"Webapp connected on '{ipv4}:{port}'")
 
         @anvil.server.callable()
         def run_auto():
             """Calls auto.run()"""
-            self.log.debug("CALLED")
-            self.runtime.auto.run()
+            log.debug("CALLED")
+            runtime.auto.run()
 
         @anvil.server.callable()
         def stop_auto():
             """Calls auto.stop()"""
-            self.log.debug("CALLED")
-            self.runtime.auto.stop()
+            log.debug("CALLED")
+            runtime.auto.stop()
 
         @anvil.server.callable()
         def run_aux():
             """Calls door.run_aux()"""
-            self.log.debug("CALLED")
-            self.runtime.door.run_aux()
+            log.debug("CALLED")
+            runtime.door.run_aux()
 
         @anvil.server.callable()
         def stop_aux():
             """Calls door.stop_aux()"""
-            self.log.debug("CALLED")
-            self.runtime.door.stop_aux()
+            log.debug("CALLED")
+            runtime.door.stop_aux()
 
         @anvil.server.callable()
         def change_rise(offset):
             """Calls auto.set_sunrise(offset), saves the new value"""
-            self.log.debug("CALLED")
-            self.runtime.auto.set_sunrise(offset)
-            self.runtime.save.change('sunrise_offset', offset)
+            log.debug("CALLED")
+            runtime.auto.set_sunrise(offset)
+            runtime.save.change('sunrise_offset', offset)
 
         @anvil.server.callable()
         def change_set(offset):
             """Calls auto.set_sunset(offset), saves the new value"""
-            self.log.debug("CALLED")
-            self.runtime.auto.set_sunset(offset)
-            self.runtime.save.change('sunset_offset', offset)
+            log.debug("CALLED")
+            runtime.auto.set_sunset(offset)
+            runtime.save.change('sunset_offset', offset)
 
         @anvil.server.callable()
         def refresh_auto():
             """Calls auto.refresh()"""
-            self.runtime.log.debug("CALLED")
-            self.runtime.auto.refresh()
+            runtime.log.debug("CALLED")
+            runtime.auto.refresh()
 
         @anvil.server.callable()
         def get_times():
             """Returns sunrise and sunset times in a dictionary"""
-            self.log.debug("CALLED")
-            return {'sunrise': self.runtime.auto.active_sunrise(),
-                    'sunset': self.runtime.auto.active_sunset()}
+            log.debug("CALLED")
+            return {'sunrise': runtime.auto.active_sunrise(),
+                    'sunset': runtime.auto.active_sunset()}
 
         @anvil.server.callable()
         def c_state(variable=None):
@@ -251,11 +250,11 @@ class App:
                     save.load() (dict): all data
                     save.load()[variable] (str, int, float, bool): value of specified key
             """
-            self.log.debug("CALLED")
+            log.debug("CALLED")
             if variable is not None:
-                return self.runtime.save.load()[variable]
+                return runtime.save.load()[variable]
             else:
-                return self.runtime.save.load()
+                return runtime.save.load()
 
         @anvil.server.callable()
         def rpi_status():
@@ -266,12 +265,12 @@ class App:
         @anvil.server.callable()
         def door_status():
             """Returns func call door.get_status()"""
-            return self.runtime.door.get_status()
+            return runtime.door.get_status()
 
         @anvil.server.callable()
         def reset_config():
             """"Calls save.reset()"""
-            self.runtime.save.reset()
+            runtime.save.reset()
             return
 
         @anvil.server.callable()
@@ -286,17 +285,17 @@ class App:
                     parm (str), optional: Shutdown flag
             """
             if parm == 'h':
-                self.log.warning("Shutting Down...")
+                log.warning("Shutting Down...")
             elif parm == 'r':
-                self.log.warning("Restarting...")
+                log.warning("Restarting...")
             elif parm == 'program':
-                self.log.warning("Program is shutting down...")
+                log.warning("Program is shutting down...")
             else:
                 return
 
-            self.runtime.door.stop_aux()
-            self.runtime.auto.stop()
-            self.runtime.door.cleanup()
+            runtime.door.stop_aux()
+            runtime.auto.stop()
+            runtime.door.cleanup()
 
             if parm == 'program':
                 exit()
@@ -306,17 +305,17 @@ class App:
         @anvil.server.callable()
         def move(opt):
             """Takes opt (1 or 2) and calls door.move(opt)"""
-            self.log.debug("CALLED")
-            self.runtime.door.move(opt)
+            log.debug("CALLED")
+            runtime.door.move(opt)
 
         @anvil.server.callable()
         def change(variable, value):
             """Calls save.change(variable, value)"""
-            self.log.debug("CALLED")
-            self.runtime.save.change(variable, value)
+            log.debug("CALLED")
+            runtime.save.change(variable, value)
 
         anvil.server.wait_forever()
-        self.log.info("Startup Complete!")
+        log.info("Startup Complete!")
 
 
 if __name__ == '__main__':
