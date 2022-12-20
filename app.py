@@ -167,157 +167,154 @@ class _Initialization:
             raise
 
 
-class App:
-    @staticmethod
-    def connect():
-        runtime = _Initialization()
-        log = logging.getLogger('root')
-        net = runtime.app_config['network']
-        ipv4 = net['ipv4']
-        port = net['port']
-        key = net['key']
+def connect():
+    runtime = _Initialization()
+    log = logging.getLogger('root')
+    net = runtime.app_config['network']
+    ipv4 = net['ipv4']
+    port = net['port']
+    key = net['key']
 
-        log.debug(f"ipv4: {ipv4}")
-        log.debug(f"port: {port}")
-        log.debug(f"key: {key}")
+    log.debug(f"ipv4: {ipv4}")
+    log.debug(f"port: {port}")
+    log.debug(f"key: {key}")
 
-        log.info("Connecting to WebApp...")
-        os.system(f"anvil-app-server --app Door_Control --origin http://{ipv4}:{port}/ --uplink-key={key}")
-        sleep(10)
-        anvil.server.connect(key, url=f"ws://localhost:{port}/_/uplink")
-        log.info(f"Webapp connected on '{ipv4}:{port}'")
+    log.info("Connecting to WebApp...")
+    os.system(f"anvil-app-server --app Door_Control --origin http://{ipv4}:{port}/ --uplink-key={key}")
+    sleep(10)
+    anvil.server.connect(key, url=f"ws://localhost:{port}/_/uplink")
+    log.info(f"Webapp connected on '{ipv4}:{port}'")
 
-        @anvil.server.callable()
-        def run_auto():
-            """Calls auto.run()"""
-            log.debug("CALLED")
-            runtime.auto.run()
+    @anvil.server.callable()
+    def run_auto():
+        """Calls auto.run()"""
+        log.debug("CALLED")
+        runtime.auto.run()
 
-        @anvil.server.callable()
-        def stop_auto():
-            """Calls auto.stop()"""
-            log.debug("CALLED")
-            runtime.auto.stop()
+    @anvil.server.callable()
+    def stop_auto():
+        """Calls auto.stop()"""
+        log.debug("CALLED")
+        runtime.auto.stop()
 
-        @anvil.server.callable()
-        def run_aux():
-            """Calls door.run_aux()"""
-            log.debug("CALLED")
-            runtime.door.run_aux()
+    @anvil.server.callable()
+    def run_aux():
+        """Calls door.run_aux()"""
+        log.debug("CALLED")
+        runtime.door.run_aux()
 
-        @anvil.server.callable()
-        def stop_aux():
-            """Calls door.stop_aux()"""
-            log.debug("CALLED")
-            runtime.door.stop_aux()
+    @anvil.server.callable()
+    def stop_aux():
+        """Calls door.stop_aux()"""
+        log.debug("CALLED")
+        runtime.door.stop_aux()
 
-        @anvil.server.callable()
-        def change_rise(offset):
-            """Calls auto.set_sunrise(offset), saves the new value"""
-            log.debug("CALLED")
-            runtime.auto.set_sunrise(offset)
-            runtime.save.change('sunrise_offset', offset)
+    @anvil.server.callable()
+    def change_rise(offset):
+        """Calls auto.set_sunrise(offset), saves the new value"""
+        log.debug("CALLED")
+        runtime.auto.set_sunrise(offset)
+        runtime.save.change('sunrise_offset', offset)
 
-        @anvil.server.callable()
-        def change_set(offset):
-            """Calls auto.set_sunset(offset), saves the new value"""
-            log.debug("CALLED")
-            runtime.auto.set_sunset(offset)
-            runtime.save.change('sunset_offset', offset)
+    @anvil.server.callable()
+    def change_set(offset):
+        """Calls auto.set_sunset(offset), saves the new value"""
+        log.debug("CALLED")
+        runtime.auto.set_sunset(offset)
+        runtime.save.change('sunset_offset', offset)
 
-        @anvil.server.callable()
-        def refresh_auto():
-            """Calls auto.refresh()"""
-            runtime.log.debug("CALLED")
-            runtime.auto.refresh()
+    @anvil.server.callable()
+    def refresh_auto():
+        """Calls auto.refresh()"""
+        runtime.log.debug("CALLED")
+        runtime.auto.refresh()
 
-        @anvil.server.callable()
-        def get_times():
-            """Returns sunrise and sunset times in a dictionary"""
-            log.debug("CALLED")
-            return {'sunrise': runtime.auto.active_sunrise(),
-                    'sunset': runtime.auto.active_sunset()}
+    @anvil.server.callable()
+    def get_times():
+        """Returns sunrise and sunset times in a dictionary"""
+        log.debug("CALLED")
+        return {'sunrise': runtime.auto.active_sunrise(),
+                'sunset': runtime.auto.active_sunset()}
 
-        @anvil.server.callable()
-        def c_state(variable=None):
-            """
-            Read save file
+    @anvil.server.callable()
+    def c_state(variable=None):
+        """
+        Read save file
 
-                Parameters:
-                    variable (str), optional: key in dictionary
+            Parameters:
+                variable (str), optional: key in dictionary
 
-                Returns:
-                    save.load() (dict): all data
-                    save.load()[variable] (str, int, float, bool): value of specified key
-            """
-            log.debug("CALLED")
-            if variable is not None:
-                return runtime.save.load()[variable]
-            else:
-                return runtime.save.load()
+            Returns:
+                save.load() (dict): all data
+                save.load()[variable] (str, int, float, bool): value of specified key
+        """
+        log.debug("CALLED")
+        if variable is not None:
+            return runtime.save.load()[variable]
+        else:
+            return runtime.save.load()
 
-        @anvil.server.callable()
-        def rpi_status():
-            """Called by WebApp to check if it still has connection to this program, Returns None"""
-            # DEBUG How would this work locally
+    @anvil.server.callable()
+    def rpi_status():
+        """Called by WebApp to check if it still has connection to this program, Returns None"""
+        # DEBUG How would this work locally
+        return
+
+    @anvil.server.callable()
+    def door_status():
+        """Returns func call door.get_status()"""
+        return runtime.door.get_status()
+
+    @anvil.server.callable()
+    def reset_config():
+        """"Calls save.reset()"""
+        runtime.save.reset()
+        return
+
+    @anvil.server.callable()
+    def shutdown(parm='h'):
+        """
+        Shutdown or Restart system
+
+        If parm is changed to 'r' the system will restart
+        If parm is changed to 'program' the program will exit
+
+            Parameters:
+                parm (str), optional: Shutdown flag
+        """
+        if parm == 'h':
+            log.warning("Shutting Down...")
+        elif parm == 'r':
+            log.warning("Restarting...")
+        elif parm == 'program':
+            log.warning("Program is shutting down...")
+        else:
             return
 
-        @anvil.server.callable()
-        def door_status():
-            """Returns func call door.get_status()"""
-            return runtime.door.get_status()
+        runtime.door.stop_aux()
+        runtime.auto.stop()
+        runtime.door.cleanup()
 
-        @anvil.server.callable()
-        def reset_config():
-            """"Calls save.reset()"""
-            runtime.save.reset()
-            return
+        if parm == 'program':
+            exit()
+        else:
+            os.system(f'sudo shutdown -{parm} now')
 
-        @anvil.server.callable()
-        def shutdown(parm='h'):
-            """
-            Shutdown or Restart system
+    @anvil.server.callable()
+    def move(opt):
+        """Takes opt (1 or 2) and calls door.move(opt)"""
+        log.debug("CALLED")
+        runtime.door.move(opt)
 
-            If parm is changed to 'r' the system will restart
-            If parm is changed to 'program' the program will exit
+    @anvil.server.callable()
+    def change(variable, value):
+        """Calls save.change(variable, value)"""
+        log.debug("CALLED")
+        runtime.save.change(variable, value)
 
-                Parameters:
-                    parm (str), optional: Shutdown flag
-            """
-            if parm == 'h':
-                log.warning("Shutting Down...")
-            elif parm == 'r':
-                log.warning("Restarting...")
-            elif parm == 'program':
-                log.warning("Program is shutting down...")
-            else:
-                return
-
-            runtime.door.stop_aux()
-            runtime.auto.stop()
-            runtime.door.cleanup()
-
-            if parm == 'program':
-                exit()
-            else:
-                os.system(f'sudo shutdown -{parm} now')
-
-        @anvil.server.callable()
-        def move(opt):
-            """Takes opt (1 or 2) and calls door.move(opt)"""
-            log.debug("CALLED")
-            runtime.door.move(opt)
-
-        @anvil.server.callable()
-        def change(variable, value):
-            """Calls save.change(variable, value)"""
-            log.debug("CALLED")
-            runtime.save.change(variable, value)
-
-        anvil.server.wait_forever()
-        log.info("Startup Complete!")
+    anvil.server.wait_forever()
+    log.info("Startup Complete!")
 
 
 if __name__ == '__main__':
-    app = App()
-    app.connect()
+    connect()
