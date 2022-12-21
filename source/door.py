@@ -81,19 +81,19 @@ class Door:
 
     Attributes
     ----------
-    relay1 : int
+    RELAY2 : int
         pin of channel 1 relay
-    relay2 : int
+    RELAY2 : int
         pin of channel 2 relay
-    sw1 : int
+    SW1 : int
         pin of limit switch
-    sw2 : int
+    SW2 : int
         pin of limit switch
-    sw3 : int
+    SW3 : int
         pin of block switch
-    sw4 : int
+    SW4 : int
         pin of aux_switch1
-    sw5 : int
+    SW5 : int
         pint of aux_switch2
     travel_time : int
         maximum seconds relays remain triggered

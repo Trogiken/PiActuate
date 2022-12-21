@@ -23,7 +23,7 @@ class _Initialization:
     door : object
         Setup source.door.Door()
     auto : object
-        Setup source.auto.Auto
+        Setup source.auto.Auto()
     app_config : dict
         Config values
 
