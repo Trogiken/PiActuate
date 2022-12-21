@@ -58,17 +58,17 @@ class _Auxiliary(threading.Thread):
                 if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
                     self.in_motion = True
                     if GPIO.input(self.AUX_SW5) == 1:
-                        GPIO.output(self.RELAY1, True)
-                        GPIO.output(self.RELAY2, True)
+                        GPIO.output(self.RELAY1, self.OFF_STATE)
+                        GPIO.output(self.RELAY2, self.OFF_STATE)
                     else:
-                        GPIO.output(self.RELAY1, False)
-                        GPIO.output(self.RELAY2, True)
+                        GPIO.output(self.RELAY1, not self.OFF_STATE)
+                        GPIO.output(self.RELAY2, self.OFF_STATE)
                 elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
-                    GPIO.output(self.RELAY1, True)
-                    GPIO.output(self.RELAY2, False)
+                    GPIO.output(self.RELAY1, self.OFF_STATE)
+                    GPIO.output(self.RELAY2, not self.OFF_STATE)
                 else:
-                    GPIO.output(self.RELAY1, True)
-                    GPIO.output(self.RELAY2, True)
+                    GPIO.output(self.RELAY1, self.OFF_STATE)
+                    GPIO.output(self.RELAY2, self.OFF_STATE)
                     self.in_motion = False
 
 
@@ -185,8 +185,8 @@ class Door:
         self.stop_aux()
         if self._move_op_thread.is_alive():
             self._move_op_thread.join()  # wait for thread to complete
-        GPIO.output(self.RELAY1, True)
-        GPIO.output(self.RELAY2, True)
+        GPIO.output(self.RELAY1, self.OFF_STATE)
+        GPIO.output(self.RELAY2, self.OFF_STATE)
         GPIO.cleanup()
         log.info("GPIO Cleared")
 
@@ -248,24 +248,24 @@ class Door:
             if self.motion == 1 and GPIO.input(self.SW1) == 0:  # Requested down and limit switch not triggered
                 door_in_motion = {'in_motion': True, 'direction': 'Extending'}
                 if GPIO.input(self.SW3) == 1:  # Block switch triggered
-                    GPIO.output(self.RELAY1, True)
-                    GPIO.output(self.RELAY2, True)
+                    GPIO.output(self.RELAY1, self.OFF_STATE)
+                    GPIO.output(self.RELAY2, self.OFF_STATE)
                     blocked = True
                 else:
-                    GPIO.output(self.RELAY1, False)
-                    GPIO.output(self.RELAY2, True)
+                    GPIO.output(self.RELAY1, not self.OFF_STATE)
+                    GPIO.output(self.RELAY2, self.OFF_STATE)
             elif self.motion == 2 and GPIO.input(self.SW2) == 0:  # Requested up and limit switch not triggered
                 door_in_motion = {'in_motion': True, 'direction': 'Retracting'}
-                GPIO.output(self.RELAY1, True)
-                GPIO.output(self.RELAY2, False)
+                GPIO.output(self.RELAY1, self.OFF_STATE)
+                GPIO.output(self.RELAY2, not self.OFF_STATE)
             else:  # Motion related limit switch is triggered
                 time_exceeded = False
                 blocked = False
                 break
         # Reset motion and relays
         self.motion = 0
-        GPIO.output(self.RELAY1, True)
-        GPIO.output(self.RELAY2, True)
+        GPIO.output(self.RELAY1, self.OFF_STATE)
+        GPIO.output(self.RELAY2, self.OFF_STATE)
         door_in_motion = {'in_motion': False, 'direction': 'None'}
 
         if time_exceeded:
