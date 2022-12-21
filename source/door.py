@@ -14,13 +14,14 @@ door_in_motion = {'in_motion': False, 'direction': 'None'}
 
 
 class _Auxiliary(threading.Thread):
-    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
+    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, off_state, relay1, relay2):
         super().__init__()
         self.AUX_SW1 = aux_sw1  # trigger relay1
         self.AUX_SW2 = aux_sw2  # trigger relay2
         self.AUX_SW3 = aux_sw3  # limit
         self.AUX_SW4 = aux_sw4  # limit
         self.AUX_SW5 = aux_sw5  # block
+        self.OFF_STATE = off_state
         self.RELAY1 = relay1
         self.RELAY2 = relay2
         self.motion = 0
@@ -41,8 +42,8 @@ class _Auxiliary(threading.Thread):
     def run(self, *args, **kwargs):
         while True:
             if self.stopped():
-                GPIO.output(self.RELAY1, True)
-                GPIO.output(self.RELAY2, True)
+                GPIO.output(self.RELAY1, self.OFF_STATE)
+                GPIO.output(self.RELAY2, self.OFF_STATE)  # TODO Left off setting states here
                 return
             if GPIO.input(self.AUX_SW1) == 1:
                 self.motion = 1
@@ -81,6 +82,8 @@ class Door:
 
     Attributes
     ----------
+    OFF_STATE: bool
+        Send power to turn relays off or not
     RELAY2 : int
         pin of channel 1 relay
     RELAY2 : int
@@ -111,10 +114,11 @@ class Door:
     move(opt=int):
         move door open or closed
     """
-    def __init__(self, relay1, relay2, sw1, sw2, sw3, sw4, sw5, travel_time):
+    def __init__(self, off_state, relay1, relay2, sw1, sw2, sw3, sw4, sw5, travel_time):
         """Constructs all the necessary attributes for the Door object"""
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
+        self.OFF_STATE = off_state
         self.RELAY1 = relay1
         self.RELAY2 = relay2
         self.SW1 = sw1
@@ -139,8 +143,8 @@ class Door:
         log.debug(f"SW5: {self.SW5}")
         log.debug(f"max_travel: {self.travel_time}")
 
-        GPIO.setup(self.RELAY1, GPIO.OUT, initial=True)
-        GPIO.setup(self.RELAY2, GPIO.OUT, initial=True)
+        GPIO.setup(self.RELAY1, GPIO.OUT, initial=self.OFF_STATE)
+        GPIO.setup(self.RELAY2, GPIO.OUT, initial=self.OFF_STATE)
         GPIO.setup(self.SW1, GPIO.IN)
         GPIO.setup(self.SW2, GPIO.IN)
         GPIO.setup(self.SW3, GPIO.IN)
@@ -150,7 +154,7 @@ class Door:
         try:
             if self.aux_is_running is False:
                 self.aux = _Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
-                                      aux_sw5=self.SW3, relay1=self.RELAY1, relay2=self.RELAY2)
+                                      aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
                 self.aux.start()
 
                 self.aux_is_running = True

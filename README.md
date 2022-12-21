@@ -27,6 +27,7 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
 
 | Variable        | Purpose                                   |
 |-----------------|-------------------------------------------|
+| off_state[^1]   | Send power to turn off relay              |
 | relay1          | Extending Motion                          |
 | relay2          | Retracting Motion                         |
 | switch1         | Extend Limit                              |
@@ -34,12 +35,12 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
 | switch3         | Path of door is blocked                   |
 | switch4         | Aux switch for `relay1`                   |
 | switch5         | Aux switch for `relay2`                   |
-| timezone[^1]    | Time zone of hardware                     |
+| timezone[^2]    | Time zone of hardware                     |
 | longitude       | Longitudinal location of hardware         |
 | latitude        | Latitudinal location of hardware          |
-| travel_time[^2] | Allowed time for the door to be in motion |
+| travel_time[^3] | Allowed time for the door to be in motion |
 | ipv4            | Ipv4 address of host system               |
-| port[^3]        | Free port for webapp to run on            |
+| port[^4]        | Free port for webapp to run on            |
 | key             | String of numbers and letters             |
 
 ## Logging Config
@@ -72,6 +73,7 @@ WantedBy=multi-user.target
 #### 4. Start the service
 ``sudo systemctl start SERVICE_NAME``
 
-[^1]: US/Eastern, Europe/Amsterdam
-[^2]: Find the movement rate of door and the distance it must travel. Add an additional 4 - 6 seconds
-[^3]: Port forward this value on your router to expose it to the WAN
+[^1]: If **Off** state of relay is _True_ (Send Power), _False_ (No Power)
+[^2]: US/Eastern, Europe/Amsterdam
+[^3]: Find the movement rate of door and the distance it must travel. Add an additional 4 - 6 seconds
+[^4]: Port forward this value on your router to expose it to the WAN
