@@ -11,13 +11,43 @@ from time import sleep
 
 
 class _Initialization:
-    def __init__(self):
-        os.chdir(os.path.dirname(__file__))
-        self.home = os.getcwd()
-        self.source = os.path.join(self.home, 'source')
-        self.app_config_path = os.path.join(self.home, 'appConfig.conf')  # DEBUG
+    """
+    Setup runtime objects and verify functionality
 
-        self.log = None
+    ...
+
+    Attributes
+    ----------
+    save : object
+        add or sub minutes from time
+    door : object
+        door class object
+    auto : object
+        time zone
+    app_config : dict
+        longitudinal coordinate
+
+    Methods
+    -------
+    _logging_config_load():
+        Read and load logging config
+    _is_rpi():
+        Verify that system is an RPI
+    _app_config_load():
+        Verify  and read app config data
+    _load_objects():
+        Create and assign required objects to class variables while verifying functionality
+    _start():
+        Run the private methods in correct order
+    """
+    def __init__(self):
+        """Constructs all necessary attributes for the _Initialization object"""
+        os.chdir(os.path.dirname(__file__))
+        self._home = os.getcwd()
+        self._source = os.path.join(self._home, 'source')
+        self._app_config_path = os.path.join(self._home, 'appConfig.conf')  # DEBUG
+        self._log = None
+
         self.save = None
         self.door = None
         self.auto = None
@@ -27,8 +57,8 @@ class _Initialization:
 
     def _logging_config_load(self):
         """Init logging config (Load First)"""
-        logdir = os.path.join(self.home, 'logs')
-        config = os.path.join(self.home, 'loggingConfig.conf')
+        logdir = os.path.join(self._home, 'logs')
+        config = os.path.join(self._home, 'loggingConfig.conf')
 
         with open(config) as c:
             data = c.read()
@@ -51,7 +81,7 @@ class _Initialization:
         except BaseException as setupError:
             raise Exception(f"Logging setup failed | {setupError}")
 
-        self.log = logging.getLogger('root')
+        self._log = logging.getLogger('root')
 
     @staticmethod
     def _is_rpi():  # DEBUG Method of identifying OS is untested
@@ -72,7 +102,7 @@ class _Initialization:
 
     def _app_config_load(self):
         """Validate and return config data"""
-        values = toml.load(self.app_config_path)
+        values = toml.load(self._app_config_path)
         # TODO Check for empty elements
         match values:
             case {
@@ -83,91 +113,92 @@ class _Initialization:
             }:
                 return values
             case _:
-                self.log.critical(f'Invalid Config Data {values}')
+                self._log.critical(f'Invalid Config Data {values}')
                 raise ValueError('Config Error')
 
     def _load_objects(self):
         """Load app config and create objects, then run stored states (Load Last)"""
         try:  # Read AppConfig
-            self.log.debug('Reading App Config')
+            self._log.debug('Reading App Config')
 
             self.app_config = self._app_config_load()
             io = self.app_config['gpio']
             prop = self.app_config['properties']
-            self.log.info("Config Loaded")
-            self.log.debug(f"Loaded Config Data: {self.app_config}")
+            self._log.info("Config Loaded")
+            self._log.debug(f"Loaded Config Data: {self.app_config}")
         except BaseException:
             raise AttributeError("Failed to load config data")
 
         try:  # Create Save Object
-            self.log.info('Creating Save Object')
+            self._log.info('Creating Save Object')
 
             from source import Save
-            self.save = Save(os.path.join(self.source, 'DATA.pkl'))
-            self.log.info("Save object created")
+            self.save = Save(filepath=os.path.join(self._source, 'DATA.pkl'))
+            self._log.info("Save object created")
         except BaseException:
             raise AttributeError("Problem Creating Save Object")
 
         try:  # Read Save Data
-            self.log.info('Reading Save Data')
+            self._log.info('Reading Save Data')
 
             save_data = self.save.load()
-            self.log.info("Save Loaded")
-            self.log.debug(f"Loaded Save Data: {save_data}")
+            self._log.info("Save Loaded")
+            self._log.debug(f"Loaded Save Data: {save_data}")
         except BaseException:
             raise AttributeError("Problem Reading Save Data")
 
         try:  # Create Door Object
-            self.log.info('Creating Door Object')
+            self._log.info('Creating Door Object')
 
             from source import Door
             self.door = Door(relay1=io['relay1'], relay2=io['relay2'], sw1=io['switch1'], sw2=io['switch2'],
                              sw3=io['switch3'], sw4=io['switch4'], sw5=io['switch5'], travel_time=prop['travel_time'])
-            self.log.info("Door object created")
+            self._log.info("Door object created")
         except BaseException:
             raise AttributeError("Problem Creating Door Object")
 
         try:  # Create Auto Object
-            self.log.info('Creating Auto Object')
+            self._log.info('Creating Auto Object')
 
             from source import Auto
             self.auto = Auto(door=self.door, zone=str(prop['timezone']),
                              latitude=float(prop['latitude']), longitude=float(prop['longitude']),
                              sunrise_offset=int(save_data['sunrise_offset']),
                              sunset_offset=int(save_data['sunset_offset']))
-            self.log.info("Automation object created")
+            self._log.info("Automation object created")
         except BaseException:
             raise AttributeError("Problem Creating Auto Object")
 
-        self.log.debug('Executing Saved States...')
+        self._log.debug('Executing Saved States...')
         if save_data['automation']:
-            self.log.debug('Running Automation')
+            self._log.debug('Running Automation')
             self.auto.run()
         elif save_data['auxiliary']:
-            self.log.debug('Running Auxiliary Switches')
+            self._log.debug('Running Auxiliary Switches')
             self.door.run_aux()
         else:
-            self.log.debug('Nothing Executed!')
+            self._log.debug('Nothing Executed!')
 
     def _start(self):
         """Run Tests"""
         self._logging_config_load()
-        self.log.info("Startup...")
+        self._log.info("Startup...")
 
         try:
             self._is_rpi()
         except Exception:
-            self.log.exception("Program is designed for RPI only!")
+            self._log.exception("Program is designed for RPI only!")
             raise
 
         try:
             self._load_objects()
         except Exception:
-            self.log.exception("Error loading objects")
+            self._log.exception("Error loading objects")
             raise
 
 
-def connect():
+def run():
+    """Start webapp and connect up-link functions"""
     runtime = _Initialization()
     log = logging.getLogger('root')
     net = runtime.app_config['network']
@@ -185,6 +216,7 @@ def connect():
     anvil.server.connect(key, url=f"ws://localhost:{port}/_/uplink")
     log.info(f"Webapp connected on '{ipv4}:{port}'")
 
+    # region WebApp Functions
     @anvil.server.callable()
     def run_auto():
         """Calls auto.run()"""
@@ -226,7 +258,7 @@ def connect():
     @anvil.server.callable()
     def refresh_auto():
         """Calls auto.refresh()"""
-        runtime.log.debug("CALLED")
+        log.debug("CALLED")
         runtime.auto.refresh()
 
     @anvil.server.callable()
@@ -311,10 +343,11 @@ def connect():
         """Calls save.change(variable, value)"""
         log.debug("CALLED")
         runtime.save.change(variable, value)
+    # endregions
 
     anvil.server.wait_forever()
     log.info("Startup Complete!")
 
 
 if __name__ == '__main__':
-    connect()
+    run()
