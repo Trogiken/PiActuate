@@ -19,13 +19,13 @@ class _Initialization:
     Attributes
     ----------
     save : object
-        add or sub minutes from time
+        Setup source.disk.Save()
     door : object
-        door class object
+        Setup source.door.Door()
     auto : object
-        time zone
+        Setup source.auto.Auto
     app_config : dict
-        longitudinal coordinate
+        Config values
 
     Methods
     -------
