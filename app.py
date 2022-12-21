@@ -106,8 +106,8 @@ class _Initialization:
         # TODO Check for empty elements
         match values:
             case {
-                'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(),
-                         'switch4': int(), 'switch5': int()},
+                'gpio': {'off_state': bool(), 'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(),
+                         'switch3': int(), 'switch4': int(), 'switch5': int()},
                 'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'travel_time': int()},
                 'network': {'ipv4': str(), 'port': str(), 'key': str()}
             }:
