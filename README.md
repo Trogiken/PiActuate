@@ -20,7 +20,7 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
   - Enable/Disable Auxiliary Buttons
   - Timing Offsets
   - Open and Close Buttons
-  - Shutdown, Restart, and Reset (Restart and Reset requires the program to [start at boot](#creating-a-service))
+  - Shutdown, Restart, and Reset (_Restart and Reset requires the program to [start at boot](#creating-a-service)_)
 
 ## App Config
 **Program uses the "BCM" pin layout**

@@ -212,7 +212,7 @@ def run():
 
     log.info("Connecting to WebApp...")
     os.system(f"anvil-app-server --app Door_Control --origin http://{ipv4}:{port}/ --uplink-key={key}")
-    sleep(10)
+    sleep(10)  # DEBUG Best practice?
     anvil.server.connect(key, url=f"ws://localhost:{port}/_/uplink")
     log.info(f"Webapp connected on '{ipv4}:{port}'")
 
