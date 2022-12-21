@@ -10,7 +10,7 @@ except (ImportError, ModuleNotFoundError):
     log.exception("Failed to import RPi.GPIO")
     raise
 
-door_in_motion = False
+door_in_motion = {'in_motion': False, 'direction': 'None'}
 
 
 class _Auxiliary(threading.Thread):
@@ -53,7 +53,7 @@ class _Auxiliary(threading.Thread):
             else:
                 self.motion = 0
 
-            if self.in_motion and not door_in_motion:
+            if self.in_motion and not door_in_motion['in_motion']:
                 if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
                     self.in_motion = True
                     if GPIO.input(self.AUX_SW5) == 1:
@@ -200,10 +200,10 @@ class Door:
             self.status = 'open'
         elif GPIO.input(self.SW3) == 1:
             self.status = 'blocked'
-        elif door_in_motion:
-            self.status = 'moving'
-        elif door_in_motion or self.aux is not None and self.aux.in_motion:
-            self.status = 'moving'
+        elif door_in_motion['in_motion']:  # DEBUG Remove and replace with condition below?
+            self.status = door_in_motion['direction']
+        elif door_in_motion['in_motion'] or self.aux is not None and self.aux.in_motion:
+            self.status = door_in_motion['direction']
         else:
             self.status = 'unknown'
 
@@ -241,8 +241,8 @@ class Door:
         global door_in_motion
         start = time.time()
         while time.time() < start + self.travel_time:  # Timer
-            door_in_motion = True
             if self.motion == 1 and GPIO.input(self.SW1) == 0:  # Requested down and limit switch not triggered
+                door_in_motion = {'in_motion': True, 'direction': 'Extending'}
                 if GPIO.input(self.SW3) == 1:  # Block switch triggered
                     GPIO.output(self.RELAY1, True)
                     GPIO.output(self.RELAY2, True)
@@ -251,6 +251,7 @@ class Door:
                     GPIO.output(self.RELAY1, False)
                     GPIO.output(self.RELAY2, True)
             elif self.motion == 2 and GPIO.input(self.SW2) == 0:  # Requested up and limit switch not triggered
+                door_in_motion = {'in_motion': True, 'direction': 'Retracting'}
                 GPIO.output(self.RELAY1, True)
                 GPIO.output(self.RELAY2, False)
             else:  # Motion related limit switch is triggered
@@ -261,7 +262,7 @@ class Door:
         self.motion = 0
         GPIO.output(self.RELAY1, True)
         GPIO.output(self.RELAY2, True)
-        door_in_motion = False
+        door_in_motion = {'in_motion': False, 'direction': 'None'}
 
         if time_exceeded:
             log.warning(f'Exceeded travel time of {self.travel_time} seconds')
