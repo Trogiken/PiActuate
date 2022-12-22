@@ -161,11 +161,11 @@ class _Initialization:
         try:  # Create Auto Object
             self._log.info('Creating Auto Object')
 
-            from source import Auto
-            self.auto = Auto(door=self.door, zone=str(prop['timezone']),
-                             latitude=float(prop['latitude']), longitude=float(prop['longitude']),
-                             sunrise_offset=int(save_data['sunrise_offset']),
-                             sunset_offset=int(save_data['sunset_offset']))
+            from source import Auto  # DEBUG Removed redundant data type declaration; verify functionality
+            self.auto = Auto(door=self.door, zone=prop['timezone'],
+                             latitude=prop['latitude'], longitude=prop['longitude'],
+                             sunrise_offset=save_data['sunrise_offset'],
+                             sunset_offset=save_data['sunset_offset'])
             self._log.info("Automation object created")
         except BaseException:
             raise AttributeError("Problem Creating Auto Object")

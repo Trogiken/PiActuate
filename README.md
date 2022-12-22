@@ -27,7 +27,7 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
 
 | Variable        | Purpose                                   |
 |-----------------|-------------------------------------------|
-| off_state[^1]   | Power delivery of relay **off** state     |
+| off_state[^1]   | Power setting of relay **off** state      |
 | relay1          | Extending Motion                          |
 | relay2          | Retracting Motion                         |
 | switch1         | Extend Limit                              |
@@ -73,7 +73,7 @@ WantedBy=multi-user.target
 #### 4. Start the service
 ``sudo systemctl start SERVICE_NAME``
 
-[^1]: If **Off** state of relay is _on_ (Send Power), _off_ (No Power)
+[^1]: If **Off** state of relay is _true_ (Send Power), _false_ (No Power)
 [^2]: US/Eastern, Europe/Amsterdam
 [^3]: Find the movement rate of door and the distance it must travel. Add an additional 4 - 6 seconds
 [^4]: Port forward this value on your router to expose it to the WAN
