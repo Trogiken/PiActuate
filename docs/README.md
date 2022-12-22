@@ -74,6 +74,6 @@ WantedBy=multi-user.target
 ``sudo systemctl start SERVICE_NAME``
 
 [^1]: If **Off** state of relay is _true_ (Send Power), _false_ (No Power)
-[^2]: US/Eastern, Europe/Amsterdam
+[^2]: For a list of zones run the following: `import pytz`, then enter `pytz.all_timezones`
 [^3]: Find the movement rate of door and the distance it must travel. Add an additional 4 - 6 seconds
 [^4]: Port forward this value on your router to expose it to the WAN
