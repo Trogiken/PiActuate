@@ -48,7 +48,7 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
 | travel_time[^3] | Allowed time for the door to be in motion |
 | ipv4            | Ipv4 address of host system               |
 | port[^4]        | Free port for webapp to run on            |
-| key             | String of numbers and letters             |
+| key             | Token, links backend to WebApp            |
 
 ## Logging Config
 See the official python documentation [here](https://docs.python.org/3/library/logging.config.html)
