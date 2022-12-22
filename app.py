@@ -324,12 +324,11 @@ def run():
         else:
             return
 
-        runtime.door.stop_aux()
         runtime.auto.stop()
         runtime.door.cleanup()
 
         if parm == 'program':
-            exit()
+            raise
         else:
             os.system(f'sudo shutdown -{parm} now')
 
