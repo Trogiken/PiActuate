@@ -23,10 +23,10 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
   - Shutdown, Restart, and Reset (_Restart and Reset requires the program to [start at boot](#creating-a-service)_)
 
 ## App Config
-**Program uses the "BCM" pin layout**
 
 | Variable        | Purpose                                   |
 |-----------------|-------------------------------------------|
+| board_mode      | BCM or BOARD layout                       |
 | off_state[^1]   | Power setting of relay **off** state      |
 | relay1          | Extending Motion                          |
 | relay2          | Retracting Motion                         |

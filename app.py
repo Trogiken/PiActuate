@@ -106,7 +106,7 @@ class _Initialization:
         # TODO Check for empty elements
         match values:
             case {
-                'gpio': {'off_state': bool(), 'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(),
+                'gpio': {'board_mode': str(), 'off_state': bool(), 'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(),
                          'switch3': int(), 'switch4': int(), 'switch5': int()},
                 'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'travel_time': int()},
                 'network': {'ipv4': str(), 'port': str(), 'key': str()}
@@ -150,10 +150,10 @@ class _Initialization:
         try:  # Create Door Object
             self._log.info('Creating Door Object')
 
-            # DEBUG Verify 'on' and 'off' will return correct booleans from AppConfig
             from source import Door
-            self.door = Door(off_state=io['off_state'], relay1=io['relay1'], relay2=io['relay2'], sw1=io['switch1'], sw2=io['switch2'],
-                             sw3=io['switch3'], sw4=io['switch4'], sw5=io['switch5'], travel_time=prop['travel_time'])
+            self.door = Door(board_mode=io['board_mode'], off_state=io['off_state'], relay1=io['relay1'],
+                             relay2=io['relay2'], sw1=io['switch1'], sw2=io['switch2'], sw3=io['switch3'],
+                             sw4=io['switch4'], sw5=io['switch5'], travel_time=prop['travel_time'])
             self._log.info("Door object created")
         except BaseException:
             raise AttributeError("Problem Creating Door Object")
