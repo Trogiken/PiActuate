@@ -4,6 +4,7 @@ GitHub: https://github.com/Trogiken/chicken-door
 """
 import os
 import ast
+import threading
 import logging.config
 import anvil
 import toml
@@ -198,6 +199,10 @@ class _Initialization:
             raise
 
 
+def webapp(ipv4, port, key):
+    os.system(f"anvil-app-server --app Door_Control --origin http://{ipv4}:{port}/ --uplink-key={key}")
+
+
 def run():
     """Start webapp and connect up-link functions"""
     runtime = _Initialization()
@@ -211,10 +216,14 @@ def run():
     log.debug(f"port: {port}")
     log.debug(f"key: {key}")
 
+    log.info("Starting WebApp thread...")
+    webapp_thread = threading.Thread(target=webapp, args=(ipv4, port, key,))
+    webapp_thread.start()
+    log.info("Webapp Thread Running!")
+
     log.info("Connecting to WebApp...")
-    os.system(f"anvil-app-server --app Door_Control --origin http://{ipv4}:{port}/ --uplink-key={key}")
     sleep(10)  # DEBUG Best practice?
-    anvil.server.connect(key, url=f"ws://localhost:{port}/_/uplink")
+    anvil.server.connect(key, url=f"ws://{ipv4}:{port}/_/uplink")
     log.info(f"Webapp connected on '{ipv4}:{port}'")
 
     # region WebApp Functions
@@ -328,7 +337,7 @@ def run():
         runtime.door.cleanup()
 
         if parm == 'program':
-            raise
+            raise SystemExit
         else:
             os.system(f'sudo shutdown -{parm} now')
 
