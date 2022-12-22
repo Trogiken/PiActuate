@@ -25,7 +25,7 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
 ## Installation
 1. Install Requirements
 2. Download Repository
-3. Run the following: `anvil-app-server --app Door_Control --origin http://IPV4:PORT/` _This will install a large .jar_
+3. Run the following in repo directory: `anvil-app-server --app Door_Control` _This will install a large .jar_
 4. Force quit the WebApp once it has finished starting
 5. Now you can run the program directly from the app.py or via a service
 
