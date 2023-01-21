@@ -38,7 +38,7 @@ class Initialization:
     def __init__(self):
         """Constructs all necessary attributes for the Initialization object"""
         os.chdir(os.path.dirname(__file__))
-        self._home = str(Path(os.getcwd()).parents[1])  # DEBUG Correct level?
+        self._home = str(Path(os.getcwd()).parents[0])  # DEBUG Correct level?
         self._source = os.path.join(self._home, 'source')
         self._app_config_path = os.path.join(self._home, 'appConfig.conf')  # DEBUG
         self._log = None
@@ -126,7 +126,7 @@ class Initialization:
         try:  # Create Save Object
             self._log.info('Creating Save Object')
 
-            from source import Save
+            from source.disk import Save
             self.save = Save(filepath=os.path.join(self._source, 'DATA.pkl'))
             self._log.info("Save object created")
         except BaseException:
@@ -144,7 +144,7 @@ class Initialization:
         try:  # Create Door Object
             self._log.info('Creating Door Object')
 
-            from source import Door
+            from source.door import Door
             self.door = Door(board_mode=io['board_mode'], off_state=io['off_state'], relay1=io['relay1'],
                              relay2=io['relay2'], sw1=io['switch1'], sw2=io['switch2'], sw3=io['switch3'],
                              sw4=io['switch4'], sw5=io['switch5'], travel_time=prop['travel_time'])
@@ -155,7 +155,7 @@ class Initialization:
         try:  # Create Auto Object
             self._log.info('Creating Auto Object')
 
-            from source import Auto  # DEBUG Removed redundant data type declaration; verify functionality
+            from source.auto import Auto  # DEBUG Removed redundant data type declaration; verify functionality
             self.auto = Auto(door=self.door, zone=prop['timezone'],
                              latitude=prop['latitude'], longitude=prop['longitude'],
                              sunrise_offset=save_data['sunrise_offset'],
@@ -177,7 +177,7 @@ class Initialization:
     def _start(self):
         """Run Tests"""
         self._logging_config_load()
-        self._log.info("Startup...")
+        self._log.info("Initializing...")
 
         try:
             self._is_rpi()
@@ -191,4 +191,4 @@ class Initialization:
             self._log.exception("Error loading objects")
             raise
 
-        self._log.info("Startup Complete!")
+        self._log.info("Initialization Complete!")

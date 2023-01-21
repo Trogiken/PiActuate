@@ -4,10 +4,10 @@ GitHub: https://github.com/Trogiken/chicken-door
 """
 import os
 import logging.config
-from source import startup
+from source.startup import Initialization
 
 
-runtime = startup.Initialization()
+runtime = Initialization()
 log = logging.getLogger('root')
 
 
