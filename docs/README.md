@@ -25,9 +25,13 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
 ## Installation
 1. Install Requirements
 2. Download Repository
-3. Run the following in repo directory: `anvil-app-server --app Door_Control` _This will install a large .jar_
+3. Run the following in repo directory: `anvil-app-server --app Door_Control` _This will download a large .jar_
 4. Force quit the WebApp once it has finished starting
-5. Now you can run the program directly from the app.py or via a service
+5. Now you can run the program directly from the command line or via a service
+
+## Running
+1. Open a terminal in the same directory that contains Door_Control
+2. Run the following replacing capitalized words with proper values `anvil-app-server --app Door_Control --origin http://IPV4:PORT/`
 
 ## App Config
 
@@ -46,9 +50,6 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
 | longitude       | Longitudinal location of hardware         |
 | latitude        | Latitudinal location of hardware          |
 | travel_time[^3] | Allowed time for the door to be in motion |
-| ipv4            | Ipv4 address of host system               |
-| port[^4]        | Free port for webapp to run on            |
-| key             | Token, links backend to WebApp            |
 
 ## Logging Config
 See the official python documentation [here](https://docs.python.org/3/library/logging.config.html)
@@ -69,11 +70,13 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/path/to/bin/python /path/to/app.py
+User=USER-NAME
+ExecStart=path/to/anvil-app-server --app path/to/Door_Control --origin http://IPV4:PORT/
 
 [Install]
 WantedBy=multi-user.target
 ```
+Use `locate anvil-app-server` to find the command location
 #### 3. Enable the service
 ``sudo systemctl enable SERVICE_NAME``
 
