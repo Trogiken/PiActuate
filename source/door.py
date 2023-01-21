@@ -10,17 +10,18 @@ except (ImportError, ModuleNotFoundError):
     log.exception("Failed to import RPi.GPIO")
     raise
 
-door_in_motion = False
+door_in_motion = {'in_motion': False, 'direction': 'None'}
 
 
 class _Auxiliary(threading.Thread):
-    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, relay1, relay2):
+    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, off_state, relay1, relay2):
         super().__init__()
         self.AUX_SW1 = aux_sw1  # trigger relay1
         self.AUX_SW2 = aux_sw2  # trigger relay2
         self.AUX_SW3 = aux_sw3  # limit
         self.AUX_SW4 = aux_sw4  # limit
         self.AUX_SW5 = aux_sw5  # block
+        self.OFF_STATE = off_state
         self.RELAY1 = relay1
         self.RELAY2 = relay2
         self.motion = 0
@@ -41,8 +42,8 @@ class _Auxiliary(threading.Thread):
     def run(self, *args, **kwargs):
         while True:
             if self.stopped():
-                GPIO.output(self.RELAY1, True)
-                GPIO.output(self.RELAY2, True)
+                GPIO.output(self.RELAY1, self.OFF_STATE)
+                GPIO.output(self.RELAY2, self.OFF_STATE)  # TODO Left off setting states here
                 return
             if GPIO.input(self.AUX_SW1) == 1:
                 self.motion = 1
@@ -53,21 +54,21 @@ class _Auxiliary(threading.Thread):
             else:
                 self.motion = 0
 
-            if self.in_motion and not door_in_motion:
+            if self.in_motion and not door_in_motion['in_motion']:
                 if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
                     self.in_motion = True
                     if GPIO.input(self.AUX_SW5) == 1:
-                        GPIO.output(self.RELAY1, True)
-                        GPIO.output(self.RELAY2, True)
+                        GPIO.output(self.RELAY1, self.OFF_STATE)
+                        GPIO.output(self.RELAY2, self.OFF_STATE)
                     else:
-                        GPIO.output(self.RELAY1, False)
-                        GPIO.output(self.RELAY2, True)
+                        GPIO.output(self.RELAY1, not self.OFF_STATE)
+                        GPIO.output(self.RELAY2, self.OFF_STATE)
                 elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
-                    GPIO.output(self.RELAY1, True)
-                    GPIO.output(self.RELAY2, False)
+                    GPIO.output(self.RELAY1, self.OFF_STATE)
+                    GPIO.output(self.RELAY2, not self.OFF_STATE)
                 else:
-                    GPIO.output(self.RELAY1, True)
-                    GPIO.output(self.RELAY2, True)
+                    GPIO.output(self.RELAY1, self.OFF_STATE)
+                    GPIO.output(self.RELAY2, self.OFF_STATE)
                     self.in_motion = False
 
 
@@ -81,19 +82,21 @@ class Door:
 
     Attributes
     ----------
-    relay1 : int
+    OFF_STATE: bool
+        Send power to turn relays off or not
+    RELAY2 : int
         pin of channel 1 relay
-    relay2 : int
+    RELAY2 : int
         pin of channel 2 relay
-    sw1 : int
+    SW1 : int
         pin of limit switch
-    sw2 : int
+    SW2 : int
         pin of limit switch
-    sw3 : int
+    SW3 : int
         pin of block switch
-    sw4 : int
+    SW4 : int
         pin of aux_switch1
-    sw5 : int
+    SW5 : int
         pint of aux_switch2
     travel_time : int
         maximum seconds relays remain triggered
@@ -111,10 +114,18 @@ class Door:
     move(opt=int):
         move door open or closed
     """
-    def __init__(self, relay1, relay2, sw1, sw2, sw3, sw4, sw5, travel_time):
+    def __init__(self, board_mode, off_state, relay1, relay2, sw1, sw2, sw3, sw4, sw5, travel_time):
         """Constructs all the necessary attributes for the Door object"""
-        GPIO.setmode(GPIO.BCM)
+        if board_mode.casefold() == 'bcm':
+            GPIO.setmode(GPIO.BCM)
+        elif board_mode.casefold() == 'board':
+            GPIO.setmode(GPIO.BOARD)
+        else:
+            log.error('Invalid GPIO board mode')
+            raise IOError
+
         GPIO.setwarnings(False)
+        self.OFF_STATE = off_state
         self.RELAY1 = relay1
         self.RELAY2 = relay2
         self.SW1 = sw1
@@ -139,8 +150,8 @@ class Door:
         log.debug(f"SW5: {self.SW5}")
         log.debug(f"max_travel: {self.travel_time}")
 
-        GPIO.setup(self.RELAY1, GPIO.OUT, initial=True)
-        GPIO.setup(self.RELAY2, GPIO.OUT, initial=True)
+        GPIO.setup(self.RELAY1, GPIO.OUT, initial=self.OFF_STATE)
+        GPIO.setup(self.RELAY2, GPIO.OUT, initial=self.OFF_STATE)
         GPIO.setup(self.SW1, GPIO.IN)
         GPIO.setup(self.SW2, GPIO.IN)
         GPIO.setup(self.SW3, GPIO.IN)
@@ -150,7 +161,7 @@ class Door:
         try:
             if self.aux_is_running is False:
                 self.aux = _Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
-                                      aux_sw5=self.SW3, relay1=self.RELAY1, relay2=self.RELAY2)
+                                      aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
                 self.aux.start()
 
                 self.aux_is_running = True
@@ -181,8 +192,8 @@ class Door:
         self.stop_aux()
         if self._move_op_thread.is_alive():
             self._move_op_thread.join()  # wait for thread to complete
-        GPIO.output(self.RELAY1, True)
-        GPIO.output(self.RELAY2, True)
+        GPIO.output(self.RELAY1, self.OFF_STATE)
+        GPIO.output(self.RELAY2, self.OFF_STATE)
         GPIO.cleanup()
         log.info("GPIO Cleared")
 
@@ -200,10 +211,10 @@ class Door:
             self.status = 'open'
         elif GPIO.input(self.SW3) == 1:
             self.status = 'blocked'
-        elif door_in_motion:
-            self.status = 'moving'
-        elif door_in_motion or self.aux is not None and self.aux.in_motion:
-            self.status = 'moving'
+        elif door_in_motion['in_motion']:  # DEBUG Remove and replace with condition below?
+            self.status = door_in_motion['direction']
+        elif door_in_motion['in_motion'] or self.aux is not None and self.aux.in_motion:
+            self.status = door_in_motion['direction']
         else:
             self.status = 'unknown'
 
@@ -241,27 +252,28 @@ class Door:
         global door_in_motion
         start = time.time()
         while time.time() < start + self.travel_time:  # Timer
-            door_in_motion = True
             if self.motion == 1 and GPIO.input(self.SW1) == 0:  # Requested down and limit switch not triggered
+                door_in_motion = {'in_motion': True, 'direction': 'Extending'}
                 if GPIO.input(self.SW3) == 1:  # Block switch triggered
-                    GPIO.output(self.RELAY1, True)
-                    GPIO.output(self.RELAY2, True)
+                    GPIO.output(self.RELAY1, self.OFF_STATE)
+                    GPIO.output(self.RELAY2, self.OFF_STATE)
                     blocked = True
                 else:
-                    GPIO.output(self.RELAY1, False)
-                    GPIO.output(self.RELAY2, True)
+                    GPIO.output(self.RELAY1, not self.OFF_STATE)
+                    GPIO.output(self.RELAY2, self.OFF_STATE)
             elif self.motion == 2 and GPIO.input(self.SW2) == 0:  # Requested up and limit switch not triggered
-                GPIO.output(self.RELAY1, True)
-                GPIO.output(self.RELAY2, False)
+                door_in_motion = {'in_motion': True, 'direction': 'Retracting'}
+                GPIO.output(self.RELAY1, self.OFF_STATE)
+                GPIO.output(self.RELAY2, not self.OFF_STATE)
             else:  # Motion related limit switch is triggered
                 time_exceeded = False
                 blocked = False
                 break
         # Reset motion and relays
         self.motion = 0
-        GPIO.output(self.RELAY1, True)
-        GPIO.output(self.RELAY2, True)
-        door_in_motion = False
+        GPIO.output(self.RELAY1, self.OFF_STATE)
+        GPIO.output(self.RELAY2, self.OFF_STATE)
+        door_in_motion = {'in_motion': False, 'direction': 'None'}
 
         if time_exceeded:
             log.warning(f'Exceeded travel time of {self.travel_time} seconds')

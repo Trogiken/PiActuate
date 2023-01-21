@@ -1,44 +1,8 @@
-from .packages import toml
-from pathlib import Path
 import os
 import pickle
 import logging
 
 log = logging.getLogger('root')
-
-os.chdir(os.path.dirname(__file__))
-_cwd = os.getcwd()
-home = str(Path(_cwd).parents[0])
-
-
-class Config:
-    """
-    A class that manages config file
-
-    ...
-
-    Methods
-    -------
-    load():
-        read file data
-    """
-    path = os.path.join(home, 'appConfig.conf')
-
-    # validate config data
-    _values = toml.load(path)
-    match _values:
-        case {
-            'gpio': {'relay1': int(), 'relay2': int(), 'switch1': int(), 'switch2': int(), 'switch3': int(), 'switch4': int(), 'switch5': int()},
-            'properties': {'timezone': str(), 'longitude': float(), 'latitude': float(), 'travel_time': int(), 'anvil_id': str()}
-        }:
-            pass
-        case _:
-            log.critical(f'Invalid Config Data {_values}')
-            raise ValueError('Config Error')
-
-    def load(self):
-        """Read file data, return (dict)"""
-        return toml.load(self.path)
 
 
 class Save:
@@ -56,19 +20,21 @@ class Save:
     change(variable="", value=""):
         change variable in file to value given
     """
-    filename = os.path.join(home, 'DATA.pkl')
-    default_save = {
-        'automation': False,
-        'auxiliary': False,
-        'sunrise_offset': 0,
-        'sunset_offset': 0
-    }
+    def __init__(self, filepath: str):
+        self.filename = filepath
 
-    if not os.path.exists(filename):
-        log.info("No save found, Creating one...")
-        with open(filename, 'wb') as f:
-            pickle.dump(default_save, f)
-            log.info("Save Created")
+        self.default_save = {
+            'automation': False,
+            'auxiliary': False,
+            'sunrise_offset': 0,
+            'sunset_offset': 0
+        }
+
+        if not os.path.exists(self.filename):
+            log.info("No save found, Creating one...")
+            with open(self.filename, 'wb') as f:
+                pickle.dump(self.default_save, f)
+                log.info("Save Created")
 
     def load(self):
         """Read file data, return data (dict)"""
