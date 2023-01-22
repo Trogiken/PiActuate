@@ -102,6 +102,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+.idea/
 .env
 .venv
 env/
@@ -130,4 +131,4 @@ dmypy.json
 
 # Custom
 logs/
-/.anvil-data/
+.backup
