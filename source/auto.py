@@ -1,5 +1,5 @@
-from .packages import timezone
-from .packages import SolarTime
+from source.packages import timezone
+from source.packages import SolarTime
 from datetime import date, datetime, timedelta
 from time import sleep
 import threading
@@ -108,7 +108,7 @@ class _Scheduler(threading.Thread):
                     log.debug("Stopping...")
                     return
                 if self._refresh_event.is_set():
-                    request_refresh = True
+                    request_refresh = True  # FIXME Variable updating may not work
                     break
                 sleep(1)
             cycle += 1
