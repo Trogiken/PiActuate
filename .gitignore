@@ -129,6 +129,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Custom
+# Made at Runtime
 logs/
-.backup
+.pkl
+.pickle
