@@ -37,8 +37,7 @@ class Initialization:
     """
     def __init__(self):
         """Constructs all necessary attributes for the Initialization object"""
-        os.chdir(os.path.dirname(__file__))
-        self._home = str(Path(os.getcwd()).parents[0])  # DEBUG Correct level?
+        self._home = str(Path(__file__).resolve().parents[1])  # DEBUG Correct level?
         self._source = os.path.join(self._home, 'source')
         self._app_config_path = os.path.join(self._home, 'appConfig.conf')  # DEBUG
         self._log = None
