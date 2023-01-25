@@ -190,13 +190,13 @@ class Auto:
             log.exception("Scheduler has failed to Stop")
 
     def set_sunrise(self, value):
-        """Changes Auto() and (if running) _Scheduler() attribute "sunrise_offset" to (value)"""
+        """Changes Auto() and _Scheduler() attribute "sunrise_offset" to (value)"""
         self.sunrise_offset = value
         if self.sch.is_alive():
             self.sch.sunrise_offset = value
 
     def set_sunset(self, value):
-        """Changes Auto() and (if running) _Scheduler() attribute "sunset_offset" to (value)"""
+        """Changes Auto() and _Scheduler() attribute "sunset_offset" to (value)"""
         self.sunset_offset = value
         if self.sch.is_alive():
             self.sch.sunset_offset = value
