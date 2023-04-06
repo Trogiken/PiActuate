@@ -19,5 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('webui-admin/', admin.site.urls),
-    path('', include('login.urls')),
+    path('', include('controls.urls')),
+    path('', include('django.contrib.auth.urls')),
 ]
