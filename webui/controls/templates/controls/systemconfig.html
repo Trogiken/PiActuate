@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Config{% endblock %}
+
+{% block content %}
+    <h1>Config Page</h1>
+    <section id="SystemConfig-form">
+      <h2>Your Comment</h2>
+      <form action="{% url 'systemconfig-page' %}" method="POST">
+        {% csrf_token %}
+        {% for form_field in systemconfig_form %}
+          <div class="form-control {% if form_field.errors %}invalid{% endif %}">
+            {{ form_field.label_tag }}
+            {{ form_field }}
+              <span class="help-text">{{ form_field.help_text }}</span>
+            {{ form_field.errors }}
+          </div>
+        {% endfor %}
+        <button>Save</button>
+      </form>
+    </section>
+{% endblock %}
