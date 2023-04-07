@@ -9,7 +9,24 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     {% block css %}{% endblock %}
 </head>
+<header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'controls-page' %}">Controls</a></li>
+            <li><a href="{% url 'systemconfig-page' %}">System Config</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
 <body>
-    {% block content %}{% endblock %}
+    {% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% endblock %}
 </body>
 </html>

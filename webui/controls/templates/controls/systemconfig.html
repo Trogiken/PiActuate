@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Config{% endblock %}
+{% block title %}System Config{% endblock %}
 
 {% block content %}
     <h1>Config Page</h1>
+
+    <hr>
+
     <section id="SystemConfig-form">
-      <h2>Your Comment</h2>
       <form action="{% url 'systemconfig-page' %}" method="POST">
         {% csrf_token %}
         {% for form_field in systemconfig_form %}

@@ -5,8 +5,9 @@ from .models import SystemConfig
 class SystemConfigForm(forms.ModelForm):
     class Meta:
         model = SystemConfig
-        exclude = ['first_login']  # remember to save this value when database is updated, otherwise it will be reset to False
+        fields = ("__all__")
 
+        # TODO add labels and error messages
         labels = {
             # examples:
             "username": "Your name",
