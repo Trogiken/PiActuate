@@ -22,7 +22,7 @@ class ControlsView(View):
     def get(self, request):
         if request.user.is_authenticated:
             if not SystemConfig.objects.exists():  # first time login
-                redirect("systemconfig-page")
+                return redirect("systemconfig-page")
             return render(request, "controls/controls.html")  # provide context when model is created
         else:
             return redirect("login")
@@ -35,8 +35,11 @@ class ControlsView(View):
 class SystemConfigView(View):
     def get(self, request):
         if request.user.is_authenticated:
-            if not SystemConfig.objects.exists():  # render form with existing data
+            if not SystemConfig.objects.exists():
+                print("creating new system config")
                 SystemConfig.objects.create()
+
+            # render form with existing data
             return render(request, "controls/systemconfig.html", {
                 "systemconfig_form": SystemConfigForm(instance=SystemConfig.objects.first())
             })

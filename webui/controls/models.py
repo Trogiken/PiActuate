@@ -14,6 +14,7 @@ class SystemConfig(models.Model):
     board_mode = models.CharField(max_length=5, default='BCM', editable=False,
                                   help_text="This is the help text for board_mode")
 
+    # TODO create exclusions for pins that cannot be used
     relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for relay1")
     relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for relay2")
     switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for switch1")
@@ -36,8 +37,8 @@ class SystemConfig(models.Model):
         return super(SystemConfig, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name = "Startup Config"
-        verbose_name_plural = "Startup Configs"
+        verbose_name = "System Config"
+        verbose_name_plural = "System Configs"
 
 
 class StartupConfig(models.Model):
