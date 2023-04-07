@@ -1,4 +1,5 @@
 from django.db import models
+from .validators import excluded_pin
 
 # import max and min
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -14,14 +15,13 @@ class SystemConfig(models.Model):
     board_mode = models.CharField(max_length=5, default='BCM', editable=False,
                                   help_text="This is the help text for board_mode")
 
-    # TODO create exclusions for pins that cannot be used
-    relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for relay1")
-    relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for relay2")
-    switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for switch1")
-    switch2 = models.IntegerField(default=13, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for switch2")
-    switch3 = models.IntegerField(default=19, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for switch3")
-    switch4 = models.IntegerField(default=23, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for switch4")
-    switch5 = models.IntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(31)], help_text="This is the help text for switch5")
+    relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for relay1")
+    relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for relay2")
+    switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch1")
+    switch2 = models.IntegerField(default=13, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch2")
+    switch3 = models.IntegerField(default=19, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch3")
+    switch4 = models.IntegerField(default=23, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch4")
+    switch5 = models.IntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch5")
     off_state = models.CharField(max_length=5, choices=OffState.choices, default=OffState.POWER_ON, help_text="This is the help text for off_state")
     timezone = models.CharField(max_length=100, help_text="This is the help text for timezone")
     longitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, help_text="This is the help text for longitude")

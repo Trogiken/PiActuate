@@ -75,6 +75,3 @@ class SystemConfigView(View):
         return render(request, "controls/systemconfig.html", {
             "systemconfig_form": systemconfg_form
         })
-
-
-# if first login display system config page
