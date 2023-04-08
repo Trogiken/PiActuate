@@ -1,20 +1,18 @@
 .errorlist {
     list-style: none;
-    margin: 0.5rem 0;
+    margin-top: 0.5rem;
+    margin-bottom: -0.5rem;
     padding: 0;
     color: #d6000b;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid #d6000b;
+    border-radius: 12px;
+    text-align: center;
 }
-.invalid label {
-    color: #d6000b;
+.invalid {
+    border: 1px solid #d6000b;
 }
-
-/* The following does not work */
-.invalid input,
-.invalid textarea {
-    border-color: #d6000b;
-    background-color: #ffe6e7;
-}
-/* ******* */
 
 .login-form {
     background: #f1f7fe;
