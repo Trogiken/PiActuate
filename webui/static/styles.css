@@ -7,10 +7,28 @@ body {
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
-    overflow-y: hidden;
-    display: flex;
     justify-content: center;
     align-items: center;
-    background: #dde5f4;
+    /* Created with https://www.css-gradient.com */
+    background: #B1D1EF;
+    background: -webkit-linear-gradient(top left, #B1D1EF, #3F82E0);
+    background: -moz-linear-gradient(top left, #B1D1EF, #3F82E0);
+    background: linear-gradient(to bottom right, #B1D1EF, #3F82E0);
     height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
+
+body::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+body::-webkit-scrollbar-track {
+  background: #1e1e24;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #6649b8;
+}
+/* Style system messages here */

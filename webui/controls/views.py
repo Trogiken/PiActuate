@@ -22,6 +22,7 @@ class RedirectToControlsView(View):
 
 class UserLoginView(LoginView):
     authentication_form = UserLoginForm
+    redirect_authenticated_user = True
 
 
 class ControlsView(View):

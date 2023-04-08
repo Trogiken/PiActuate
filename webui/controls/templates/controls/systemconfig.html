@@ -1,6 +1,15 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}System Config{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'controls/includes/sidebar-navbar.css' %}">
+{% endblock %}
+
+{% block navbar %}
+{% include "controls/includes/sidebar-navbar.html" %}
+{% endblock %}
 
 {% block content %}
     <h1>Config Page</h1>
