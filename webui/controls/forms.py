@@ -1,5 +1,7 @@
 from django import forms
 from .models import SystemConfig
+from django.contrib.auth.forms import AuthenticationForm, UsernameField
+from django.contrib.auth.models import User
 
 
 class SystemConfigForm(forms.ModelForm):
@@ -29,3 +31,14 @@ class SystemConfigForm(forms.ModelForm):
                 "max_value": "Please enter a rating of at most 5"
             }
         }
+
+
+class UserLoginForm(AuthenticationForm):
+    username = UsernameField(widget=forms.TextInput(
+        attrs={'placeholder': 'Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={'placeholder': 'Password'}))
+
+    class Meta:
+        model = User
+        fields = ('username','password')

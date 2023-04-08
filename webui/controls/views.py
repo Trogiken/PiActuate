@@ -1,13 +1,15 @@
 from django.shortcuts import render
 
+from django.contrib.auth.views import LoginView
 from django.views.generic import View
 from django.shortcuts import redirect
-from django.urls import reverse
-from django.http import HttpResponse
-from django.contrib import messages
-# use messages to display errors
+# from django.urls import reverse
+# from django.http import HttpResponse
+# from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm
 
-from .forms import SystemConfigForm
+
+from .forms import SystemConfigForm, UserLoginForm
 from .models import SystemConfig
 
 # Create your views here.
@@ -15,7 +17,11 @@ from .models import SystemConfig
 
 class RedirectToControlsView(View):
     def get(self, request):
-        return redirect("controls-page")
+        return redirect("login")
+
+
+class UserLoginView(LoginView):
+    authentication_form = UserLoginForm
 
 
 class ControlsView(View):
