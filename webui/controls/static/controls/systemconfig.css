@@ -1,0 +1,96 @@
+h1 {
+    text-align: center;
+}
+
+body {
+    overflow: hidden;
+}
+
+.SystemConfig-form {
+    background: #f1f7fe;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 30px;
+    box-shadow: 0 0 2em #e6e9f9;
+    width: 30%;
+    max-width: 500px;
+    min-width: 300px;
+    margin: 2rem auto 3rem auto;
+    text-align: center;
+}
+
+.SystemConfig-form .form-control {
+    margin: 1em 0;
+    text-align: center;
+}
+
+.SystemConfig-form #form {
+    margin-top: -1em;
+}
+
+.SystemConfig-form .form-control input,
+.SystemConfig-form .form-control select {
+    padding: .5em 0;
+    border: 1px solid #e6e9f9;
+    border-radius: 30px;
+    background: #f1f7fe;
+    box-shadow: 0 0 2em #e6e9f9;
+    width: 25%;
+    min-width: 100px;
+    display: inline-block;
+    text-align: center;
+}
+
+/* display no help text when page loads */
+.SystemConfig-form .form-control .field-help .help-text {
+  display: none;
+}
+
+/* help buttons */
+.SystemConfig-form .form-control .help-button {
+  width: 25px;
+  height: 25px;
+  border-style: none;
+  border-radius: 50%;
+  background: #3e4684;
+}
+
+.SystemConfig-form .form-control .help-button svg {
+  width: 15px;
+  height: 15px;
+  color: white;
+}
+/* ******************* */
+
+/* Small screens */
+@media only screen and (max-width: 600px) {
+  .SystemConfig-form {
+    margin: 0 auto 3rem auto;
+  }
+
+  body {
+    overflow-y: scroll;
+  }
+}
+
+/* Large screens */
+@media only screen and (min-width: 600px) {
+  .SystemConfig-form {
+    margin: 2rem auto 3rem auto;
+  }
+}
+
+.SystemConfig-form .submit-button {
+    padding: 1em;
+    background: #3e4684;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    width: 100%;
+}
+
+button {
+    cursor: pointer;
+}

@@ -5,6 +5,11 @@
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'controls/includes/sidebar-navbar.css' %}">
+<link rel="stylesheet" href="{% static 'controls/systemconfig.css' %}">
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'controls/systemconfig-help-hide.js' %}"></script>
 {% endblock %}
 
 {% block navbar %}
@@ -12,22 +17,34 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Config Page</h1>
-
-    <hr>
-
-    <section id="SystemConfig-form">
-      <form action="{% url 'systemconfig-page' %}" method="POST">
+    <section class="SystemConfig-form">
+      <form action="{% url 'systemconfig-page' %}" method="POST" id="form">
         {% csrf_token %}
         {% for form_field in systemconfig_form %}
           <div class="form-control {% if form_field.errors %}invalid{% endif %}">
-            {{ form_field.label_tag }}
-            {{ form_field }}
-              <span class="help-text">{{ form_field.help_text }}</span>
-            {{ form_field.errors }}
+              {{ form_field.label_tag }}
+              {{ form_field }}
+              <button class="help-button" onclick="toggleHelp('{{ form_field.id_for_label|add:'help-text' }}')" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 320 512"
+                  >
+                      <g>
+                          <path
+                              fill="currentColor"
+                              d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"
+                          ></path>
+                      </g>
+                  </svg>
+              </button>
+              <div class="field-help">
+                  <div id="{{ form_field.id_for_label|add:'help-text' }}" class="help-text">
+                        {{ form_field.help_text }}
+                  </div>
+              </div>
+              {{ form_field.errors }}
           </div>
         {% endfor %}
-        <button>Save</button>
+        <button class="submit-button" type="submit">Save</button>
       </form>
     </section>
 {% endblock %}
