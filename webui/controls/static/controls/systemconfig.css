@@ -22,6 +22,27 @@ body {
     color: #d6000b;
 }
 
+/* Help text does not display properly on small screen size */
+.field-help {
+    display: inline-block;
+    margin-left: 0.5rem;
+    position: relative;
+}
+
+.field-help .help-text {
+    display: none;
+    position: absolute;
+    background: #e1eaf5;
+    border-radius: 30px;
+    box-shadow: 0 0 2em #e6e9f9;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #4d4d4d;
+    width: 200px;
+    text-align: center;
+}
+
 .SystemConfig-form {
     background: #f1f7fe;
     padding: 2rem;
@@ -32,7 +53,6 @@ body {
     width: 40%;
     max-width: 500px;
     min-width: 300px;
-    margin: 2rem auto 3rem auto;
     text-align: center;
 }
 
@@ -41,8 +61,14 @@ body {
     text-align: center;
 }
 
-.SystemConfig-form #form {
-    margin-top: -1em;
+
+.SystemConfig-form .form-control label {
+    display: inline-block;
+    width: 25%;
+    min-width: 100px;
+    text-align: right;
+    margin-right: 1em;
+    font-weight: 600;
 }
 
 .SystemConfig-form .form-control input,
@@ -81,15 +107,21 @@ body {
 
 /* Small screens */
 @media only screen and (max-width: 600px) {
+  #form {
+    margin: -1rem auto -1rem auto;
+  }
   .SystemConfig-form {
-    margin: 0 auto 3rem auto;
+    margin: 0 auto calc(100vh - 60%) auto;
   }
 }
 
 /* Large screens */
 @media only screen and (min-width: 600px) {
+  #form {
+    margin: .5rem auto 1rem auto;
+  }
   .SystemConfig-form {
-    margin: 2rem auto 3rem auto;
+    margin: 0 auto;
   }
 }
 
