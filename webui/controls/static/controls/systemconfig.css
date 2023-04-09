@@ -3,7 +3,7 @@ h1 {
 }
 
 body {
-    overflow: hidden;
+    overflow: auto;
 }
 
 .SystemConfig-form {
@@ -67,10 +67,6 @@ body {
 @media only screen and (max-width: 600px) {
   .SystemConfig-form {
     margin: 0 auto 3rem auto;
-  }
-
-  body {
-    overflow-y: scroll;
   }
 }
 

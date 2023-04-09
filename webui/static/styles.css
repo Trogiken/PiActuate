@@ -13,8 +13,6 @@ body {
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
-    justify-content: center;
-    align-items: center;
     /* Created with https://www.css-gradient.com */
     background: #B1D1EF;
     background: -webkit-linear-gradient(top left, #B1D1EF, #3F82E0);
