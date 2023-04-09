@@ -13,11 +13,7 @@ body {
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
-    /* Created with https://www.css-gradient.com */
     background: #B1D1EF;
-    background: -webkit-linear-gradient(top left, #B1D1EF, #3F82E0);
-    background: -moz-linear-gradient(top left, #B1D1EF, #3F82E0);
-    background: linear-gradient(to bottom right, #B1D1EF, #3F82E0);
     height: 100vh;
     margin: 0;
     padding: 0;
