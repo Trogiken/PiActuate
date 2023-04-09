@@ -6,6 +6,22 @@ body {
     overflow: auto;
 }
 
+.errorlist {
+    list-style: none;
+    margin: 0.5rem auto -0.5rem auto;
+    padding: .25rem;
+    color: #d6000b;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid #d6000b;
+    border-radius: 12px;
+    text-align: center;
+    display: inline-block;
+}
+.invalid-indicator {
+    color: #d6000b;
+}
+
 .SystemConfig-form {
     background: #f1f7fe;
     padding: 2rem;
@@ -13,7 +29,7 @@ body {
     flex-direction: column;
     border-radius: 30px;
     box-shadow: 0 0 2em #e6e9f9;
-    width: 30%;
+    width: 40%;
     max-width: 500px;
     min-width: 300px;
     margin: 2rem auto 3rem auto;
