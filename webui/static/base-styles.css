@@ -14,10 +14,6 @@ body {
         -ms-user-select: none;
             user-select: none;
     background: #B1D1EF;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
 }
 
 body::-webkit-scrollbar {
