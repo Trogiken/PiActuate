@@ -1,140 +1,120 @@
-h1 {
-    text-align: center;
+.SystemConfig-container {
+  background: #f1f7fe;
+  padding: 2rem;
+  border-radius: 30px;
+  box-shadow: 0 0 2rem #e6e9f9;
+  margin: auto;
 }
-
-body {
-    overflow: auto;
-}
-
-.errorlist {
-    list-style: none;
-    margin: 0.5rem auto -0.5rem auto;
-    padding: .25rem;
-    color: #d6000b;
-    font-size: 14px;
-    font-weight: 600;
-    border: 1px solid #d6000b;
-    border-radius: 12px;
-    text-align: center;
-    display: inline-block;
-}
-.invalid-indicator {
-    color: #d6000b;
-}
-
-/* Help text does not display properly on small screen size */
-.field-help {
-    display: inline-block;
-    margin-left: 0.5rem;
-    position: relative;
-}
-
-.field-help .help-text {
-    display: none;
-    position: absolute;
-    background: #e1eaf5;
-    border-radius: 30px;
-    box-shadow: 0 0 2em #e6e9f9;
-    padding: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 400;
-    color: #4d4d4d;
-    width: 200px;
-    text-align: center;
-}
-
 .SystemConfig-form {
-    background: #f1f7fe;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    border-radius: 30px;
-    box-shadow: 0 0 2em #e6e9f9;
-    width: 40%;
-    max-width: 500px;
-    min-width: 300px;
-    text-align: center;
+  flex-direction: column;
+  display: flex;
 }
 
 .SystemConfig-form .form-control {
-    margin: 1em 0;
-    text-align: center;
+  background: white;
+  box-shadow: 0 0 2rem #e6e9f9;
+  padding: 1rem;
+  border-radius: 20px;
+  color: #4d4d4d;
+  margin: .4rem;
+  width: auto;
+  text-align: center;
 }
-
-
 .SystemConfig-form .form-control label {
-    display: inline-block;
-    width: 25%;
-    min-width: 100px;
-    text-align: right;
-    margin-right: 1em;
-    font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
 }
-
+/* more space for button */
+.SystemConfig-form .form-control:last-of-type {
+  margin-bottom: 1rem;
+}
 .SystemConfig-form .form-control input,
 .SystemConfig-form .form-control select {
-    padding: .5em 0;
-    border: 1px solid #e6e9f9;
-    border-radius: 30px;
-    background: #f1f7fe;
-    box-shadow: 0 0 2em #e6e9f9;
-    width: 25%;
-    min-width: 100px;
-    display: inline-block;
-    text-align: center;
+  padding: .5em 0;
+  border: 1px solid #e6e9f9;
+  border-radius: 30px;
+  background: #f1f7fe;
+  box-shadow: 0 0 2em #e6e9f9;
+  width: 25%;
+  min-width: 100px;
+  text-align: center;
+}
+/* center the value text in select tag */
+.SystemConfig-form .form-control select {
+  text-align-last: center;
+}
+/* Hide up down arrows */
+.SystemConfig-form .form-control input::-webkit-inner-spin-button,
+.SystemConfig-form .form-control input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-/* display no help text when page loads */
-.SystemConfig-form .form-control .field-help .help-text {
-  display: none;
-}
-
-/* help buttons */
-.SystemConfig-form .form-control .help-button {
-  width: 25px;
-  height: 25px;
-  border-style: none;
-  border-radius: 50%;
+.SystemConfig-form .submit-button {
+  padding: 1rem;
   background: #3e4684;
-}
-
-.SystemConfig-form .form-control .help-button svg {
-  width: 15px;
-  height: 15px;
   color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  width: 100%;
 }
-/* ******************* */
+.help-button {
+  background: #3e4684;
+  border: none;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  color: white;
+  font-weight: bold;
+  /* iOS adds padding for some reason */
+  padding: 0;
+}
+.help-button:hover {
+  background: #4c56a0;
+}
+.help-button svg {
+  fill: currentColor;
+  text-align: center;
+}
+.help-text {
+  color: red;
+}
 
 /* Small screens */
 @media only screen and (max-width: 600px) {
-  #form {
-    margin: -1rem auto -1rem auto;
-  }
-  .SystemConfig-form {
-    margin: 0 auto calc(100vh - 60%) auto;
+  .SystemConfig-container {
+    position: relative;
+    /* small screen, nav gets in way */
+    margin-bottom: 5rem;
   }
 }
 
 /* Large screens */
 @media only screen and (min-width: 600px) {
-  #form {
-    margin: .5rem auto 1rem auto;
-  }
-  .SystemConfig-form {
-    margin: 0 auto;
+  /* put form in center of screen */
+  .SystemConfig-container {
+    width: 50%;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 
-.SystemConfig-form .submit-button {
-    padding: 1em;
-    background: #3e4684;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-weight: 600;
-    width: 100%;
+.errorlist {
+  list-style: none;
+  margin-top: 0.5rem;
+  margin-bottom: -0.5rem;
+  padding: 0;
+  color: #d6000b;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #d6000b;
+  border-radius: 12px;
+  text-align: center;
 }
-
-button {
-    cursor: pointer;
+.invalid-indicator {
+  color: #d6000b;
 }
