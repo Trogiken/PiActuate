@@ -78,7 +78,9 @@
   text-align: center;
 }
 .help-text {
-  color: red;
+  color: #3e4684;
+  margin: .25rem 0 0 0;
+  font-weight: 400;
 }
 
 /* Small screens */
@@ -95,6 +97,7 @@
   /* put form in center of screen */
   .SystemConfig-container {
     width: 50%;
+    max-width: 600px;
     height: auto;
     position: absolute;
     top: 50%;
