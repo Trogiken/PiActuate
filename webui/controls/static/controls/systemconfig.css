@@ -86,7 +86,6 @@
 /* Small screens */
 @media only screen and (max-width: 600px) {
   .SystemConfig-container {
-    position: relative;
     /* small screen, nav gets in way */
     margin-bottom: 5rem;
   }
@@ -98,11 +97,6 @@
   .SystemConfig-container {
     width: 50%;
     max-width: 600px;
-    height: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
   }
 }
 
