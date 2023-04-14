@@ -47,3 +47,16 @@ class StartupConfig(models.Model):
     automation = models.BooleanField(default=False)
     sunrise_offset = models.IntegerField(default=0)
     sunset_offset = models.IntegerField(default=0)
+    auxillary = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "Automation"
+
+    def save(self, *args, **kwargs):
+        if not self.pk and SystemConfig.objects.exists():
+            raise PermissionError('There can only be 1 StartupConfig instance')
+        return super(SystemConfig, self).save(*args, **kwargs)
+    
+    class Meta:
+        verbose_name = "Automation"
+        verbose_name_plural = "Automations"

@@ -2,22 +2,26 @@
     font-family: "Poppins";
 }
 
+.container {
+  padding: 1rem;
+}
+
+hr {
+    border: 0;
+    height: 2px;
+    background: #333;
+}
+
+button {
+  cursor: pointer;
+}
+
 body {
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
-    justify-content: center;
-    align-items: center;
-    /* Created with https://www.css-gradient.com */
     background: #B1D1EF;
-    background: -webkit-linear-gradient(top left, #B1D1EF, #3F82E0);
-    background: -moz-linear-gradient(top left, #B1D1EF, #3F82E0);
-    background: linear-gradient(to bottom right, #B1D1EF, #3F82E0);
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
 }
 
 body::-webkit-scrollbar {

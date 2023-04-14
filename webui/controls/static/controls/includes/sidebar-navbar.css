@@ -7,9 +7,8 @@
   --transition-speed: 600ms;
 }
 
-main {
+.container {
   margin-left: 5rem;
-  padding: 1rem;
 }
 
 .navbar {
@@ -17,6 +16,7 @@ main {
   background-color: var(--bg-primary);
   transition: width 600ms ease;
   overflow: hidden;
+  z-index: 100;
 }
 
 .navbar-nav {
@@ -128,8 +128,9 @@ main {
     justify-content: center;
   }
 
-  main {
-    margin: 0;
+  .container {
+    /* margin-bottom: 5rem; */
+    margin-left: 0;
   }
 }
 
@@ -143,6 +144,7 @@ main {
 
   .navbar:hover {
     width: 16rem;
+
   }
 
   .navbar:hover .link-text {
@@ -157,5 +159,10 @@ main {
   .navbar:hover .logo-text
   {
     left: 0px;
+  }
+
+  .container {
+    margin-left: 5rem;
+    /* margin-bottom: 0; */
   }
 }

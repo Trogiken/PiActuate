@@ -9,13 +9,13 @@ from django.shortcuts import redirect
 from django.contrib.auth.forms import AuthenticationForm
 
 
-from .forms import SystemConfigForm, UserLoginForm
-from .models import SystemConfig
+from .forms import SystemConfigForm, UserLoginForm, MovementForm, StartupConfigForm
+from .models import SystemConfig, StartupConfig
 
 # Create your views here.
 
 
-class RedirectToControlsView(View):
+class RedirectToLoginView(View):
     def get(self, request):
         return redirect("login")
 
@@ -25,12 +25,25 @@ class UserLoginView(LoginView):
     redirect_authenticated_user = True
 
 
-class ControlsView(View):
+class MovementRequestView(View):
+    def post(self, request):
+        # TODO handle movement request
+        pass
+
+
+class DashboardView(View):
     def get(self, request):
         if request.user.is_authenticated:
             if not SystemConfig.objects.exists():  # first time login
                 return redirect("systemconfig-page")
-            return render(request, "controls/controls.html")  # provide context when model is created
+            
+            if not StartupConfig.objects.exists():
+                StartupConfig.objects.create()
+            
+            return render(request, "controls/dashboard.html", {
+                "startupconfig_form": StartupConfigForm(instance=StartupConfig.objects.first()),
+                "movement_form": MovementForm()
+            })  # provide context when model is created
         else:
             return redirect("login")
 

@@ -1,7 +1,20 @@
 from django import forms
-from .models import SystemConfig
+from .models import SystemConfig, StartupConfig
 from django.contrib.auth.forms import AuthenticationForm, UsernameField
 from django.contrib.auth.models import User
+
+
+class MovementForm(forms.Form):
+    submit1 = forms.CharField(required=False)
+    submit2 = forms.CharField(required=False)
+
+
+class StartupConfigForm(forms.ModelForm):
+    class Meta:
+        model = StartupConfig
+        fields = ("__all__")
+
+        # TODO add labels and error messages
 
 
 class SystemConfigForm(forms.ModelForm):

@@ -5,6 +5,11 @@
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'controls/includes/sidebar-navbar.css' %}">
+<link rel="stylesheet" href="{% static 'controls/systemconfig.css' %}">
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'controls/systemconfig-help-hide.js' %}"></script>
 {% endblock %}
 
 {% block navbar %}
@@ -12,22 +17,40 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Config Page</h1>
-
-    <hr>
-
-    <section id="SystemConfig-form">
-      <form action="{% url 'systemconfig-page' %}" method="POST">
+    <section class="SystemConfig-container">
+      <form class="SystemConfig-form" action="{% url 'systemconfig-page' %}" method="POST">
         {% csrf_token %}
         {% for form_field in systemconfig_form %}
-          <div class="form-control {% if form_field.errors %}invalid{% endif %}">
-            {{ form_field.label_tag }}
-            {{ form_field }}
-              <span class="help-text">{{ form_field.help_text }}</span>
-            {{ form_field.errors }}
+          <div class="form-control">
+              {% if form_field.errors %}
+              <span class="invalid-indicator">*</span>
+              {% endif %}
+
+              {{ form_field.label_tag }}
+              {{ form_field }}
+              <button class="help-button" onclick="toggleHelp('{{ form_field.id_for_label|add:'-help-text' }}')" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 150 500"
+                width="10"
+                height="10"
+                aria-hidden="false"
+                focusable="false"
+                role="img"
+              >
+                  <g>
+                      <path
+                          d="M48 80a48 48 0 1 1 96 0A48 48 0 1 1 48 80zM0 224c0-17.7 14.3-32 32-32H96c17.7 0 32 14.3 32 32V448h32c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H64V256H32c-17.7 0-32-14.3-32-32z"
+                      ></path>
+                  </g>
+              </svg>
+              </button>
+              <div id="{{ form_field.id_for_label|add:'-help-text' }}" class="help-text">
+                    {{ form_field.help_text }}
+              </div>
+              {{ form_field.errors }}
           </div>
         {% endfor %}
-        <button>Save</button>
+        <button class="submit-button" type="submit">Save</button>
       </form>
     </section>
 {% endblock %}

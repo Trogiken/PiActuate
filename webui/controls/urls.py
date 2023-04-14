@@ -3,15 +3,17 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path("",
-         views.RedirectToControlsView.as_view(), name="redirect-to-controls-page"),
+     path("",
+         views.RedirectToLoginView.as_view(), name="redirect-to-login"),
 
-    path("controls/",
-         views.ControlsView.as_view(), name="controls-page"),
-    path("system-config/",
+     path("dashboard/",
+         views.DashboardView.as_view(), name="dashboard-page"),
+     path("system-config/",
          views.SystemConfigView.as_view(), name="systemconfig-page"),
-    path('auth/',
+     path("movement-request/", 
+          views.MovementRequestView.as_view(), name="movement-request"),
+     path('auth/',
          include('django.contrib.auth.urls')),
-    path('auth/login',
-         views.UserLoginView.as_view(), name='login'),
+     path('auth/login',
+          views.UserLoginView.as_view(), name='login'),
 ]

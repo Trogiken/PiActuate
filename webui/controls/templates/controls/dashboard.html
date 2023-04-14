@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'controls/includes/sidebar-navbar.css' %}">
+<link rel="stylesheet" href="{% static 'controls/dashboard.css' %}">
+{% endblock %}
+
+{% block navbar %}
+{% include "controls/includes/sidebar-navbar.html" %}
+{% endblock %}
+
+{% block content %}
+    <section class="Control-container">
+      <form class="Control-form" action="{% url 'TODO' %}" method="POST">
+        {% csrf_token %}
+        {% for form_field in UNKNOWN_form %}
+          <div class="form-control">
+          </div>
+        {% endfor %}
+        <button class="submit-button" type="submit">Save</button>
+      </form>
+    </section>
+
+    <section class="Automation-container">
+        {% csrf_token %}
+        <form class="Automation-form" action="{% url 'TODO' %}">
+            {% comment %} JUST NONSENSE {% endcomment %}
+            <div class="form-control">
+                <label for="automation">Automation</label>
+                <select name="automation" id="automation">
+                <option value="1">Automation 1</option>
+                <option value="2">Automation 2</option>
+                <option value="3">Automation 3</option>
+                </select>
+            </div>
+            <button class="submit-button" type="submit">Save</button>
+        </form>
+    </section>
+{% endblock %}
