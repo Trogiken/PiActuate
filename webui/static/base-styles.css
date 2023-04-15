@@ -36,3 +36,4 @@ body::-webkit-scrollbar-thumb {
   background: #6649b8;
 }
 /* Style system messages here */
+/* Including the LEVEL styles (debug, critical, etc) */

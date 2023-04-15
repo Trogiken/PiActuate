@@ -3,8 +3,6 @@ from django.shortcuts import render
 from django.contrib.auth.views import LoginView
 from django.views.generic import View
 from django.shortcuts import redirect
-# from django.urls import reverse
-# from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -71,14 +69,13 @@ class DashboardView(LoginRequiredMixin, View):
 
 class SystemConfigView(LoginRequiredMixin, View):
     """View for the system configuration page"""
-
     def get(self, request):
         if SystemConfig.objects.exists():
             return render(request, "controls/systemconfig.html", {
                 "systemconfig_form": SystemConfigForm(instance=SystemConfig.objects.first())
                 })
         else:
-            # TODO send message to user that he needs to create a system config for the first time
+            messages.add_message(request, messages.INFO, "Save the system config to continue to the dashboard")
             return render(request, "controls/systemconfig.html", {
                 "systemconfig_form": SystemConfigForm(),
                 })
@@ -107,10 +104,12 @@ class SystemConfigView(LoginRequiredMixin, View):
             config.travel_time = form_data["travel_time"]
 
             config.save()
-            # TODO if first startup send to controls, if not send to same page
+
+            messages.add_message(request, messages.INFO, "System config saved!")
             return redirect("systemconfig-page")
 
         # TODO if the form is invalid, we want to show the form again with previous data
+        messages.add_message(request, messages.ERROR, "There was an error with the form, please try again")
         return render(request, "controls/systemconfig.html", {
             "systemconfig_form": systemconfg_form
         })

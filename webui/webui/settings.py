@@ -136,3 +136,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'dashboard-page'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
+
+# message stuff
+from django.contrib.messages import constants as messages
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# This sets the mapping of message level to message tag, which is typically rendered as a CSS class in HTML
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+    messages.SUCCESS: 'success',
+    messages.INFO: 'info',
+    messages.WARNING: 'warning',
+    messages.DEBUG: 'debug',
+}
