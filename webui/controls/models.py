@@ -50,13 +50,13 @@ class StartupConfig(models.Model):
     auxillary = models.BooleanField(default=False)
 
     def __str__(self):
-        return "Automation"
+        return "StartupConfig"
 
     def save(self, *args, **kwargs):
-        if not self.pk and SystemConfig.objects.exists():
+        if not self.pk and StartupConfig.objects.exists():
             raise PermissionError('There can only be 1 StartupConfig instance')
-        return super(SystemConfig, self).save(*args, **kwargs)
+        return super(StartupConfig, self).save(*args, **kwargs)
     
     class Meta:
-        verbose_name = "Automation"
-        verbose_name_plural = "Automations"
+        verbose_name = "Startup Config"
+        verbose_name_plural = "Startup Configs"

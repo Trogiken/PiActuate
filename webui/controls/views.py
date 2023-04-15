@@ -5,71 +5,90 @@ from django.views.generic import View
 from django.shortcuts import redirect
 # from django.urls import reverse
 # from django.http import HttpResponse
-# from django.contrib import messages
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-from .forms import SystemConfigForm, UserLoginForm, MovementForm, StartupConfigForm
+from .forms import SystemConfigForm, UserLoginForm, ControlForm, AutomationForm
 from .models import SystemConfig, StartupConfig
+
 
 # Create your views here.
 
 
 class RedirectToLoginView(View):
+    """Redirects to login page"""
+
     def get(self, request):
         return redirect("login")
 
 
 class UserLoginView(LoginView):
+    """Login view for the user"""
+
     authentication_form = UserLoginForm
     redirect_authenticated_user = True
 
 
-class MovementRequestView(View):
+class ControlPostView(LoginRequiredMixin, View):
     def post(self, request):
-        # TODO handle movement request
         pass
 
 
-class DashboardView(View):
-    def get(self, request):
-        if request.user.is_authenticated:
-            if not SystemConfig.objects.exists():  # first time login
-                return redirect("systemconfig-page")
-            
-            if not StartupConfig.objects.exists():
-                StartupConfig.objects.create()
-            
-            return render(request, "controls/dashboard.html", {
-                "startupconfig_form": StartupConfigForm(instance=StartupConfig.objects.first()),
-                "movement_form": MovementForm()
-            })  # provide context when model is created
-        else:
-            return redirect("login")
-
+class AutomationPostView(LoginRequiredMixin, View):
     def post(self, request):
-        # handle updated controls
         pass
+    
 
+# do the same as above but with a view class
+class DashboardView(LoginRequiredMixin, View):
+    """View for the dashboard page"""
 
-class SystemConfigView(View):
+    # MAKE VALIDATION FOR THE FORMS, CALL THE FOLLOWING TO VALIDATE SELF MADE FORMS
+    """from django.core.exceptions import ValidationError
+
+        try:
+            article.full_clean()
+        except ValidationError as e:
+            # Do something based on the errors contained in e.message_dict.
+            # Display them to a user, or handle them programmatically.
+            pass
+    """
+
     def get(self, request):
-        if request.user.is_authenticated:
-            if not SystemConfig.objects.exists():
-                print("creating new system config")
-                SystemConfig.objects.create()
+        if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page
+            return redirect("systemconfig-page")
 
-            # render form with existing data
+        if not StartupConfig.objects.exists():
+            StartupConfig.objects.create()
+
+        # TODO fill values with already existing values from the database
+        return render(request, "controls/dashboard.html", {
+            "control_form": ControlForm(),
+            "automation_form": AutomationForm()
+        })
+
+
+class SystemConfigView(LoginRequiredMixin, View):
+    """View for the system configuration page"""
+
+    def get(self, request):
+        if SystemConfig.objects.exists():
             return render(request, "controls/systemconfig.html", {
                 "systemconfig_form": SystemConfigForm(instance=SystemConfig.objects.first())
-            })
+                })
         else:
-            return redirect("login")
+            # TODO send message to user that he needs to create a system config for the first time
+            return render(request, "controls/systemconfig.html", {
+                "systemconfig_form": SystemConfigForm(),
+                })
 
     def post(self, request):
         systemconfg_form = SystemConfigForm(request.POST)
 
         if systemconfg_form.is_valid():
+            if not SystemConfig.objects.exists():
+                SystemConfig.objects.create()
             config = SystemConfig.objects.first()
             form_data = systemconfg_form.cleaned_data
 

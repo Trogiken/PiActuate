@@ -4,17 +4,21 @@ from django.contrib.auth.forms import AuthenticationForm, UsernameField
 from django.contrib.auth.models import User
 
 
-class MovementForm(forms.Form):
-    submit1 = forms.CharField(required=False)
-    submit2 = forms.CharField(required=False)
+class ControlForm(forms.Form):
+    auxillary_toggle = forms.BooleanField(required=False)
+    # up and down buttons TEMPORARY
+    up = forms.BooleanField(required=False)
+    down = forms.BooleanField(required=False)
+
+    # validation
 
 
-class StartupConfigForm(forms.ModelForm):
-    class Meta:
-        model = StartupConfig
-        fields = ("__all__")
+class AutomationForm(forms.Form):
+    automation_toggle = forms.BooleanField(required=False)
+    sunrise_offset = forms.IntegerField()
+    sunset_offset = forms.IntegerField()
 
-        # TODO add labels and error messages
+    # validation
 
 
 class SystemConfigForm(forms.ModelForm):

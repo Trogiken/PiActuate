@@ -10,8 +10,12 @@ urlpatterns = [
          views.DashboardView.as_view(), name="dashboard-page"),
      path("system-config/",
          views.SystemConfigView.as_view(), name="systemconfig-page"),
-     path("movement-request/", 
-          views.MovementRequestView.as_view(), name="movement-request"),
+
+    path("control-post/",
+         views.ControlPostView.as_view(), name="control-post"),
+    path("automation-post/",
+         views.AutomationPostView.as_view(), name="automation-post"),
+
      path('auth/',
          include('django.contrib.auth.urls')),
      path('auth/login',
