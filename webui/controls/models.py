@@ -15,18 +15,18 @@ class SystemConfig(models.Model):
     board_mode = models.CharField(max_length=5, default='BCM', editable=False,
                                   help_text="This is the help text for board_mode")
 
-    relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for relay1")
-    relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for relay2")
-    switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch1")
-    switch2 = models.IntegerField(default=13, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch2")
-    switch3 = models.IntegerField(default=19, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch3")
-    switch4 = models.IntegerField(default=23, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch4")
-    switch5 = models.IntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], help_text="This is the help text for switch5")
-    off_state = models.CharField(max_length=5, choices=OffState.choices, default=OffState.POWER_ON, help_text="This is the help text for off_state")
-    timezone = models.CharField(max_length=100, help_text="This is the help text for timezone")
-    longitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, help_text="This is the help text for longitude")
-    latitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, help_text="This is the help text for latitude")
-    travel_time = models.IntegerField(default=10, help_text="This is the help text for travel_time")
+    relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 1", help_text="This is the help text for relay1")
+    relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 2", help_text="This is the help text for relay2")
+    switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 1", help_text="This is the help text for switch1")
+    switch2 = models.IntegerField(default=13, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 2", help_text="This is the help text for switch2")
+    switch3 = models.IntegerField(default=19, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 3", help_text="This is the help text for switch3")
+    switch4 = models.IntegerField(default=23, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 4", help_text="This is the help text for switch4")
+    switch5 = models.IntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 5", help_text="This is the help text for switch5")
+    off_state = models.CharField(max_length=5, choices=OffState.choices, default=OffState.POWER_ON, verbose_name="Off State", help_text="This is the help text for off_state")
+    timezone = models.CharField(max_length=100, verbose_name="Timezone", help_text="This is the help text for timezone")
+    longitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Longitude", help_text="This is the help text for longitude")
+    latitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Latitude", help_text="This is the help text for latitude")
+    travel_time = models.IntegerField(default=10, verbose_name="Travel Time", help_text="This is the help text for travel_time")
 
     def __str__(self):
         return "SystemConfig"
@@ -44,10 +44,10 @@ class SystemConfig(models.Model):
 class StartupConfig(models.Model):
     # property function to give sunrise and sunset time?
 
-    automation = models.BooleanField(default=False)
-    sunrise_offset = models.IntegerField(default=0)
-    sunset_offset = models.IntegerField(default=0)
-    auxillary = models.BooleanField(default=False)
+    automation = models.BooleanField(default=False, verbose_name="Automation", help_text="Toggle automation on or off")
+    auxillary = models.BooleanField(default=False, verbose_name="Auxillary", help_text="Toggle auxillary on or off")
+    sunrise_offset = models.IntegerField(default=0, verbose_name="Sunrise Offset", help_text="Add or subtract minutes from sunrise")
+    sunset_offset = models.IntegerField(default=0, verbose_name="Sunset Offset", help_text="Add or subtract minutes from sunset")
 
     def __str__(self):
         return "StartupConfig"

@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Small screens */
+@media only screen and (max-width: 600px) {
+    .container {
+      /* small screen, nav gets in way */
+      margin-bottom: 5rem;
+      
+      flex-direction: column;
+    }
+}
+/* Large screens */
+@media only screen and (min-width: 600px) {
+    /* put form in center of screen */
+    .container {
+      flex-direction: row;
+    }
+}
+
+.Control-container,
+.Detail-container {
+    background: #f1f7fe;
+    padding: 2rem;
+    border-radius: 30px;
+    box-shadow: 0 0 2rem #e6e9f9;
+    margin: auto;
+    text-align: center;
+}
+
+.Control-form,
+.Detail-form {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}

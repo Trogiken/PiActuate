@@ -4,21 +4,10 @@ from django.contrib.auth.forms import AuthenticationForm, UsernameField
 from django.contrib.auth.models import User
 
 
-class ControlForm(forms.Form):
-    auxillary_toggle = forms.BooleanField(required=False)
-    # up and down buttons TEMPORARY
-    up = forms.BooleanField(required=False)
-    down = forms.BooleanField(required=False)
-
-    # validation
-
-
-class AutomationForm(forms.Form):
-    automation_toggle = forms.BooleanField(required=False)
-    sunrise_offset = forms.IntegerField()
-    sunset_offset = forms.IntegerField()
-
-    # validation
+class DetailForm(forms.ModelForm):
+    class Meta:
+        model = StartupConfig
+        fields = ("__all__")
 
 
 class SystemConfigForm(forms.ModelForm):

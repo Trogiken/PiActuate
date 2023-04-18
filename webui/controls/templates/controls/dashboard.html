@@ -14,23 +14,21 @@
 
 {% block content %}
     <section class="Control-container">
-      <form class="Control-form" action="{% url 'control-post' %}" method="POST">
-        {% csrf_token %}
-        {% for form_field in control_form %}
-          <div class="form-control">
-            {{ form_field.label_tag }}
-            {{ form_field }}
-            {{ form_field.errors }}
-          </div>
-        {% endfor %}
-        <button class="submit-button" type="submit">Save</button>
-      </form>
+      <div class="Control-form">
+        <form action="{% url 'door_up-post' %}" method="POST">
+          <button id="up_button" type="submit">up arrow</button>
+        </form>
+        <form action="{% url 'door_down-post' %}" method="POST">
+          <button id="down_button" type="submit">down arrow</button>
+        </form>
+        <label>Door Status: <span id="status_text">placeholder</span></label>
+      </div>
     </section>
 
-    <section class="Automation-container">
-      <form class="Automation-form" action="{% url 'automation-post' %}" method="POST">
+    <section class="Detail-container">
+      <form class="Detail-form" action="{% url 'detail-post' %}" method="POST">
         {% csrf_token %}
-        {% for form_field in automation_form %}
+        {% for form_field in detail_form %}
           <div class="form-control">
             {{ form_field.label_tag }}
             {{ form_field }}

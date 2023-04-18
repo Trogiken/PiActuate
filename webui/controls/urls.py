@@ -11,10 +11,12 @@ urlpatterns = [
      path("system-config/",
          views.SystemConfigView.as_view(), name="systemconfig-page"),
 
-    path("control-post/",
-         views.ControlPostView.as_view(), name="control-post"),
-    path("automation-post/",
-         views.AutomationPostView.as_view(), name="automation-post"),
+    path("dashboard/door_up/",
+         views.door_up, name="door_up-post"),
+    path("dashboard/door_down/",
+        views.door_down, name="door_down-post"),
+    path("detail-post/",
+         views.DetailPostView.as_view(), name="detail-post"),
 
      path('auth/',
          include('django.contrib.auth.urls')),

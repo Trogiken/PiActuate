@@ -1,13 +1,16 @@
 from django.shortcuts import render
 
+from django.http import HttpResponse
 from django.contrib.auth.views import LoginView
 from django.views.generic import View
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 
-from .forms import SystemConfigForm, UserLoginForm, ControlForm, AutomationForm
+from .forms import SystemConfigForm, UserLoginForm, DetailForm
 from .models import SystemConfig, StartupConfig
 
 
@@ -28,31 +31,48 @@ class UserLoginView(LoginView):
     redirect_authenticated_user = True
 
 
-class ControlPostView(LoginRequiredMixin, View):
-    def post(self, request):
-        pass
+@login_required
+@csrf_exempt
+def door_up(request):
+    """door up"""
+    if request.method == "POST":
+        print('door up')
+        # TODO dont redirect and add code
+        return redirect("dashboard-page")
 
 
-class AutomationPostView(LoginRequiredMixin, View):
+@login_required
+@csrf_exempt
+def door_down(request):
+    """door down"""
+    if request.method == "POST":
+        print('door down')
+        # TODO dont redirect and add code
+        return redirect("dashboard-page")
+
+
+class DetailPostView(LoginRequiredMixin, View):
     def post(self, request):
-        pass
+        detail_form = DetailForm(request.POST)
+        if detail_form.is_valid():
+            startup_config = StartupConfig.objects.first()
+            startup_config.automation = detail_form.cleaned_data["automation"]
+            startup_config.auxillary = detail_form.cleaned_data["auxillary"]
+            startup_config.sunrise_offset = detail_form.cleaned_data["sunrise_offset"]
+            startup_config.sunset_offset = detail_form.cleaned_data["sunset_offset"]
+            startup_config.save()
+            messages.add_message(request, messages.INFO, "Saved")
+            return redirect("dashboard-page")
+        else:
+            messages.add_message(request, messages.ERROR, "Problem Saving")
+            return render(request, "controls/dashboard.html", {
+                "detail_form": detail_form,
+            })
     
 
 # do the same as above but with a view class
 class DashboardView(LoginRequiredMixin, View):
     """View for the dashboard page"""
-
-    # MAKE VALIDATION FOR THE FORMS, CALL THE FOLLOWING TO VALIDATE SELF MADE FORMS
-    """from django.core.exceptions import ValidationError
-
-        try:
-            article.full_clean()
-        except ValidationError as e:
-            # Do something based on the errors contained in e.message_dict.
-            # Display them to a user, or handle them programmatically.
-            pass
-    """
-
     def get(self, request):
         if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page
             return redirect("systemconfig-page")
@@ -62,8 +82,7 @@ class DashboardView(LoginRequiredMixin, View):
 
         # TODO fill values with already existing values from the database
         return render(request, "controls/dashboard.html", {
-            "control_form": ControlForm(),
-            "automation_form": AutomationForm()
+            "detail_form": DetailForm(instance=StartupConfig.objects.first()),
         })
 
 
@@ -74,7 +93,7 @@ class SystemConfigView(LoginRequiredMixin, View):
             return render(request, "controls/systemconfig.html", {
                 "systemconfig_form": SystemConfigForm(instance=SystemConfig.objects.first())
                 })
-        else:
+        else:  # if there is no system config force user to create one on the system config page
             messages.add_message(request, messages.INFO, "Save the system config to continue to the dashboard")
             return render(request, "controls/systemconfig.html", {
                 "systemconfig_form": SystemConfigForm(),
