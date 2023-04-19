@@ -16,10 +16,18 @@
     <section class="Control-container">
       <div class="Control-form">
         <form action="{% url 'door_up-post' %}" method="POST">
-          <button id="up_button" type="submit">up arrow</button>
+          <button id="up_button" type="submit">
+            <div class="button-icon">
+              <ion-icon name="arrow-up-outline"></ion-icon>
+            </div>
+          </button>
         </form>
         <form action="{% url 'door_down-post' %}" method="POST">
-          <button id="down_button" type="submit">down arrow</button>
+          <button id="down_button" type="submit">
+            <div class="button-icon">
+              <ion-icon name="arrow-down-outline"></ion-icon>
+            </div>
+          </button>
         </form>
         <label>Door Status: <span id="status_text">placeholder</span></label>
       </div>

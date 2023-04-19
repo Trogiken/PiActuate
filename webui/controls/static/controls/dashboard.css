@@ -20,6 +20,7 @@
     }
 }
 
+/* Form containers */
 .Control-container,
 .Detail-container {
     background: #f1f7fe;
@@ -30,9 +31,37 @@
     text-align: center;
 }
 
+/* Form elements */
 .Control-form,
 .Detail-form {
     display: flex;
     flex-direction: column;
     gap: .5rem;
+}
+
+/* Up and down arrow buttons */
+#up_button,
+#down_button {
+    display: table-cell;
+    width: auto;
+    height: 100%;
+    border: none;
+    outline: 2px solid #e6e9f9;
+    background: #f1f7fe;
+    font-size: 2rem;
+    color: #3f51b5;
+    cursor: pointer;
+}
+#up_button:hover,
+#down_button:hover {
+    color: #1a237e;
+    outline: 2px solid #d8dcf4;
+}
+#up_button:active,
+#down_button:active {
+    color: #000051;
+    outline: 2px solid #c5cae9;
+}
+.button-icon ion-icon{
+    vertical-align: middle;
 }
