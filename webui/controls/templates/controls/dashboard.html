@@ -13,17 +13,18 @@
 {% endblock %}
 
 {% block content %}
-    <section class="Control-container">
+    <section class="Form-container">
       <div class="Control-form">
+        <p>Door Controls</p>
         <form action="{% url 'door_up-post' %}" method="POST">
-          <button id="up_button" type="submit">
+          <button class="move-button" type="submit">
             <div class="button-icon">
               <ion-icon name="arrow-up-outline"></ion-icon>
             </div>
           </button>
         </form>
         <form action="{% url 'door_down-post' %}" method="POST">
-          <button id="down_button" type="submit">
+          <button class="move-button" type="submit">
             <div class="button-icon">
               <ion-icon name="arrow-down-outline"></ion-icon>
             </div>
@@ -31,19 +32,25 @@
         </form>
         <label>Door Status: <span id="status_text">placeholder</span></label>
       </div>
-    </section>
 
-    <section class="Detail-container">
-      <form class="Detail-form" action="{% url 'detail-post' %}" method="POST">
-        {% csrf_token %}
-        {% for form_field in detail_form %}
-          <div class="form-control">
-            {{ form_field.label_tag }}
-            {{ form_field }}
-            {{ form_field.errors }}
-          </div>
-        {% endfor %}
-        <button class="submit-button" type="submit">Save</button>
-      </form>
+      <hr>
+
+      <div>
+        <form class="Detail-form" action="{% url 'detail-post' %}" method="POST">
+          {% csrf_token %}
+          {% for form_field in detail_form %}
+          {% if form_field.id_for_label == 'id_sunrise_offset' %}
+            <hr>
+            <p>Offset Values (+ or - Minutues)</p>
+          {% endif %}
+            <div class="form-control">
+              {{ form_field.label_tag }}
+              {{ form_field }}
+              {{ form_field.errors }}
+            </div>
+          {% endfor %}
+          <button class="submit-button" type="submit">Save</button>
+        </form>
+      </div>
     </section>
 {% endblock %}

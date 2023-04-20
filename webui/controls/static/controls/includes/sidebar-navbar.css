@@ -1,19 +1,10 @@
-:root {
-  font-size: 16px;
-  --text-primary: #b6b6b6;
-  --text-secondary: #ececec;
-  --bg-primary: #23232e;
-  --bg-secondary: #141418;
-  --transition-speed: 600ms;
-}
-
 .container {
   margin-left: 5rem;
 }
 
 .navbar {
   position: fixed;
-  background-color: var(--bg-primary);
+  background-color: var(--nav-bg-primary);
   transition: width 600ms ease;
   overflow: hidden;
   z-index: 100;
@@ -41,16 +32,16 @@
   display: flex;
   align-items: center;
   height: 5rem;
-  color: var(--text-primary);
+  color: var(--nav-text-primary);
   text-decoration: none;
   filter: grayscale(100%) opacity(0.7);
-  transition: var(--transition-speed);
+  transition: var(--nav-transition-speed);
 }
 
 .nav-link:hover {
   filter: grayscale(0%) opacity(1);
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
+  background: var(--nav-bg-secondary);
+  color: var(--nav-text-secondary);
 }
 
 .link-text {
@@ -76,7 +67,7 @@
 
 .fa-primary,
 .fa-secondary {
-  transition: var(--transition-speed);
+  transition: var(--nav-transition-speed);
 }
 
 .logo {
@@ -84,8 +75,8 @@
   text-transform: uppercase;
   margin-bottom: 1rem;
   text-align: center;
-  color: var(--text-secondary);
-  background: var(--bg-secondary);
+  color: var(--nav-text-secondary);
+  background: var(--nav-bg-secondary);
   font-size: 1.5rem;
   letter-spacing: 0.3ch;
   width: 100%;
@@ -93,7 +84,7 @@
 
 .logo svg {
   transform: rotate(0deg);
-  transition: var(--transition-speed);
+  transition: var(--nav-transition-speed);
 }
 
 .logo-text
@@ -101,7 +92,7 @@
   display: inline;
   position: absolute;
   left: -999px;
-  transition: var(--transition-speed);
+  transition: var(--nav-transition-speed);
 }
 
 .navbar:hover .logo svg {

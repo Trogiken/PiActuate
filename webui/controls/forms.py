@@ -9,6 +9,12 @@ class DetailForm(forms.ModelForm):
         model = StartupConfig
         fields = ("__all__")
 
+        # change labels for offsets
+        labels = {
+            "sunrise_offset": "Runrise",
+            "sunset_offset": "Sunset",
+        }
+
 
 class SystemConfigForm(forms.ModelForm):
     class Meta:

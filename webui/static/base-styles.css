@@ -2,14 +2,17 @@
     font-family: "Poppins";
 }
 
-.container {
-  padding: 1rem;
+:root {
+  --nav-text-primary: #b6b6b6;
+  --nav-text-secondary: #ececec;
+  --nav-bg-primary: #23232e;
+  --nav-bg-secondary: #141418;
+  --nav-transition-speed: 600ms;
+  /* Make more variables for form elements */
 }
 
-hr {
-    border: 0;
-    height: 2px;
-    background: #333;
+.container {
+  padding: 1rem;
 }
 
 button {
@@ -22,6 +25,7 @@ body {
         -ms-user-select: none;
             user-select: none;
     background: #B1D1EF;
+    font-size: 16px;
 }
 
 body::-webkit-scrollbar {
