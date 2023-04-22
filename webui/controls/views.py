@@ -14,7 +14,9 @@ from .forms import SystemConfigForm, UserLoginForm, DetailForm
 from .models import SystemConfig, StartupConfig
 
 
-# Create your views here.
+from source.startup import Initialization
+
+runtime = Initialization()
 
 
 class RedirectToLoginView(View):
