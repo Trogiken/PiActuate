@@ -15,18 +15,18 @@ class SystemConfig(models.Model):
     board_mode = models.CharField(max_length=5, default='BCM', editable=False,
                                   help_text="This is the help text for board_mode")
 
-    relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 1", help_text="This is the help text for relay1")
-    relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 2", help_text="This is the help text for relay2")
-    switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 1", help_text="This is the help text for switch1")
-    switch2 = models.IntegerField(default=13, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 2", help_text="This is the help text for switch2")
-    switch3 = models.IntegerField(default=19, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 3", help_text="This is the help text for switch3")
-    switch4 = models.IntegerField(default=23, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 4", help_text="This is the help text for switch4")
-    switch5 = models.IntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 5", help_text="This is the help text for switch5")
-    off_state = models.CharField(max_length=5, choices=OffState.choices, default=OffState.POWER_ON, verbose_name="Off State", help_text="This is the help text for off_state")
-    timezone = models.CharField(max_length=100, verbose_name="Timezone", help_text="This is the help text for timezone")
-    longitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Longitude", help_text="This is the help text for longitude")
-    latitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Latitude", help_text="This is the help text for latitude")
-    travel_time = models.IntegerField(default=10, verbose_name="Travel Time", help_text="This is the help text for travel_time")
+    relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 1", help_text="Extending Motion")
+    relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 2", help_text="Retraction Motion")
+    switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 1", help_text="Extend Limit")
+    switch2 = models.IntegerField(default=13, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 2", help_text="Retract Limit")
+    switch3 = models.IntegerField(default=19, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 3", help_text="Door path is blocked")
+    switch4 = models.IntegerField(default=23, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 4", help_text="Aux switch for 'Relay 1'")
+    switch5 = models.IntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 5", help_text="Aux switch for 'Relay 2'")
+    off_state = models.CharField(max_length=5, choices=OffState.choices, default=OffState.POWER_ON, verbose_name="Off State", help_text="Power setting of relay off state")
+    timezone = models.CharField(max_length=100, verbose_name="Timezone", help_text="Timezone of hardware")
+    longitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Longitude", help_text="Longitudinal location of hardware")
+    latitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Latitude", help_text="Latitudinal location of hardware")
+    travel_time = models.IntegerField(default=10, verbose_name="Travel Time", help_text="Allowed time, in seconds, for the door to be in motion")
 
     def __str__(self):
         return "SystemConfig"
