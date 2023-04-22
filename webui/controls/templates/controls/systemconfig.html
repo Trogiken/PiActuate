@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block content %}
-    <section class="SystemConfig-container">
+    <section class="Form-container">
       <form class="SystemConfig-form" action="{% url 'systemconfig-page' %}" method="POST">
         {% csrf_token %}
         {% for form_field in systemconfig_form %}

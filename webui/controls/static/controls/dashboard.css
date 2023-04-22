@@ -1,31 +1,4 @@
-.container {
-    display: flex;
-    gap: 1rem;
-    flex-direction: column;
-}
-
-/* Small screens */
-@media only screen and (max-width: 600px) {
-    .container {
-        /* small screen, nav gets in way */
-        margin-bottom: 5rem;
-    }
-}
-/* Large screens */
-@media only screen and (min-width: 600px) {
-    .container {
-        /* small screen, nav gets in way */
-        margin-bottom: 0;
-    }
-}
-
-/* Form containers */
 .Form-container {
-    background: #f1f7fe;
-    padding: 2rem;
-    border-radius: 30px;
-    box-shadow: 0 0 2rem #e6e9f9;
-    margin: auto;
     text-align: center;
 }
 
@@ -65,6 +38,37 @@ hr {
     border: 0;
     height: 2px;
     background: #333;
+    min-width: 100%;
+}
+
+h1 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #3e4684;
+}
+
+p {
+    margin-top: -1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #3e4684;
+}
+
+.form-control input[type=number] {
+    padding: .5em 0;
+    border: 1px solid #e6e9f9;
+    border-radius: 30px;
+    background: #f1f7fe;
+    box-shadow: 0 0 2em #e6e9f9;
+    width: 25%;
+    min-width: 100px;
+    text-align: center;
+}
+.form-control input[type=checkbox] {
+    width: auto;
+    min-width: 0;
+    text-align: left;
 }
 
 .Detail-form .submit-button {
@@ -75,5 +79,6 @@ hr {
     border-radius: 30px;
     font-weight: 600;
     width: 100%;
+    margin-top: .5rem;
   }
 

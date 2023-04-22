@@ -1,10 +1,3 @@
-.SystemConfig-container {
-  background: #f1f7fe;
-  padding: 2rem;
-  border-radius: 30px;
-  box-shadow: 0 0 2rem #e6e9f9;
-  margin: auto;
-}
 .SystemConfig-form {
   flex-direction: column;
   display: flex;
@@ -82,37 +75,4 @@
   margin: .25rem 0 0 0;
   font-weight: 400;
   display: none;
-}
-
-/* Small screens */
-@media only screen and (max-width: 600px) {
-  .SystemConfig-container {
-    /* small screen, nav gets in way */
-    margin-bottom: 5rem;
-  }
-}
-
-/* Large screens */
-@media only screen and (min-width: 600px) {
-  /* put form in center of screen */
-  .SystemConfig-container {
-    width: 50%;
-    max-width: 600px;
-  }
-}
-
-.errorlist {
-  list-style: none;
-  margin-top: 0.5rem;
-  margin-bottom: -0.5rem;
-  padding: 0;
-  color: #d6000b;
-  font-size: 14px;
-  font-weight: 600;
-  border: 1px solid #d6000b;
-  border-radius: 12px;
-  text-align: center;
-}
-.invalid-indicator {
-  color: #d6000b;
 }

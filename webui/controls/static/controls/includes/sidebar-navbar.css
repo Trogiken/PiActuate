@@ -120,7 +120,9 @@
   }
 
   .container {
-    /* margin-bottom: 5rem; */
+    /* if overflow, nav overlaps content */
+    margin-bottom: 5rem;
+
     margin-left: 0;
   }
 }
@@ -135,7 +137,6 @@
 
   .navbar:hover {
     width: 16rem;
-
   }
 
   .navbar:hover .link-text {
@@ -154,6 +155,6 @@
 
   .container {
     margin-left: 5rem;
-    /* margin-bottom: 0; */
+    margin-bottom: 0;
   }
 }

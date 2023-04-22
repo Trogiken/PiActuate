@@ -1,35 +1,15 @@
-.errorlist {
-    list-style: none;
-    margin-top: 0.5rem;
-    margin-bottom: -0.5rem;
-    padding: 0;
-    color: #d6000b;
-    font-size: 14px;
-    font-weight: 600;
-    border: 1px solid #d6000b;
-    border-radius: 12px;
-    text-align: center;
-}
-.invalid {
-    border: 1px solid #d6000b;
-}
-
-.login-form {
-    background: #f1f7fe;
-    padding: 2rem;
-    flex-direction: column;
-    border-radius: 30px;
-    box-shadow: 0 0 2rem #e6e9f9;
+.Form-container {
+    width: auto;
     /* put form in center of screen */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
-.login-form .logo {
+.Form-container .logo {
     margin: -3rem auto;
 }
-.login-form .form-control {
+.Form-container .form-control {
     background: white;
     box-shadow: 0 0 2rem #e6e9f9;
     padding: 1rem;
@@ -39,19 +19,19 @@
     color: #4d4d4d;
     margin: 1rem;
 }
-.login-form .form-control input {
+.Form-container .form-control input {
     outline: none;
     border: none;
 }
-.login-form .form-control input::placeholder,
-.login-form .form-control input::-webkit-input-placeholder {
+.Form-container .form-control input::placeholder,
+.Form-container .form-control input::-webkit-input-placeholder {
     color: black;
     font-size: 0.9rem;
 }
-.login-form .form-control ion-icon {
+.Form-container .form-control ion-icon {
     margin-bottom: -0.2rem;
 }
-.login-form .submit-button {
+.Form-container .submit-button {
     padding: 1rem;
     background: #3e4684;
     color: white;
