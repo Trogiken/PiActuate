@@ -44,6 +44,12 @@
   color: var(--nav-text-secondary);
 }
 
+.active {
+  filter: grayscale(0%) opacity(1);
+  background: var(--nav-bg-secondary);
+  color: var(--nav-text-secondary);
+}
+
 .link-text {
   display: none;
   margin-left: 1rem;
