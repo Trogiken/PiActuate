@@ -23,6 +23,7 @@
         {% csrf_token %}
         {% for form_field in systemconfig_form %}
           <div class="form-control">
+            <div class="item-row">
               {% if form_field.errors %}
               <span class="invalid-indicator">*</span>
               {% endif %}
@@ -45,6 +46,8 @@
                   </g>
               </svg>
               </button>
+            </div>
+              {% comment %} Move the help stuff out of the current class to make sure it can be displayed below and not in the row {% endcomment %}
               <div id="{{ form_field.id_for_label|add:'-help-text' }}" class="help-text">
                     {{ form_field.help_text }}
               </div>

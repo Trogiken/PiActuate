@@ -38,6 +38,13 @@ button {
   cursor: pointer;
 }
 
+/* Hide up down arrows */
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 body {
     -webkit-user-select: none;
        -moz-user-select: none;

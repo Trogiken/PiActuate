@@ -3,6 +3,13 @@
   display: flex;
 }
 
+.item-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
 .SystemConfig-form .form-control {
   background: white;
   box-shadow: 0 0 2rem #e6e9f9;
@@ -35,12 +42,6 @@
 /* center the value text in select tag */
 .SystemConfig-form .form-control select {
   text-align-last: center;
-}
-/* Hide up down arrows */
-.SystemConfig-form .form-control input::-webkit-inner-spin-button,
-.SystemConfig-form .form-control input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
 }
 
 .SystemConfig-form .submit-button {
