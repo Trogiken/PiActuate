@@ -3,6 +3,8 @@ import os
 import logging.config
 from pathlib import Path
 
+
+
 from controls.models import SystemConfig, StartupConfig
 
 
@@ -41,6 +43,7 @@ class Initialization:
         self._home = str(Path(__file__).resolve().parents[2])  # DEBUG Correct level?
         self._source = str(Path(__file__).resolve().parents[0])
         self._log = None
+
 
         self.door = None
         self.auto = None
@@ -97,8 +100,8 @@ class Initialization:
     def _load_objects(self):
         """Load system config and create objects, then run stored states (Load Last)"""
         
-        self._log.debug(f"Loaded System Config Data: {self.system_config}")
-        self._log.debug(f"Loaded Startup Config Data: {self.startup_config}")
+        self._log.debug(f"System Config: {vars(self.system_config)}")
+        self._log.debug(f"Startup Config: {vars(self.startup_config)}")
 
         SyC = self.system_config
         StC = self.startup_config
@@ -108,9 +111,9 @@ class Initialization:
             self._log.info('Creating Door Object')
 
             from source.door import Door
-            self.door = Door(board_mode=SyC['board_mode'], off_state=SyC['off_state'], relay1=SyC['relay1'],
-                             relay2=SyC['relay2'], sw1=SyC['switch1'], sw2=SyC['switch2'], sw3=SyC['switch3'],
-                             sw4=SyC['switch4'], sw5=SyC['switch5'], travel_time=SyC['travel_time'])
+            self.door = Door(board_mode=SyC.board_mode, off_state=SyC.off_state, relay1=SyC.relay1,
+                             relay2=SyC.relay2, sw1=SyC.switch1, sw2=SyC.switch2, sw3=SyC.switch3,
+                             sw4=SyC.switch4, sw5=SyC.switch5, travel_time=SyC.travel_time)
             self._log.info("Door object created")
         except BaseException:
             raise AttributeError("Problem Creating Door Object")
@@ -119,10 +122,10 @@ class Initialization:
             self._log.info('Creating Auto Object')
 
             from source.auto import Auto  # DEBUG Removed redundant data type declaration; verify functionality
-            self.auto = Auto(door=self.door, zone=SyC['timezone'],
-                             latitude=SyC['latitude'], longitude=SyC['longitude'],
-                             sunrise_offset=StC['sunrise_offset'],
-                             sunset_offset=StC['sunset_offset']
+            self.auto = Auto(door=self.door, zone=SyC.timezone,
+                             latitude=SyC.latitude, longitude=SyC.longitude,
+                             sunrise_offset=StC.sunrise_offset,
+                             sunset_offset=StC.sunset_offset,
                              )
             self._log.info("Automation object created")
         except BaseException:
