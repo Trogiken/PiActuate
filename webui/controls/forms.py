@@ -11,7 +11,7 @@ class DetailForm(forms.ModelForm):
 
         # change labels for offsets
         labels = {
-            "sunrise_offset": "Runrise",
+            "sunrise_offset": "Sunrise",
             "sunset_offset": "Sunset",
         }
 
