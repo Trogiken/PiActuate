@@ -30,8 +30,15 @@ class _Auxiliary(threading.Thread):
 
         self._stop_event = threading.Event()
 
-        GPIO.setup(self.AUX_SW1, GPIO.IN)
-        GPIO.setup(self.AUX_SW2, GPIO.IN)
+        log.debug("AUX pins setting up...")
+        try:
+            GPIO.setup(self.AUX_SW1, GPIO.IN)
+            GPIO.setup(self.AUX_SW2, GPIO.IN)
+        except Exception:
+            log.exception("Failed to set up AUX pins")
+            raise
+
+        log.debug("Aux pins set up successfully")
 
     def stop(self):
         self._stop_event.set()
@@ -141,6 +148,7 @@ class Door:
         self.aux_is_running = False
         self._move_op_thread = threading.Thread()
 
+        log.debug(f"off_state: {self.OFF_STATE}")
         log.debug(f"RELAY1: {self.RELAY1}")
         log.debug(f"RELAY2: {self.RELAY2}")
         log.debug(f"SW1: {self.SW1}")
@@ -150,11 +158,18 @@ class Door:
         log.debug(f"SW5: {self.SW5}")
         log.debug(f"max_travel: {self.travel_time}")
 
-        GPIO.setup(self.RELAY1, GPIO.OUT, initial=self.OFF_STATE)
-        GPIO.setup(self.RELAY2, GPIO.OUT, initial=self.OFF_STATE)
-        GPIO.setup(self.SW1, GPIO.IN)
-        GPIO.setup(self.SW2, GPIO.IN)
-        GPIO.setup(self.SW3, GPIO.IN)
+        log.debug("Main pins setting up...")
+        try:
+            GPIO.setup(self.RELAY1, GPIO.OUT, initial=self.OFF_STATE)
+            GPIO.setup(self.RELAY2, GPIO.OUT, initial=self.OFF_STATE)
+            GPIO.setup(self.SW1, GPIO.IN)
+            GPIO.setup(self.SW2, GPIO.IN)
+            GPIO.setup(self.SW3, GPIO.IN)
+        except Exception:
+            log.exception("Failed to setup main pins")
+            raise IOError
+        
+        log.debug("Main pins setup successfully")
 
     def run_aux(self):
         """Creates an Auxiliary object and starts the thread"""
