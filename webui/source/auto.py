@@ -85,7 +85,7 @@ class _Scheduler(threading.Thread):
                     log.debug("Refreshing...")
                     self._refresh_event.clear()
                     break
-                current = datetime.now().strftime("%H:%M")
+                current = datetime.now().strftime("%HH:%MM")
                 status = self.door.get_status()
                 self.active_current = current
                 log.debug(f"Current Time: {current}")
