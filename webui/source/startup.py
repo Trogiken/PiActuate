@@ -108,6 +108,11 @@ class Initialization:
         try:  # Create Door Object
             self._log.info('Creating Door Object')
 
+            if SyC.off_state == 'True':
+                SyC.off_state = True
+            else:
+                SyC.off_state = False
+
             from source.door import Door
             self.door = Door(board_mode=str(SyC.board_mode), off_state=SyC.off_state, relay1=int(SyC.relay1),
                              relay2=int(SyC.relay2), sw1=int(SyC.switch1), sw2=int(SyC.switch2), sw3=int(SyC.switch3),
@@ -128,6 +133,17 @@ class Initialization:
             self._log.info("Automation object created")
         except BaseException:
             raise AttributeError("Problem Creating Auto Object")
+
+
+        if StC.automation == 'True':
+            StC.automation = True
+        else:
+            StC.automation = False
+
+        if StC.auxillary == 'True':
+            StC.auxillary = True
+        else:
+            StC.auxillary = False
 
         # Execute Saved States
         self._log.debug('Executing Saved States...')
