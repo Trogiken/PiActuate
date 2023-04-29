@@ -102,16 +102,16 @@ class _Scheduler(threading.Thread):
                         log.info("Door Called Down")
                         self.door.move(1)
                         break
-                i = 0
-                while i != 60:  # Wait for some seconds, checking for stop event each second
-                    i += 1
-                    if self._stop_event.is_set():
-                        log.debug("Stopping...")
-                        return
-                    if self._refresh_event.is_set():
-                        request_refresh = True
-                        break
-                    sleep(1)
+            i = 0
+            while i != 60:  # Wait for some seconds, checking for stop event each second
+                i += 1
+                if self._stop_event.is_set():
+                    log.debug("Stopping...")
+                    return
+                if self._refresh_event.is_set():
+                    request_refresh = True
+                    break
+                sleep(1)
 
 
 class Auto:
