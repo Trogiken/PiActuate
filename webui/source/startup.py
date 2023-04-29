@@ -135,11 +135,15 @@ class Initialization:
             raise AttributeError("Problem Creating Auto Object")
 
 
+        self._log.info(StC.automation)
+        self._log.info(type(StC.automation))
         if StC.automation == 'True':
             StC.automation = True
         else:
             StC.automation = False
 
+        self._log.info(StC.auxillary)
+        self._log.info(type(StC.auxillary))
         if StC.auxillary == 'True':
             StC.auxillary = True
         else:
@@ -150,11 +154,9 @@ class Initialization:
         if StC.automation:
             self._log.debug('Running Automation')
             self.auto.run()
-        elif StC.auxillary:
+        if StC.auxillary:
             self._log.debug('Running Auxiliary Switches')
             self.door.run_aux()
-        else:
-            self._log.debug('Nothing Executed!')
 
     def _start(self):
         """Run Tests"""
