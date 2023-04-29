@@ -16,7 +16,18 @@ from .models import SystemConfig, StartupConfig
 
 from source.startup import Initialization
 
-runtime = Initialization()
+runtime = None
+if SystemConfig.objects.exists() and StartupConfig.objects.exists() and runtime is None:
+        runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
+
+
+def backend_init():
+    """Init backend"""
+    global runtime
+    if SystemConfig.objects.exists() and StartupConfig.objects.exists():
+        if runtime is None:
+            runtime.destroy()
+        runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
 
 class RedirectToLoginView(View):
@@ -38,8 +49,7 @@ class UserLoginView(LoginView):
 def door_up(request):
     """door up"""
     if request.method == "POST":
-        print('door up')
-        # TODO dont redirect and add code
+        runtime.door.move(2)
         return redirect("dashboard-page")
 
 
@@ -48,8 +58,7 @@ def door_up(request):
 def door_down(request):
     """door down"""
     if request.method == "POST":
-        print('door down')
-        # TODO dont redirect and add code
+        runtime.door.move(1)
         return redirect("dashboard-page")
 
 
@@ -63,6 +72,21 @@ class DetailPostView(LoginRequiredMixin, View):
             startup_config.sunrise_offset = detail_form.cleaned_data["sunrise_offset"]
             startup_config.sunset_offset = detail_form.cleaned_data["sunset_offset"]
             startup_config.save()
+            # update runtime data with new values
+            if detail_form.cleaned_data["automation"]:
+                runtime.auto.run()
+                if runtime.auto.active_sunrise() != detail_form.cleaned_data["sunrise_offset"]:
+                    runtime.auto.set_sunrise(detail_form.cleaned_data["sunrise_offset"])
+                if runtime.auto.active_sunset() != detail_form.cleaned_data["sunset_offset"]:
+                    runtime.auto.set_sunset(detail_form.cleaned_data["sunset_offset"])
+                runtime.auto.refresh()
+            else:
+                runtime.auto.stop()
+
+            if detail_form.cleaned_data["auxillary"]:
+                runtime.door.run_aux()
+            else:
+                runtime.door.stop_aux()
             messages.add_message(request, messages.INFO, "Saved")
             return redirect("dashboard-page")
         else:
@@ -79,10 +103,6 @@ class DashboardView(LoginRequiredMixin, View):
         if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page
             return redirect("systemconfig-page")
 
-        if not StartupConfig.objects.exists():
-            StartupConfig.objects.create()
-
-        # TODO fill values with already existing values from the database
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),
         })
@@ -125,6 +145,7 @@ class SystemConfigView(LoginRequiredMixin, View):
             config.travel_time = form_data["travel_time"]
 
             config.save()
+            backend_init()
 
             messages.add_message(request, messages.INFO, "System config saved!")
             return redirect("systemconfig-page")

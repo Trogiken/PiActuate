@@ -16,15 +16,13 @@ class Initialization:
 
     Attributes
     ----------
-    save : object
-        Setup source.disk.Save()
     door : object
         Setup source.door.Door()
     auto : object
         Setup source.auto.Auto()
-    system_config : dict
+    system_config : class
         System Config values
-    startup_config : dict
+    startup_config : class
         Startup Config values
 
     Methods
@@ -38,17 +36,17 @@ class Initialization:
     _start():
         Run the private methods in correct order
     """
-    def __init__(self):
+    def __init__(self, system_config, startup_config):
         """Constructs all necessary attributes for the Initialization object"""
-        self._home = str(Path(__file__).resolve().parents[2])  # DEBUG Correct level?
+        self._home = str(Path(__file__).resolve().parents[2])
         self._source = str(Path(__file__).resolve().parents[0])
         self._log = None
 
 
         self.door = None
         self.auto = None
-        self.system_config = SystemConfig.objects.first()
-        self.startup_config = StartupConfig.objects.first()
+        self.system_config = system_config
+        self.startup_config = startup_config
 
         self._start()
 
@@ -160,3 +158,10 @@ class Initialization:
             raise
 
         self._log.info("Initialization Complete!")
+    
+    def destroy(self):
+        """Shutdown the door and exit the program"""
+        self._log.info("Destroying current initialization...")
+        self.auto.stop()
+        self.door.cleanup()
+        self._log.info("Initialization destroyed!")
