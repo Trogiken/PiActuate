@@ -134,21 +134,6 @@ class Initialization:
         except BaseException:
             raise AttributeError("Problem Creating Auto Object")
 
-
-        self._log.info(StC.automation)
-        self._log.info(type(StC.automation))
-        if StC.automation == 'True':
-            StC.automation = True
-        else:
-            StC.automation = False
-
-        self._log.info(StC.auxillary)
-        self._log.info(type(StC.auxillary))
-        if StC.auxillary == 'True':
-            StC.auxillary = True
-        else:
-            StC.auxillary = False
-
         # Execute Saved States
         self._log.debug('Executing Saved States...')
         if StC.automation:
