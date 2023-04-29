@@ -17,6 +17,9 @@ from .models import SystemConfig, StartupConfig
 from source.startup import Initialization
 
 runtime = None
+if not StartupConfig.objects.exists():  # always create a startup config
+    StartupConfig.objects.create()
+
 if SystemConfig.objects.exists() and StartupConfig.objects.exists() and runtime is None:
         runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
@@ -25,7 +28,7 @@ def backend_init():
     """Init backend"""
     global runtime
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-        if runtime is None:
+        if runtime is not None:
             runtime.destroy()
         runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
