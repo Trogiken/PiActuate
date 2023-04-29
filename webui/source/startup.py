@@ -109,7 +109,7 @@ class Initialization:
             self._log.info('Creating Door Object')
 
             from source.door import Door
-            self.door = Door(board_mode=str(SyC.board_mode), off_state=bool(SyC.off_state), relay1=int(SyC.relay1),
+            self.door = Door(board_mode=str(SyC.board_mode), off_state=SyC.off_state, relay1=int(SyC.relay1),
                              relay2=int(SyC.relay2), sw1=int(SyC.switch1), sw2=int(SyC.switch2), sw3=int(SyC.switch3),
                              sw4=int(SyC.switch4), sw5=int(SyC.switch5), travel_time=int(SyC.travel_time))
             self._log.info("Door object created")
@@ -131,10 +131,10 @@ class Initialization:
 
         # Execute Saved States
         self._log.debug('Executing Saved States...')
-        if StC['automation']:
+        if StC.automation:
             self._log.debug('Running Automation')
             self.auto.run()
-        elif StC['auxiliary']:
+        elif StC.auxillary:
             self._log.debug('Running Auxiliary Switches')
             self.door.run_aux()
         else:
