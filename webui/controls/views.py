@@ -78,7 +78,7 @@ class DetailPostView(LoginRequiredMixin, View):
             startup_config.save()
 
             # update runtime data with new values
-            if form_data["automation"] == 'True':
+            if form_data["automation"]:
                 runtime.auto.run()
                 if runtime.auto.active_sunrise() != int(form_data["sunrise_offset"]):
                     runtime.auto.set_sunrise(int(form_data["sunrise_offset"]))
@@ -88,7 +88,7 @@ class DetailPostView(LoginRequiredMixin, View):
             else:
                 runtime.auto.stop()
 
-            if form_data["auxillary"] == 'True':
+            if form_data["auxillary"]:
                 runtime.door.run_aux()
             else:
                 runtime.door.stop_aux()
