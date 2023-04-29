@@ -96,11 +96,13 @@ class _Scheduler(threading.Thread):
                     if status == 'closed':
                         log.info("Door Called Up")
                         self.door.move(2)
+                        sleep(1)
                         break
                 else:
                     if status == 'open':
                         log.info("Door Called Down")
                         self.door.move(1)
+                        sleep(1)
                         break
                 i = 0
                 while i != 60:  # Wait for some seconds, checking for stop event each second
