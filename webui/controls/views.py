@@ -141,7 +141,7 @@ class SystemConfigView(LoginRequiredMixin, View):
             config.switch3 = int(form_data["switch3"])
             config.switch4 = int(form_data["switch4"])
             config.switch5 = int(form_data["switch5"])
-            config.off_state = int(form_data["off_state"])
+            config.off_state = bool(form_data["off_state"])
             config.timezone = str(form_data["timezone"])
             config.longitude = float(form_data["longitude"])
             config.latitude = float(form_data["latitude"])
