@@ -65,7 +65,6 @@ class _Scheduler(threading.Thread):
 
     def run(self, *args, **kwargs):
         """Automation loop"""
-        cycle = 1
         while True:
             sun_data = self.get_world()
             sunrise = sun_data['sunrise']
@@ -88,6 +87,10 @@ class _Scheduler(threading.Thread):
                     break
                 current = datetime.now().strftime("%H:%M")
                 status = self.door.get_status()
+                self.active_current = current
+                log.debug(f"Current Time: {current}")
+                log.debug(f"Current Status: {status}")
+
 
                 if sunrise <= current < sunset:
                     if status == 'closed':
@@ -106,7 +109,7 @@ class _Scheduler(threading.Thread):
                         log.debug("Stopping...")
                         return
                     if self._refresh_event.is_set():
-                        request_refresh = True  # FIXME Variable updating may not work
+                        request_refresh = True
                         break
                     sleep(1)
 
@@ -226,5 +229,18 @@ class Auto:
         """
         if self.sch.is_alive():
             return self.sch.active_sunset
+        else:
+            return None
+    
+    def active_current(self):
+        """
+        Get current time from scheduler
+
+        Returns:
+        -------
+        sch.active_current (str): 00:00 string format
+        """
+        if self.sch.is_alive():
+            return self.sch.active_current
         else:
             return None
