@@ -71,19 +71,13 @@ class DetailPostView(LoginRequiredMixin, View):
         if detail_form.is_valid():
             startup_config = StartupConfig.objects.first()
             form_data = detail_form.cleaned_data
-            if form_data["automation"] == 'True':
-                startup_config.automation = True
-            else:
-                startup_config.automation = False
-            if form_data["auxillary"] == 'True':
-                startup_config.auxillary = True
-            else:
-                startup_config.auxillary = False
+            startup_config.automation = form_data["automation"]
+            startup_config.auxillary = form_data["auxillary"]
             startup_config.sunrise_offset = form_data["sunrise_offset"]
             startup_config.sunset_offset = form_data["sunset_offset"]
             startup_config.save()
             # update runtime data with new values
-            if startup_config.automation:
+            if startup_config.automation == 'True':
                 runtime.auto.run()
                 if runtime.auto.active_sunrise() != int(form_data["sunrise_offset"]):
                     runtime.auto.set_sunrise(int(form_data["sunrise_offset"]))
@@ -93,7 +87,7 @@ class DetailPostView(LoginRequiredMixin, View):
             else:
                 runtime.auto.stop()
 
-            if startup_config.auxillary:
+            if startup_config.auxillary == 'True':
                 runtime.door.run_aux()
             else:
                 runtime.door.stop_aux()
@@ -148,8 +142,7 @@ class SystemConfigView(LoginRequiredMixin, View):
             config.switch3 = form_data["switch3"]
             config.switch4 = form_data["switch4"]
             config.switch5 = form_data["switch5"]
-            if form_data["off_state"] == 'True':
-                config.off_state = True
+            config.off_state = form_data["off_state"]
             config.timezone = form_data["timezone"]
             config.longitude = form_data["longitude"]
             config.latitude = form_data["latitude"]
