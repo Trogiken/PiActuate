@@ -67,8 +67,6 @@ class _Scheduler(threading.Thread):
         """Automation loop"""
         cycle = 1
         while True:
-            log.debug(f"Cycle: {cycle}")
-
             sun_data = self.get_world()
             sunrise = sun_data['sunrise']
             sunset = sun_data['sunset']
@@ -101,17 +99,16 @@ class _Scheduler(threading.Thread):
                         log.info("Door Called Down")
                         self.door.move(1)
                         break
-            i = 0
-            while i != 60:  # Wait for some seconds, checking for stop event each second
-                i += 1
-                if self._stop_event.is_set():
-                    log.debug("Stopping...")
-                    return
-                if self._refresh_event.is_set():
-                    request_refresh = True  # FIXME Variable updating may not work
-                    break
-                sleep(1)
-            cycle += 1
+                i = 0
+                while i != 60:  # Wait for some seconds, checking for stop event each second
+                    i += 1
+                    if self._stop_event.is_set():
+                        log.debug("Stopping...")
+                        return
+                    if self._refresh_event.is_set():
+                        request_refresh = True  # FIXME Variable updating may not work
+                        break
+                    sleep(1)
 
 
 class Auto:
