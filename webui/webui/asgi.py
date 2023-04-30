@@ -24,9 +24,8 @@ import webui.routing
 application = ProtocolTypeRouter(
     {
         "http": django_asgi_app,
-        "websocket": AuthMiddlewareStack(
-            URLRouter(
-                webui.routing.websocket_urlpatterns)
-                ),
+        "websocket": AllowedHostsOriginValidator(
+            AuthMiddlewareStack(URLRouter(webui.routing.websocket_urlpatterns))
+        ),
     }
 )
