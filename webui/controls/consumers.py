@@ -1,13 +1,7 @@
 import json
 
 from channels.generic.websocket import WebsocketConsumer
-from controls.views import runtime
-
-from time import sleep
-while runtime is None:
-    sleep(1)
-    from controls.views import runtime
-
+from .models import SystemConfig
 
 class DashboardConsumer(WebsocketConsumer):
     def connect(self):
@@ -18,7 +12,14 @@ class DashboardConsumer(WebsocketConsumer):
 
     def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
-        self.send(text_data=json.dumps({
-            "message": runtime.door.get_status()
-            })
-        )  # send door status
+        if SystemConfig.objects.exists():  # jank
+            from controls.views import runtime
+            self.send(text_data=json.dumps({
+                "message": runtime.door.get_status()
+                })
+            )  # send door status
+        else:
+            self.send(text_data=json.dumps({
+                "message": "undefined"
+                })
+            )
