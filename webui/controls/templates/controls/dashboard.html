@@ -14,6 +14,7 @@
 
 {% block js %}
 <script src="{% static 'controls/includes/sidebar-active.js' %}"></script>
+<script src="{% static 'controls/includes/door-status.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -86,26 +87,4 @@
         </form>
       </div>
     </section>
-    <script>
-      const statusSocket = new WebSocket(
-        'ws://'
-        + window.location.host
-        + '/ws/dashboard/status/'
-      );
-      
-      document.onload = function() {
-        window.setInterval(getStatus, 1000);
-      };
-      
-      function getStatus() {
-        statusSocket.send(JSON.stringify({
-          'message': 'get_status'
-        }));
-      }
-
-      statusSocket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        document.querySelector('#status_text').innerHTML = data.message;
-      };
-    </script>
 {% endblock %}
