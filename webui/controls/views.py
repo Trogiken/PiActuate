@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from time import sleep
+
 from django.http import HttpResponse
 from django.contrib.auth.views import LoginView
 from django.views.generic import View
@@ -85,6 +87,7 @@ class DetailPostView(LoginRequiredMixin, View):
                 if runtime.auto.sunset_offset != int(form_data["sunset_offset"]):
                     runtime.auto.set_sunset(int(form_data["sunset_offset"]))
                 runtime.auto.refresh()
+                sleep(.5)  # give the scheduler time to update
             else:
                 runtime.auto.stop()
 

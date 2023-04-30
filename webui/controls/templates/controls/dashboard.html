@@ -65,7 +65,7 @@
             <div>
               {{ detail_form.sunrise_offset.label_tag }}
               {% if active_times.sunrise %}
-                <span>{{ active_times.sunrise }}</span>
+                <span>[{{ active_times.sunrise }}]</span>
               {% endif %}
             </div>
             {{ detail_form.sunrise_offset }}
@@ -75,7 +75,7 @@
             <div>
               {{ detail_form.sunset_offset.label_tag }}
               {% if active_times.sunset %}
-                <span>{{ active_times.sunset }}</span>
+                <span>[{{ active_times.sunset }}]</span>
               {% endif %}
             </div>
             {{ detail_form.sunset_offset }}
