@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block js %}
+<script src="{% static 'controls/status-update.js' %}"></script>
 <script src="{% static 'controls/includes/sidebar-active.js' %}"></script>
 {% endblock %}
 
@@ -34,7 +35,7 @@
             </div>
           </button>
         </form>
-        <label>Door Status: <span id="status_text">placeholder</span></label>
+        <label>Door Status: <span id="status_text"></span></label>
       </div>
 
       <hr>
