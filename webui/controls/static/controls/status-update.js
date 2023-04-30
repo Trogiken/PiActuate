@@ -4,7 +4,7 @@ const statusSocket = new WebSocket(
     + '/ws/dashboard/status/'
   );
   
-document.onload = function() {
+window.onload = function() {
     window.setInterval(getStatus, 1000);
 };
 
