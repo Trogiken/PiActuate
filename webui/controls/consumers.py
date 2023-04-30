@@ -12,8 +12,6 @@ class DashboardConsumer(WebsocketConsumer):
 
     def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
-        print(data)
-        print(runtime.door.get_status())
         self.send(text_data=json.dumps({
             "message": runtime.door.get_status()
             })
