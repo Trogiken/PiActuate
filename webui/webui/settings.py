@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["127.0.0.1", '192.168.254.18:8000', '*']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'controls',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -72,6 +73,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'webui.wsgi.application'
+ASGI_APPLICATION = 'webui.asgi.application'
 
 
 # Database

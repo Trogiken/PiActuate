@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from time import sleep
+
 from django.contrib.auth.views import LoginView
 from django.views.generic import View
 from django.shortcuts import redirect
@@ -16,7 +17,21 @@ from .models import SystemConfig, StartupConfig
 
 from source.startup import Initialization
 
-runtime = Initialization()
+runtime = None
+if not StartupConfig.objects.exists():  # always create a startup config
+    StartupConfig.objects.create()
+
+if SystemConfig.objects.exists() and StartupConfig.objects.exists() and runtime is None:
+        runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
+
+
+def backend_init():
+    """Init backend"""
+    global runtime
+    if SystemConfig.objects.exists() and StartupConfig.objects.exists():
+        if runtime is not None:
+            runtime.destroy()
+        runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
 
 class RedirectToLoginView(View):
@@ -38,8 +53,7 @@ class UserLoginView(LoginView):
 def door_up(request):
     """door up"""
     if request.method == "POST":
-        print('door up')
-        # TODO dont redirect and add code
+        runtime.door.move(2)
         return redirect("dashboard-page")
 
 
@@ -48,8 +62,7 @@ def door_up(request):
 def door_down(request):
     """door down"""
     if request.method == "POST":
-        print('door down')
-        # TODO dont redirect and add code
+        runtime.door.move(1)
         return redirect("dashboard-page")
 
 
@@ -58,17 +71,36 @@ class DetailPostView(LoginRequiredMixin, View):
         detail_form = DetailForm(request.POST)
         if detail_form.is_valid():
             startup_config = StartupConfig.objects.first()
-            startup_config.automation = detail_form.cleaned_data["automation"]
-            startup_config.auxillary = detail_form.cleaned_data["auxillary"]
-            startup_config.sunrise_offset = detail_form.cleaned_data["sunrise_offset"]
-            startup_config.sunset_offset = detail_form.cleaned_data["sunset_offset"]
+            form_data = detail_form.cleaned_data
+            startup_config.automation = form_data["automation"]
+            startup_config.auxillary = form_data["auxillary"]
+            startup_config.sunrise_offset = form_data["sunrise_offset"]
+            startup_config.sunset_offset = form_data["sunset_offset"]
             startup_config.save()
+
+            # update runtime data with new values
+            if form_data["automation"]:
+                runtime.auto.run()
+                if runtime.auto.sunrise_offset != int(form_data["sunrise_offset"]):
+                    runtime.auto.set_sunrise(int(form_data["sunrise_offset"]))
+                if runtime.auto.sunset_offset != int(form_data["sunset_offset"]):
+                    runtime.auto.set_sunset(int(form_data["sunset_offset"]))
+                runtime.auto.refresh()
+                sleep(1)  # give the scheduler time to update
+            else:
+                runtime.auto.stop()
+
+            if form_data["auxillary"]:
+                runtime.door.run_aux()
+            else:
+                runtime.door.stop_aux()
             messages.add_message(request, messages.INFO, "Saved")
             return redirect("dashboard-page")
         else:
             messages.add_message(request, messages.ERROR, "Problem Saving")
             return render(request, "controls/dashboard.html", {
                 "detail_form": detail_form,
+                "active_times": {'sunrise': runtime.auto.active_sunrise(), 'sunset': runtime.auto.active_sunset(), 'current': runtime.auto.active_current()},
             })
     
 
@@ -79,12 +111,9 @@ class DashboardView(LoginRequiredMixin, View):
         if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page
             return redirect("systemconfig-page")
 
-        if not StartupConfig.objects.exists():
-            StartupConfig.objects.create()
-
-        # TODO fill values with already existing values from the database
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),
+            "active_times": {'sunrise': runtime.auto.active_sunrise(), 'sunset': runtime.auto.active_sunset(), 'current': runtime.auto.active_current()},
         })
 
 
@@ -125,6 +154,7 @@ class SystemConfigView(LoginRequiredMixin, View):
             config.travel_time = form_data["travel_time"]
 
             config.save()
+            backend_init()
 
             messages.add_message(request, messages.INFO, "System config saved!")
             return redirect("systemconfig-page")

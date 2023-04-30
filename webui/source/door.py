@@ -121,7 +121,7 @@ class Door:
     move(opt=int):
         move door open or closed
     """
-    def __init__(self, board_mode, off_state, relay1, relay2, sw1, sw2, sw3, sw4, sw5, travel_time):
+    def __init__(self, board_mode: str, off_state: bool, relay1: int, relay2: int, sw1: int, sw2: int, sw3: int, sw4: int, sw5: int, travel_time: int):
         """Constructs all the necessary attributes for the Door object"""
         if board_mode.casefold() == 'bcm':
             GPIO.setmode(GPIO.BCM)

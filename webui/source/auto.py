@@ -65,10 +65,7 @@ class _Scheduler(threading.Thread):
 
     def run(self, *args, **kwargs):
         """Automation loop"""
-        cycle = 1
         while True:
-            log.debug(f"Cycle: {cycle}")
-
             sun_data = self.get_world()
             sunrise = sun_data['sunrise']
             sunset = sun_data['sunset']
@@ -88,30 +85,35 @@ class _Scheduler(threading.Thread):
                     log.debug("Refreshing...")
                     self._refresh_event.clear()
                     break
-                current = datetime.now().strftime("%H:%M")
+                current = datetime.now(timezone(self.zone)).strftime("%H:%M")
                 status = self.door.get_status()
+                self.active_current = current
+                log.debug(f"Current Time: {current}")
+                log.debug(f"Current Status: {status}")
+
 
                 if sunrise <= current < sunset:
                     if status == 'closed':
                         log.info("Door Called Up")
                         self.door.move(2)
+                        sleep(1)
                         break
                 else:
                     if status == 'open':
                         log.info("Door Called Down")
                         self.door.move(1)
+                        sleep(1)
                         break
-            i = 0
-            while i != 60:  # Wait for some seconds, checking for stop event each second
-                i += 1
-                if self._stop_event.is_set():
-                    log.debug("Stopping...")
-                    return
-                if self._refresh_event.is_set():
-                    request_refresh = True  # FIXME Variable updating may not work
-                    break
-                sleep(1)
-            cycle += 1
+                i = 0
+                while i != 60:  # Wait for some seconds, checking for stop event each second
+                    i += 1
+                    if self._stop_event.is_set():
+                        log.debug("Stopping...")
+                        return
+                    if self._refresh_event.is_set():
+                        request_refresh = True
+                        break
+                    sleep(1)
 
 
 class Auto:
@@ -229,5 +231,18 @@ class Auto:
         """
         if self.sch.is_alive():
             return self.sch.active_sunset
+        else:
+            return None
+    
+    def active_current(self):
+        """
+        Get current time from scheduler
+
+        Returns:
+        -------
+        sch.active_current (str): 00:00 string format
+        """
+        if self.sch.is_alive():
+            return self.sch.active_current
         else:
             return None

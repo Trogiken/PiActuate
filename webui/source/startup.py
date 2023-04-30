@@ -16,15 +16,13 @@ class Initialization:
 
     Attributes
     ----------
-    save : object
-        Setup source.disk.Save()
     door : object
         Setup source.door.Door()
     auto : object
         Setup source.auto.Auto()
-    system_config : dict
+    system_config : class
         System Config values
-    startup_config : dict
+    startup_config : class
         Startup Config values
 
     Methods
@@ -38,17 +36,17 @@ class Initialization:
     _start():
         Run the private methods in correct order
     """
-    def __init__(self):
+    def __init__(self, system_config, startup_config):
         """Constructs all necessary attributes for the Initialization object"""
-        self._home = str(Path(__file__).resolve().parents[2])  # DEBUG Correct level?
+        self._home = str(Path(__file__).resolve().parents[2])
         self._source = str(Path(__file__).resolve().parents[0])
         self._log = None
 
 
         self.door = None
         self.auto = None
-        self.system_config = SystemConfig.objects.first()
-        self.startup_config = StartupConfig.objects.first()
+        self.system_config = system_config
+        self.startup_config = startup_config
 
         self._start()
 
@@ -110,10 +108,15 @@ class Initialization:
         try:  # Create Door Object
             self._log.info('Creating Door Object')
 
+            if SyC.off_state == 'True':
+                SyC.off_state = True
+            else:
+                SyC.off_state = False
+
             from source.door import Door
-            self.door = Door(board_mode=SyC.board_mode, off_state=SyC.off_state, relay1=SyC.relay1,
-                             relay2=SyC.relay2, sw1=SyC.switch1, sw2=SyC.switch2, sw3=SyC.switch3,
-                             sw4=SyC.switch4, sw5=SyC.switch5, travel_time=SyC.travel_time)
+            self.door = Door(board_mode=str(SyC.board_mode), off_state=SyC.off_state, relay1=int(SyC.relay1),
+                             relay2=int(SyC.relay2), sw1=int(SyC.switch1), sw2=int(SyC.switch2), sw3=int(SyC.switch3),
+                             sw4=int(SyC.switch4), sw5=int(SyC.switch5), travel_time=int(SyC.travel_time))
             self._log.info("Door object created")
         except BaseException:
             raise AttributeError("Problem Creating Door Object")
@@ -122,10 +125,10 @@ class Initialization:
             self._log.info('Creating Auto Object')
 
             from source.auto import Auto  # DEBUG Removed redundant data type declaration; verify functionality
-            self.auto = Auto(door=self.door, zone=SyC.timezone,
-                             latitude=SyC.latitude, longitude=SyC.longitude,
-                             sunrise_offset=StC.sunrise_offset,
-                             sunset_offset=StC.sunset_offset,
+            self.auto = Auto(door=self.door, zone=str(SyC.timezone),
+                             latitude=float(SyC.latitude), longitude=float(SyC.longitude),
+                             sunrise_offset=int(StC.sunrise_offset),
+                             sunset_offset=int(StC.sunset_offset),
                              )
             self._log.info("Automation object created")
         except BaseException:
@@ -133,14 +136,12 @@ class Initialization:
 
         # Execute Saved States
         self._log.debug('Executing Saved States...')
-        if StC['automation']:
+        if StC.automation:
             self._log.debug('Running Automation')
             self.auto.run()
-        elif StC['auxiliary']:
+        if StC.auxillary:
             self._log.debug('Running Auxiliary Switches')
             self.door.run_aux()
-        else:
-            self._log.debug('Nothing Executed!')
 
     def _start(self):
         """Run Tests"""
@@ -160,3 +161,10 @@ class Initialization:
             raise
 
         self._log.info("Initialization Complete!")
+    
+    def destroy(self):
+        """Shutdown the door and exit the program"""
+        self._log.info("Destroying current initialization...")
+        self.auto.stop()
+        self.door.cleanup()
+        self._log.info("Initialization destroyed!")
