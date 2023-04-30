@@ -58,13 +58,16 @@
 
           <h1>Offset Values</h1>
           <p>(+ or - Minutes)</p>
+          <span>Current Time: {{ active_times.current_time }}</span>
           <div class="form-control">
             {{ detail_form.sunrise_offset.label_tag }}
+            <span>{{ active_times.sunrise }}</span>
             {{ detail_form.sunrise_offset }}
             {{ detail_form.sunrise_offset.errors }}
           </div>
           <div class="form-control">
             {{ detail_form.sunset_offset.label_tag }}
+            <span>{{ active_times.sunset }}</span>
             {{ detail_form.sunset_offset }}
             {{ detail_form.sunset_offset.errors }}
           </div>

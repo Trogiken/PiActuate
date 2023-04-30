@@ -98,6 +98,7 @@ class DetailPostView(LoginRequiredMixin, View):
             messages.add_message(request, messages.ERROR, "Problem Saving")
             return render(request, "controls/dashboard.html", {
                 "detail_form": detail_form,
+                "active_times": {'sunrise': runtime.auto.active_sunrise(), 'sunset': runtime.auto.active_sunset(), 'current': runtime.auto.active_current()},
             })
     
 
@@ -110,6 +111,7 @@ class DashboardView(LoginRequiredMixin, View):
 
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),
+            "active_times": {'sunrise': runtime.auto.active_sunrise(), 'sunset': runtime.auto.active_sunset(), 'current': runtime.auto.active_current()},
         })
 
 
