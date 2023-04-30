@@ -3,6 +3,12 @@ import json
 from channels.generic.websocket import WebsocketConsumer
 from controls.views import runtime
 
+from time import sleep
+while runtime is None:
+    sleep(1)
+    from controls.views import runtime
+
+
 class DashboardConsumer(WebsocketConsumer):
     def connect(self):
         self.accept()
