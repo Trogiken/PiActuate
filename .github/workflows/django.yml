@@ -24,7 +24,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r /github/docs/requirements.txt
+        pip install -r default/docs/requirements.txt
     - name: Run Tests
       run: |
         python manage.py test
