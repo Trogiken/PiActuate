@@ -157,10 +157,18 @@ class Auto:
         start the scheduler thread
     stop():
         stop the scheduler thread
+    set_sunrise_offset():
+        set sunrise offset time (HH:MM) Call refresh() to apply changes
+    set_sunset_offset():
+        set sunset offset time (HH:MM) Call refresh() to apply changes
+    refresh():
+        refresh dates and times
     active_sunrise():
         get sunrise time from scheduler
     active_sunset():
         get sunset time from scheduler
+    active_current():
+        get current time from scheduler
     """
     def __init__(self, door, zone, longitude, latitude, sunrise_offset, sunset_offset):
         """Constructs all necessary attributes for the Auto object"""
@@ -205,13 +213,13 @@ class Auto:
         except Exception:
             log.exception("Scheduler has failed to Stop")
 
-    def set_sunrise(self, value):
+    def set_sunrise_offset(self, value):
         """Changes Auto() and _Scheduler() attribute "sunrise_offset" to (value)"""
         self.sunrise_offset = value
         if self.sch.is_alive():
             self.sch.sunrise_offset = value
 
-    def set_sunset(self, value):
+    def set_sunset_offset(self, value):
         """Changes Auto() and _Scheduler() attribute "sunset_offset" to (value)"""
         self.sunset_offset = value
         if self.sch.is_alive():

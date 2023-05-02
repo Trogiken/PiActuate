@@ -82,9 +82,9 @@ class DetailPostView(LoginRequiredMixin, View):
             if form_data["automation"]:
                 runtime.auto.run()
                 if runtime.auto.sunrise_offset != int(form_data["sunrise_offset"]):
-                    runtime.auto.set_sunrise(int(form_data["sunrise_offset"]))
+                    runtime.auto.set_sunrise_offset(int(form_data["sunrise_offset"]))
                 if runtime.auto.sunset_offset != int(form_data["sunset_offset"]):
-                    runtime.auto.set_sunset(int(form_data["sunset_offset"]))
+                    runtime.auto.set_sunset_offset(int(form_data["sunset_offset"]))
                 runtime.auto.refresh()
                 sleep(1)  # give the scheduler time to update
             else:
