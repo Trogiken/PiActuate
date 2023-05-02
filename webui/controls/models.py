@@ -11,10 +11,12 @@ class SystemConfig(models.Model):
     class OffState(models.TextChoices):
         POWER_ON = True, 'On'
         POWER_OFF = False, 'Off'
+    
+    class BoardMode(models.TextChoices):
+        BCM = 'BCM', 'BCM'
+        BOARD = 'BOARD', 'BOARD'
 
-    board_mode = models.CharField(max_length=5, default='BCM', editable=False,
-                                  help_text="This is the help text for board_mode")
-
+    board_mode = models.CharField(max_length=5, choices=BoardMode.choices, default=BoardMode.BCM, verbose_name="Board Mode", help_text="GPIO pin numbering mode")
     relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 1", help_text="Extending Motion")
     relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 2", help_text="Retraction Motion")
     switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 1", help_text="Extend Limit")
