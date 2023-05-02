@@ -125,8 +125,10 @@ class Door:
         """Constructs all the necessary attributes for the Door object"""
         if board_mode.casefold() == 'bcm':
             GPIO.setmode(GPIO.BCM)
+            log.debug("GPIO mode set to BCM")
         elif board_mode.casefold() == 'board':
             GPIO.setmode(GPIO.BOARD)
+            log.debug("GPIO mode set to BOARD")
         else:
             log.error('Invalid GPIO board mode')
             raise IOError
