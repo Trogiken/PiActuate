@@ -6,7 +6,7 @@ _Tested on the [RPI 4 B](https://www.raspberrypi.com/products/raspberry-pi-4-mod
 ## Requirements
 Python 3.10+
 
-[Imported Files](requirments.txt)
+[Imported Files](docs/requirments.txt)
 
 ## Features
 - Automated Operation
