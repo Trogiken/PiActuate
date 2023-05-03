@@ -139,7 +139,7 @@ class SystemConfigView(LoginRequiredMixin, View):
             config = SystemConfig.objects.first()
             form_data = systemconfg_form.cleaned_data
 
-            config.board_mode = config.board_mode
+            config.board_mode = form_data["board_mode"]
             config.relay1 = form_data["relay1"]
             config.relay2 = form_data["relay2"]
             config.switch1 = form_data["switch1"]
