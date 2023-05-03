@@ -20,9 +20,10 @@ Python 3.10+
   - Open and Close Buttons
 
 ## Installation and Start
-1. Install Requirements
+1. Install Requirements: `pip install PACKAGE_NAME`
 2. Download Repository
-3. Open a terminal session in the repositorys directory, then run: `./startup_script.sh`
+3. Open a CLI session in the repositorys directory - make the script executable: `chmod +x startup_script.sh`
+4. Finally, run the startup script: `./startup_script.sh`
 
 Click [here](#creating-a-service) if you wish this script to run at boot
 
