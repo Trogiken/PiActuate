@@ -40,3 +40,6 @@
     font-weight: 600;
     width: 100%;
 }
+.Form-container .submit-button:hover {
+    background: #1a237e;
+}

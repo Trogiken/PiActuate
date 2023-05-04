@@ -53,6 +53,9 @@
   font-weight: 600;
   width: 100%;
 }
+.SystemConfig-form .submit-button:hover {
+  background: #1a237e;
+}
 .help-button {
   background: #3e4684;
   border: none;
@@ -65,7 +68,7 @@
   padding: 0;
 }
 .help-button:hover {
-  background: #4c56a0;
+  background: #1a237e;
 }
 .help-button svg {
   fill: currentColor;
