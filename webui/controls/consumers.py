@@ -12,16 +12,10 @@ class DashboardConsumer(WebsocketConsumer):
 
     def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
-        if SystemConfig.objects.exists():  # jank: this is a hack to prevent the system from crashing when the database is empty, first condition in views.py doesn't pass
-            from controls.views import runtime
-            print("Consumer condition true")  # DEBUG
-            self.send(text_data=json.dumps({
-                "message": runtime.door.get_status()
-                })
-            )  # send door status
-        else:
-            print("Consumer condition false")  # DEBUG
-            self.send(text_data=json.dumps({
-                "message": "undefined"
-                })
-            )
+        print("Consumer receive")  # DEBUG
+        from controls.views import runtime
+        print(f"Runtime: {runtime}")  # DEBUG
+        self.send(text_data=json.dumps({
+            "message": runtime.door.get_status()
+            })
+        )  # send door status
