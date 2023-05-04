@@ -18,8 +18,6 @@ from .models import SystemConfig, StartupConfig
 from source.startup import Initialization
 
 runtime = None
-if not StartupConfig.objects.exists():  # always create a startup config
-    StartupConfig.objects.create()
 
 if SystemConfig.objects.exists() and StartupConfig.objects.exists() and runtime is None:
         runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
@@ -94,7 +92,7 @@ class DetailPostView(LoginRequiredMixin, View):
                 runtime.door.run_aux()
             else:
                 runtime.door.stop_aux()
-            messages.add_message(request, messages.INFO, "Saved")
+            messages.add_message(request, messages.SUCCESS, "Saved")
             return redirect("dashboard-page")
         else:
             messages.add_message(request, messages.ERROR, "Problem Saving")
@@ -154,13 +152,19 @@ class SystemConfigView(LoginRequiredMixin, View):
             config.travel_time = form_data["travel_time"]
 
             config.save()
+
+            # if first time setup, redirect to dashboard
+            if not StartupConfig.objects.exists():
+                StartupConfig.objects.create()
+                backend_init()
+                return redirect("dashboard-page")
+
             backend_init()
 
-            messages.add_message(request, messages.INFO, "System config saved!")
+            messages.add_message(request, messages.SUCCESS, "System config saved!")
             return redirect("systemconfig-page")
 
-        # TODO if the form is invalid, we want to show the form again with previous data
-        messages.add_message(request, messages.ERROR, "There was an error with the form, please try again")
+        messages.add_message(request, messages.ERROR, "There was an error, please try again")
         return render(request, "controls/systemconfig.html", {
             "systemconfig_form": systemconfg_form
         })
