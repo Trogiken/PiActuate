@@ -79,7 +79,7 @@ class Initialization:
         self._log = logging.getLogger('root')
 
     @staticmethod
-    def _is_rpi():  # DEBUG Method of identifying OS is untested
+    def _is_rpi():
         """Check if system is running on an RPI"""
         import io
 

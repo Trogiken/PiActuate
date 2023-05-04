@@ -50,7 +50,7 @@ class _Auxiliary(threading.Thread):
         while True:
             if self.stopped():
                 GPIO.output(self.RELAY1, self.OFF_STATE)
-                GPIO.output(self.RELAY2, self.OFF_STATE)  # TODO Left off setting states here
+                GPIO.output(self.RELAY2, self.OFF_STATE)
                 return
             if GPIO.input(self.AUX_SW1) == 1:
                 self.motion = 1
