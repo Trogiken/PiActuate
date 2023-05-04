@@ -20,7 +20,6 @@ from source.startup import Initialization
 runtime = None
 
 if SystemConfig.objects.exists() and StartupConfig.objects.exists() and runtime is None:
-        print("First INIT true")  # DEBUG
         runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
 
@@ -31,8 +30,6 @@ def backend_init():
         if runtime is not None:
             runtime.destroy()
         runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
-    else:
-        print("SystemConfig or StartupConfig does not exist") # DEBUG
 
 
 class RedirectToLoginView(View):
@@ -160,7 +157,6 @@ class SystemConfigView(LoginRequiredMixin, View):
             if not StartupConfig.objects.exists():
                 StartupConfig.objects.create()
                 backend_init()
-                print("first time setup, redirect")  # DEBUG
                 return redirect("dashboard-page")
 
             backend_init()
