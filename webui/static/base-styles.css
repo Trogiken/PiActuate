@@ -86,3 +86,65 @@ body::-webkit-scrollbar-thumb:hover {
 
 /* Style system messages here */
 /* Including the LEVEL styles (debug, critical, etc) */
+.messages {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 30px;
+  background: #f1f7fe;
+  box-shadow: 0 0 2rem #e6e9f9;
+  color: #3e4684;
+  font-weight: 600;
+  text-align: center;
+  list-style: none;
+}
+.messages.flash {
+  animation: flash 1s;
+}
+
+@keyframes flash {
+  0% {
+      background-color: #f1f7fe;
+  }
+  50% {
+      color: white;
+      background-color: #3e4684;
+  }
+  100% {
+      background-color: #f1f7fe;
+  }
+}
+
+/* Listed level styles for ease of change */
+.messages li.debug {
+  color: #3e4684;
+}
+.messages li.debug:before {
+  content: "DEBUG: ";
+}
+.messages li.info {
+  color: #3e4684;
+}
+.messages li.info:before {
+  content: "INFO: ";
+}
+.messages li.success {
+  color: #3e4684;
+}
+.messages li.success:before {
+  content: "SUCCESS: ";
+  color: #00a600;
+}
+.messages li.warning {
+  color: #3e4684;
+}
+.messages li.warning:before {
+  content: "WARNING: ";
+  color: #ce9e00;
+}
+.messages li.error {
+  color: #3e4684;
+}
+.messages li.error::before {
+  content: "ERROR: ";
+  color: #d6000b;
+}

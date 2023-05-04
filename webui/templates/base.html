@@ -20,7 +20,7 @@
 
     <main class="container">
         {% if messages %}
-        <ul class="messages">
+        <ul class="messages flash">
             {% for message in messages %}
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
             {% endfor %}
@@ -32,7 +32,29 @@
 
     <!--  Load js files  -->
     {% block js %}{% endblock %}
+
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        // hide the specified messages after 3 seconds
+        var messages = document.querySelectorAll('.success, .debug, info');
+
+        window.onload = function() {
+            // Hide messages
+            setTimeout(function(){
+                for (var i = 0; i < messages.length; i ++) {
+                    messages[i].setAttribute('style', 'display:none');
+                }
+                
+                // Check if all messages are hidden
+                var messageContainer = document.querySelector('.messages');
+                if (messageContainer && Array.from(messageContainer.querySelectorAll('.warning, .error, .success')).every(function(el) {
+                    return el.style.display === 'none';
+                })) {
+                    messageContainer.remove();
+                }
+            }, 5000)
+        };
+    </script>
 </body>
 </html>
