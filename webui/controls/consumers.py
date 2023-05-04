@@ -1,10 +1,10 @@
 import json
 
 from channels.generic.websocket import WebsocketConsumer
-from .models import SystemConfig
 
 class DashboardConsumer(WebsocketConsumer):
     def connect(self):
+        print("Consumer connect")  # DEBUG
         self.accept()
 
     def disconnect(self, close_code):

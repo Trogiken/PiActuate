@@ -5,6 +5,8 @@ const statusSocket = new WebSocket(
   );
   
 window.onload = function() {
+    // log
+    console.log('status-update.js loaded');
     window.setInterval(getStatus, 1000);
 };
 
