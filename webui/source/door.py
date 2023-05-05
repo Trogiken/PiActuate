@@ -144,7 +144,6 @@ class Door:
         self.SW5 = sw5
         self.travel_time = travel_time
 
-        self.status = None
         self.motion = 0
         self.aux = None
         self.aux_is_running = False
@@ -214,6 +213,7 @@ class Door:
         GPIO.cleanup()
         log.info("GPIO Cleared")
 
+    @property
     def status(self):
         """
         Check door position
@@ -223,19 +223,19 @@ class Door:
         status (str): closed, open, blocked, moving or unknown
         """
         if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
-            self.status = 'closed'
+            status = 'closed'
         elif GPIO.input(self.SW1) == 0 and GPIO.input(self.SW2) == 1:
-            self.status = 'open'
+            status = 'open'
         elif GPIO.input(self.SW3) == 1:
-            self.status = 'blocked'
+            status = 'blocked'
         elif door_in_motion['in_motion']:  # DEBUG Remove and replace with condition below?
-            self.status = door_in_motion['direction']
+            status = door_in_motion['direction']
         elif door_in_motion['in_motion'] or self.aux is not None and self.aux.in_motion:
-            self.status = door_in_motion['direction']
+            status = door_in_motion['direction']
         else:
-            self.status = 'unknown'
+            status = 'unknown'
 
-        return self.status
+        return status
 
     def _move_op(self, opt):
         """
@@ -299,7 +299,7 @@ class Door:
             self._move_op(2)
             return
 
-        log.info(f"Status: {self.status()}")
+        log.info(f"Status: {self.status}")
         log.info("[Operation Stop]")
 
     def move(self, opt):

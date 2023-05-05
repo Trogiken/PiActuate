@@ -37,10 +37,6 @@ class _Scheduler(threading.Thread):
         rise_offset = timedelta(minutes=self.sunrise_offset)
         set_offset = timedelta(minutes=self.sunset_offset)
 
-        log.debug(f"Requested Date: {requested_date}")
-        log.debug(f"Sunrise Offset: {self.sunrise_offset} minutes")
-        log.debug(f"Sunset Offset: {self.sunset_offset} minutes")
-
         year = requested_date.year
         month = requested_date.month
         day = requested_date.day
@@ -64,6 +60,9 @@ class _Scheduler(threading.Thread):
         # Remove seconds from time
         sunset = sunset[:len(sunset) - 3]
         sunrise = sunrise[:len(sunrise) - 3]
+
+        log.debug(f"Requested Date: {requested_date}, Sunrise Offset: {self.sunrise_offset}, Sunset Offset: {self.sunset_offset}")
+        log.debug(f"Sunrise: {sunrise}, Sunset: {sunset}")
 
         return {'sunset': sunset, 'sunrise': sunrise}
 
@@ -90,11 +89,11 @@ class _Scheduler(threading.Thread):
             # Compare rise and set to the current time
             # Check if the door is open or closed, if it is open, close it, if it is closed, open it
             if self.active_sunrise < self.active_current < self.active_sunset:
-                if self.door.status() == 'closed':
+                if self.door.status == 'closed':
                     log.info("Opening Door")
                     self.door.move(2)
             elif self.active_current < self.active_sunrise or self.active_current > self.active_sunset:
-                if self.door.status() == 'open':
+                if self.door.status == 'open':
                     log.info("Closing Door")
                     self.door.move(1)
             else:

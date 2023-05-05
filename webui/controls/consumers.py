@@ -14,6 +14,6 @@ class DashboardConsumer(WebsocketConsumer):
         if data.get('message') == 'get_status':
             from controls.views import runtime
             self.send(text_data=json.dumps({
-                "message": runtime.door.status()
+                "message": runtime.door.status
                 })
             ) # send door status
