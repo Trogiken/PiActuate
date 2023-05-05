@@ -116,7 +116,7 @@ class Door:
         stop Auxiliary thread
     cleanup():
         resets relays and clears GPIO pins
-    get_status():
+    status():
         check if doors position is closed, open, blocked, or not known
     move(opt=int):
         move door open or closed
@@ -214,7 +214,7 @@ class Door:
         GPIO.cleanup()
         log.info("GPIO Cleared")
 
-    def get_status(self):
+    def status(self):
         """
         Check door position
 
@@ -299,7 +299,7 @@ class Door:
             self._move_op(2)
             return
 
-        log.info(f"Status: {self.get_status()}")
+        log.info(f"Status: {self.status()}")
         log.info("[Operation Stop]")
 
     def move(self, opt):
