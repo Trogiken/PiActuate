@@ -75,59 +75,44 @@ class _Scheduler(threading.Thread):
             today_suntimes = self.get_suntimes(today_date)
             tomorrow_suntimes = self.get_suntimes(tomorrow_date)
 
-            request_refresh = False
-            while True:
-                if request_refresh:
+            # set the times that will be compared
+            self.active_current = datetime.now(timezone(self.zone)).strftime("%H:%M")
+            if self.active_current > today_suntimes['sunset']:
+                self.active_sunrise = tomorrow_suntimes['sunrise']
+                self.active_sunset = tomorrow_suntimes['sunset']
+            elif self.active_current < today_suntimes['sunset']:
+                self.active_sunrise = today_suntimes['sunrise']
+                self.active_sunset = today_suntimes['sunset']
+            else:
+                log.error("Something went wrong setting up active times")
+            
+
+            # Compare rise and set to the current time
+            # Check if the door is open or closed, if it is open, close it, if it is closed, open it
+            if self.active_sunrise < self.active_current < self.active_sunset:
+                if self.door.status() == 'closed':
+                    log.info("Opening Door")
+                    self.door.move(2)
+            elif self.active_current < self.active_sunrise or self.active_current > self.active_sunset:
+                if self.door.status() == 'open':
+                    log.info("Closing Door")
+                    self.door.move(1)
+            else:
+                log.error("Something went wrong comparing times")
+
+
+            # Wait for some seconds, checking for stop event each second
+            i = 0
+            while i != 60:
+                i += 1
+                if self._stop_event.is_set():
+                    log.debug("Stopping...")
+                    return
+                if self._refresh_event.is_set(): # skip count down
                     log.debug("Refreshing...")
                     self._refresh_event.clear()
                     break
-                
-                current_date = date.today()
-                current_time = datetime.now(timezone(self.zone)).strftime("%H:%M")
-                current_status = self.door.get_status()
-                self.active_current = current_time
-
-                log.debug(f"Current Date: {current_date}")
-                log.debug(f"Current Time: {current_time}")
-                log.debug(f"Current Status: {current_status}")
-
-                if current_date == today_date:
-                    sunrise = today_suntimes['sunrise']
-                    sunset = today_suntimes['sunset']
-                elif current_date == tomorrow_date:
-                    sunrise = tomorrow_suntimes['sunrise']
-                    sunset = today_suntimes['sunset']
-                else:
-                    log.warning("Date comparison failed, refreshing data...")
-                    break
-
-                self.active_sunrise = sunrise
-                self.active_sunset = sunset
-                log.debug(f"Sunset set to [{sunset}]")
-                log.debug(f"Sunrise set to [{sunrise}]")
-
-                if sunrise <= current_time < sunset:
-                    if current_status == 'closed':
-                        log.info("Door Called Up")
-                        self.door.move(2)
-                        sleep(1)
-                        break
-                else:
-                    if current_status == 'open':
-                        log.info("Door Called Down")
-                        self.door.move(1)
-                        sleep(1)
-                        break
-                i = 0
-                while i != 60:  # Wait for some seconds, checking for stop event each second
-                    i += 1
-                    if self._stop_event.is_set():
-                        log.debug("Stopping...")
-                        return
-                    if self._refresh_event.is_set():
-                        request_refresh = True
-                        break
-                    sleep(1)
+                sleep(1)
 
 
 class Auto:
