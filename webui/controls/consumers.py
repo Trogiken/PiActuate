@@ -37,7 +37,7 @@ class DoorMovementConsumer(WebsocketConsumer):
                 "message": "Door is opening"
                 })
             )
-        elif data.get('message') == 'open':
+        elif data.get('message') == 'close':
             runtime.door.move(1)
             self.send(text_data=json.dumps({
                 "signal": "200",

@@ -15,7 +15,7 @@
 
 /* Up and down arrow buttons */
 .move-button {
-    display: table-cell;
+    /* display: table-cell; DEBUG */
     border: none;
     outline: 2px solid #e6e9f9;
     background: #f1f7fe;
@@ -129,4 +129,5 @@ p {
     transform: translate(-50%, -50%);
     font-size: 16px;
     color: #3498db;
+    display: none;
 }
