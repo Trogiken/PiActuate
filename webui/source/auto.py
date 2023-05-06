@@ -48,27 +48,29 @@ class _Scheduler(threading.Thread):
             raise Exception(f"An error occurred when figuring sun times: {e}")
     
     def get_active_times(self):
-            today_date = date.today(timezone(self.zone))
-            tomorrow_date = date.today(timezone(self.zone)) + timedelta(days=1)
-            try:
-                today_suntimes = self.get_suntimes(today_date)
-                tomorrow_suntimes = self.get_suntimes(tomorrow_date)
-            except Exception:
-                log.exception("Problem getting sun times")
-                
-
-            # set the times that will be compared
-            current_time = datetime.now(timezone(self.zone)).strftime("%H:%M")
-            if current_time > today_suntimes['sunset']:
-                active_sunrise = tomorrow_suntimes['sunrise']
-                active_sunset = tomorrow_suntimes['sunset']
-            elif current_time < today_suntimes['sunset']:
-                active_sunrise = today_suntimes['sunrise']
-                active_sunset = today_suntimes['sunset']
-            else:
-                raise Exception(f"Something went wrong setting up active times: Current Time: {current_time}, Today Sun Times: {today_suntimes}, Tommorrow Sun Times: {tomorrow_suntimes}")
+        """Gets the active sunrise, sunset, and current times"""
+        # current date based on system local time regardless of timezone
+        today_date = datetime.now(timezone(self.zone)).date()
+        tomorrow_date = today_date + timedelta(days=1)
+        try:
+            today_suntimes = self.get_suntimes(today_date)
+            tomorrow_suntimes = self.get_suntimes(tomorrow_date)
+        except Exception:
+            log.exception("Problem getting sun times")
             
-            return current_time, active_sunrise, active_sunset
+
+        # set the times that will be compared
+        current_time = datetime.now(timezone(self.zone)).strftime("%H:%M")
+        if current_time > today_suntimes['sunset']:
+            active_sunrise = tomorrow_suntimes['sunrise']
+            active_sunset = tomorrow_suntimes['sunset']
+        elif current_time < today_suntimes['sunset']:
+            active_sunrise = today_suntimes['sunrise']
+            active_sunset = today_suntimes['sunset']
+        else:
+            raise Exception(f"Something went wrong setting up active times: Current Time: {current_time}, Today Sun Times: {today_suntimes}, Tommorrow Sun Times: {tomorrow_suntimes}")
+        
+        return current_time, active_sunrise, active_sunset
 
     def run(self, *args, **kwargs):
         """Automation loop"""
