@@ -34,7 +34,7 @@ class Initialization:
     """
     def __init__(self, system_config, startup_config):
         """Constructs all necessary attributes for the Initialization object"""
-        self._home = str(Path(__file__).resolve().parents[2])
+        self._home = str(Path(__file__).resolve().parents[1])
         self._source = str(Path(__file__).resolve().parents[0])
         self._log = None
 
