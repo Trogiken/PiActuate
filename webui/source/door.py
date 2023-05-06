@@ -49,6 +49,7 @@ class _Auxiliary(threading.Thread):
     def run(self, *args, **kwargs):
         while True:
             if self.stopped():
+                log.debug("Stopping...")
                 GPIO.output(self.RELAY1, self.OFF_STATE)
                 GPIO.output(self.RELAY2, self.OFF_STATE)
                 return
