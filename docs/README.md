@@ -21,15 +21,15 @@ Python 3.10+
 
 ## Installation and Start
 1. Download Repository
-2. Open the `startup_script.sh` file and edit the environment variables
+2. Set Environment Variables
   * SECRET_KEY : Cryptographic signing and encryption throughout app.
-    * Example: `SECRET_KEY="not-secure-key-)*j23891A0239(i09asdfs0dfj"`
+    * Example: `export SECRET_KEY="not-secure-key-)*j23891A0239(i09asdfs0dfj"`
     * If none is given, a random one will be assigned each run
   * IS_DEVELOPMENT : Application will run with debug mode on.
-    * Example: `IS_DEVELOPMENT="False"`
+    * Example: `export IS_DEVELOPMENT="False"`
     * If none is given, will be set to True
   * ALLOWED_HOSTS : Valid host names Django can serve.
-    * Example: `ALLOWED_HOSTS="192.1.1.1,172.200.20.1,hostname.com"`
+    * Example: `export ALLOWED_HOSTS="192.1.1.1,172.200.20.1,hostname.com"`
     * If none is given, will be set to a wildcard
 3. Open a CLI session in the repositorys directory
 4. Run the startup script: `chmod +x startup_script.sh && ./startup_script.sh`
