@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import SystemConfigForm, UserLoginForm, DetailForm
 from .models import SystemConfig, StartupConfig
 
-
+# append root directory to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'source')))
 from startup import Initialization
 

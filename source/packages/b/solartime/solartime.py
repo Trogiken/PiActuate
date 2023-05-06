@@ -29,7 +29,7 @@ import sys
 from math import cos, sin, tan, acos, asin, floor, radians, degrees
 
 try:
-    packages.a import pytz
+    from packages.a import pytz
 except ImportError:
     raise ImportError('The solartime module requires the pytz module to be available.')
 
