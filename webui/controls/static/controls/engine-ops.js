@@ -34,11 +34,11 @@ movementSocket.onmessage = function(e) {
   const data = JSON.parse(e.data);
   if (data.signal === '200') {
       document.querySelector('#loading-text').innerHTML = 'Success: ' + data.message;
-      setTimeout(hideLoading, 1500);
+      setTimeout(hideLoading, 2000);
       hideLoading();
   } else {
       document.querySelector('#loading-text').innerHTML = 'Error: ' + data.message;
-      setTimeout(hideLoading, 1500);
+      setTimeout(hideLoading, 2000);
       hideLoading();
   }
 }
@@ -48,9 +48,9 @@ const loadingOverlay = document.getElementById('loading-overlay');
 const loadingText = document.getElementById('loading-text');
 function showLoading() {
   loadingOverlay.style.display = 'block';
-  loadText.style.display = 'block';
+  loadingText.style.display = 'block';
 }
 function hideLoading() {
   loadingOverlay.style.display = 'none';
-  loadText.style.display = 'none';
+  loadingText.style.display = 'none';
 }
