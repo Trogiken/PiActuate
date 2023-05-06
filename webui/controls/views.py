@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
 from time import sleep
+import os
+import sys
 
 from django.contrib.auth.views import LoginView
 from django.views.generic import View
@@ -14,8 +16,9 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import SystemConfigForm, UserLoginForm, DetailForm
 from .models import SystemConfig, StartupConfig
 
-
-from source.startup import Initialization
+# append root directory to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
+from startup import Initialization
 
 runtime = None
 

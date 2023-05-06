@@ -4,10 +4,6 @@ import logging.config
 from pathlib import Path
 
 
-
-from controls.models import SystemConfig, StartupConfig
-
-
 class Initialization:
     """
     Setup runtime objects and verify functionality
@@ -38,7 +34,7 @@ class Initialization:
     """
     def __init__(self, system_config, startup_config):
         """Constructs all necessary attributes for the Initialization object"""
-        self._home = str(Path(__file__).resolve().parents[2])
+        self._home = str(Path(__file__).resolve().parents[1])
         self._source = str(Path(__file__).resolve().parents[0])
         self._log = None
 
@@ -113,7 +109,7 @@ class Initialization:
             else:
                 SyC.off_state = False
 
-            from source.door import Door
+            from door import Door
             self.door = Door(board_mode=str(SyC.board_mode), off_state=SyC.off_state, relay1=int(SyC.relay1),
                              relay2=int(SyC.relay2), sw1=int(SyC.switch1), sw2=int(SyC.switch2), sw3=int(SyC.switch3),
                              sw4=int(SyC.switch4), sw5=int(SyC.switch5), travel_time=int(SyC.travel_time))
@@ -124,7 +120,7 @@ class Initialization:
         try:  # Create Auto Object
             self._log.info('Creating Auto Object')
 
-            from source.auto import Auto  # DEBUG Removed redundant data type declaration; verify functionality
+            from auto import Auto
             self.auto = Auto(door=self.door, zone=str(SyC.timezone),
                              latitude=float(SyC.latitude), longitude=float(SyC.longitude),
                              sunrise_offset=int(StC.sunrise_offset),
