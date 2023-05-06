@@ -1,5 +1,5 @@
-from source.packages import timezone
-from source.packages import SolarTime
+from packages import timezone
+from packages import SolarTime
 from datetime import date, datetime, timedelta
 from time import sleep
 import threading

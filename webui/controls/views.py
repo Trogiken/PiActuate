@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
 from time import sleep
+import os
+import sys
 
 from django.contrib.auth.views import LoginView
 from django.views.generic import View
@@ -15,7 +17,8 @@ from .forms import SystemConfigForm, UserLoginForm, DetailForm
 from .models import SystemConfig, StartupConfig
 
 
-from source.startup import Initialization
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'source')))
+from startup import Initialization
 
 runtime = None
 
