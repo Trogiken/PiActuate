@@ -30,7 +30,7 @@ class _Auxiliary(threading.Thread):
 
         self._stop_event = threading.Event()
 
-        log.debug("AUX pins setting up...")
+        log.info("AUX pins setting up...")
         try:
             GPIO.setup(self.AUX_SW1, GPIO.IN)
             GPIO.setup(self.AUX_SW2, GPIO.IN)
@@ -38,7 +38,7 @@ class _Auxiliary(threading.Thread):
             log.exception("Failed to set up AUX pins")
             raise
 
-        log.debug("Aux pins set up successfully")
+        log.info("Aux pins set up successfully")
 
     def stop(self):
         self._stop_event.set()
@@ -159,7 +159,7 @@ class Door:
         log.debug(f"SW5: {self.SW5}")
         log.debug(f"max_travel: {self.travel_time}")
 
-        log.debug("Main pins setting up...")
+        log.info("Main pins setting up...")
         try:
             GPIO.setup(self.RELAY1, GPIO.OUT, initial=self.OFF_STATE)
             GPIO.setup(self.RELAY2, GPIO.OUT, initial=self.OFF_STATE)
@@ -170,7 +170,7 @@ class Door:
             log.exception("Failed to setup main pins")
             raise IOError
         
-        log.debug("Main pins setup successfully")
+        log.info("Main pins setup successfully")
     
     @property
     def aux_is_running(self):

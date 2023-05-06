@@ -48,8 +48,7 @@ class _Scheduler(threading.Thread):
             raise Exception(f"An error occurred when figuring sun times: {e}")
     
     def get_active_times(self):
-        """Gets the active sunrise, sunset, and current times"""
-        # current date based on system local time regardless of timezone
+        """Compares current time to sunrise and sunset times and returns active times accordingly"""
         today_date = datetime.now(timezone(self.zone)).date()
         tomorrow_date = today_date + timedelta(days=1)
         try:
@@ -78,7 +77,7 @@ class _Scheduler(threading.Thread):
             try:
                 self.active_current, self.active_sunrise, self.active_sunset = self.get_active_times()
             except Exception:
-                log.exception("Problem getting active times, disabling automation")
+                log.exception("Problem getting active times, stopping scheduler")
                 self._stop_event.set()
                 continue  # skip the rest of the loop
                 
@@ -97,13 +96,12 @@ class _Scheduler(threading.Thread):
                 log.error("Something went wrong comparing times")
 
 
-            # Wait until the next check
-            while self.active_current != self.active_sunrise and self.active_current != self.active_sunset:
+            i = 0   # counter
+            while i != 60:
+                i += 1
                 self.active_current = datetime.now(timezone(self.zone)).strftime("%H:%M")
-                if self.active_current == '00:00':
-                    log.debug("New day, getting new sun times")
+                if self.active_current == '00:00':   # redundancy to make sure times are always refreshed
                     self._refresh_event.set()
-                    
                 if self._stop_event.is_set():
                     log.debug("Stopping...")
                     return
@@ -137,7 +135,7 @@ class Auto:
 
     Methods
     -------
-    run():
+    start():
         start the scheduler thread
     stop():
         stop the scheduler thread
@@ -180,7 +178,7 @@ class Auto:
                 self.sch.start()
                 log.info("Scheduler is Running")
             else:
-                log.warning("Scheduler is already Running")
+                log.info("Scheduler is already Running")
         except Exception:
             log.exception("Scheduler has failed to Run")
 
@@ -192,7 +190,7 @@ class Auto:
                 self.sch.join()
                 log.info("Scheduler has stopped Running")
             else:
-                log.warning("Scheduler is not Running")
+                log.info("Scheduler is not Running")
         except Exception:
             log.exception("Scheduler has failed to Stop")
 
