@@ -48,23 +48,9 @@ class UserLoginView(LoginView):
     authentication_form = UserLoginForm
     redirect_authenticated_user = True
 
-
-@login_required
-@csrf_exempt
-def door_up(request):
-    """door up"""
-    if request.method == "POST":
-        runtime.door.move(2)
-        return redirect("dashboard-page")
-
-
-@login_required
-@csrf_exempt
-def door_down(request):
-    """door down"""
-    if request.method == "POST":
-        runtime.door.move(1)
-        return redirect("dashboard-page")
+    def form_invalid(self, form):
+        messages.error(self.request, "Invalid username or password")
+        return super().form_invalid(form)
 
 
 class DetailPostView(LoginRequiredMixin, View):
