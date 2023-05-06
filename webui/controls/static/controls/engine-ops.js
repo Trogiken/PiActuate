@@ -44,7 +44,7 @@ movementSocket.onmessage = function(e) {
 }
 
 
-const loadingOverlay = document.getElementById('loading-overlay');
+const loadingOverlay = document.getElementById('#loading-container');
 const loadingText = document.getElementById('loading-text');
 function showLoading() {
   loadingOverlay.style.display = 'block';
