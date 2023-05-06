@@ -84,11 +84,13 @@ class _Scheduler(threading.Thread):
 
             # Compare rise and set to the current time
             # Check if the door is open or closed, if it is open, close it, if it is closed, open it
-            if self.active_sunrise < self.active_current < self.active_sunset:
+            if self.active_sunrise <= self.active_current < self.active_sunset:
+                log.debug(f'Door open conditions met: Current Time: {self.active_current}')
                 if self.door.status == 'Closed':
                     log.info("Opening Door")
                     self.door.move(2)
-            elif self.active_current < self.active_sunrise or self.active_current > self.active_sunset:
+            elif self.active_current < self.active_sunrise or self.active_current >= self.active_sunset:
+                log.debug(f'Door close conditions met: Current Time: {self.active_current}')
                 if self.door.status == 'Open':
                     log.info("Closing Door")
                     self.door.move(1)
@@ -99,9 +101,6 @@ class _Scheduler(threading.Thread):
             i = 0   # counter
             while i != 60:
                 i += 1
-                self.active_current = datetime.now(timezone(self.zone)).strftime("%H:%M")
-                if self.active_current == '00:00':   # redundancy to make sure times are always refreshed
-                    self._refresh_event.set()
                 if self._stop_event.is_set():
                     log.debug("Stopping...")
                     return
