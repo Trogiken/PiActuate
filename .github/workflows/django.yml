@@ -24,7 +24,11 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r docs/requirements.txt
+        pip install Django
+        pip install channels
+        pip install daphne
+        pip install pytz
+        pip install solartime
     - name: Run Tests
       run: |
         python webui/manage.py test
