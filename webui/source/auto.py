@@ -48,8 +48,8 @@ class _Scheduler(threading.Thread):
             raise Exception(f"An error occurred when figuring sun times: {e}")
     
     def get_active_times(self):
-            today_date = date.today()
-            tomorrow_date = date.today() + timedelta(days=1)
+            today_date = date.today(timezone(self.zone))
+            tomorrow_date = date.today(timezone(self.zone)) + timedelta(days=1)
             try:
                 today_suntimes = self.get_suntimes(today_date)
                 tomorrow_suntimes = self.get_suntimes(tomorrow_date)
