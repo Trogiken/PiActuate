@@ -108,6 +108,14 @@ class DashboardView(LoginRequiredMixin, View):
     def get(self, request):
         if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page
             return redirect("systemconfig-page")
+        
+        # check if automation or auxillary running states are different from the database
+        startup_config = StartupConfig.objects.first()
+        if startup_config.automation is True and runtime.auto.is_running is False:
+            startup_config.automation = False
+        if startup_config.auxillary is True and runtime.door.aux_is_running is False:
+            startup_config.auxillary = False
+        startup_config.save()
 
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),

@@ -146,7 +146,6 @@ class Door:
 
         self.motion = 0
         self.aux = None
-        self.aux_is_running = False
         self._move_op_thread = threading.Thread()
 
         log.debug(f"off_state: {self.OFF_STATE}")
@@ -171,6 +170,11 @@ class Door:
             raise IOError
         
         log.debug("Main pins setup successfully")
+    
+    @property
+    def aux_is_running(self):
+        """Returns the status of the Auxiliary thread"""
+        return self.aux.is_alive()
 
     def run_aux(self):
         """Creates an Auxiliary object and starts the thread"""
@@ -180,12 +184,10 @@ class Door:
                                       aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
                 self.aux.start()
 
-                self.aux_is_running = True
                 log.info("Auxiliary is Running")
             else:
                 log.warning("Auxiliary is already Running")
         except Exception:
-            self.aux_is_running = False
             log.exception("Auxiliary has failed to Run")
 
     def stop_aux(self):
@@ -196,7 +198,6 @@ class Door:
                 self.aux.join()
 
                 self.aux = None
-                self.aux_is_running = False
                 log.info("Auxiliary has stopped Running")
             else:
                 log.warning("Auxiliary is not Running")
@@ -223,11 +224,11 @@ class Door:
         status (str): closed, open, blocked, moving or unknown
         """
         if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
-            status = 'closed'
+            status = 'Closed'
         elif GPIO.input(self.SW1) == 0 and GPIO.input(self.SW2) == 1:
-            status = 'open'
+            status = 'Open'
         elif GPIO.input(self.SW3) == 1:
-            status = 'blocked'
+            status = 'Blocked'
         elif door_in_motion['in_motion']:  # DEBUG Remove and replace with condition below?
             status = door_in_motion['direction']
         elif door_in_motion['in_motion'] or self.aux is not None and self.aux.in_motion:
