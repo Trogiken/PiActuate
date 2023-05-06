@@ -25,7 +25,7 @@ class DashboardConsumer(WebsocketConsumer):
             ) # send door status
 
 
-class DoorMovementConsumer(LoginRequiredMixin, WebsocketConsumer):
+class DoorMovementConsumer(WebsocketConsumer):
     def connect(self):
         if self.scope['user'].is_authenticated:
             self.accept()
