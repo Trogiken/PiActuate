@@ -47,10 +47,10 @@ movementSocket.onmessage = function(e) {
 const loadingContainer = document.getElementById('loading-container');
 const loadingText = document.getElementById('loading-text');
 function showLoading() {
-  loadingOverlay.style.display = 'block';
+  loadingContainer.style.display = 'block';
   loadingText.style.display = 'block';
 }
 function hideLoading() {
-  loadingOverlay.style.display = 'none';
+  loadingContainer.style.display = 'none';
   loadingText.style.display = 'none';
 }
