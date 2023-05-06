@@ -13,7 +13,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.11]
+        python-version: ['3.10']
 
     steps:
     - uses: actions/checkout@v3
@@ -24,11 +24,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install Django
-        pip install channels
-        pip install daphne
-        pip install pytz
-        pip install solartime
+        pip install -r docs/requirements.txt
     - name: Run Tests
       run: |
         python webui/manage.py test
