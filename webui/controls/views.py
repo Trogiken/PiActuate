@@ -17,7 +17,7 @@ from .forms import SystemConfigForm, UserLoginForm, DetailForm
 from .models import SystemConfig, StartupConfig
 
 # append root directory to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'source')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
 from startup import Initialization
 
 runtime = None
