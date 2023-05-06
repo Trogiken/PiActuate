@@ -66,7 +66,7 @@ class _Scheduler(threading.Thread):
                 active_sunrise = today_suntimes['sunrise']
                 active_sunset = today_suntimes['sunset']
             else:
-                raise Exception("Something went wrong setting up active times")
+                raise Exception(f"Something went wrong setting up active times: Current Time: {current_time}, Today Sun Times: {today_suntimes}, Tommorrow Sun Times: {tomorrow_suntimes}")
             
             return current_time, active_sunrise, active_sunset
 
