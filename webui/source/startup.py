@@ -98,8 +98,8 @@ class Initialization:
     def _load_objects(self):
         """Load system config and create objects, then run stored states (Load Last)"""
         
-        self._log.debug(f"System Config: {vars(self.system_config)}")
-        self._log.debug(f"Startup Config: {vars(self.startup_config)}")
+        self._log.info(f"System Config: {vars(self.system_config)}")
+        self._log.info(f"Startup Config: {vars(self.startup_config)}")
 
         SyC = self.system_config
         StC = self.startup_config
@@ -138,7 +138,7 @@ class Initialization:
         self._log.debug('Executing Saved States...')
         if StC.automation:
             self._log.debug('Running Automation')
-            self.auto.run()
+            self.auto.start()
         if StC.auxillary:
             self._log.debug('Running Auxiliary Switches')
             self.door.run_aux()

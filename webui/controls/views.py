@@ -78,20 +78,25 @@ class DetailPostView(LoginRequiredMixin, View):
 
             # update runtime data with new values
             if form_data["automation"]:
-                runtime.auto.run()
                 if runtime.auto.sunrise_offset != int(form_data["sunrise_offset"]):
                     runtime.auto.set_sunrise_offset(int(form_data["sunrise_offset"]))
                 if runtime.auto.sunset_offset != int(form_data["sunset_offset"]):
                     runtime.auto.set_sunset_offset(int(form_data["sunset_offset"]))
-                runtime.auto.refresh()
+                if runtime.auto.is_running is False:
+                    runtime.auto.start()
+                else:
+                    runtime.auto.refresh()
                 sleep(1)  # give the scheduler time to update
             else:
-                runtime.auto.stop()
+                if runtime.auto.is_running is True:
+                    runtime.auto.stop()
 
             if form_data["auxillary"]:
-                runtime.door.run_aux()
+                if runtime.door.aux_is_running is False:
+                    runtime.door.run_aux()
             else:
-                runtime.door.stop_aux()
+                if runtime.door.aux_is_running is True:
+                    runtime.door.stop_aux()
             messages.add_message(request, messages.SUCCESS, "Saved")
             return redirect("dashboard-page")
         else:
@@ -108,6 +113,14 @@ class DashboardView(LoginRequiredMixin, View):
     def get(self, request):
         if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page
             return redirect("systemconfig-page")
+        
+        # check if automation or auxillary running states are different from the database
+        startup_config = StartupConfig.objects.first()
+        if startup_config.automation is True and runtime.auto.is_running is False:
+            startup_config.automation = False
+        if startup_config.auxillary is True and runtime.door.aux_is_running is False:
+            startup_config.auxillary = False
+        startup_config.save()
 
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),

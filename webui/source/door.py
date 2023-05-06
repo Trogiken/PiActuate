@@ -30,7 +30,7 @@ class _Auxiliary(threading.Thread):
 
         self._stop_event = threading.Event()
 
-        log.debug("AUX pins setting up...")
+        log.info("AUX pins setting up...")
         try:
             GPIO.setup(self.AUX_SW1, GPIO.IN)
             GPIO.setup(self.AUX_SW2, GPIO.IN)
@@ -38,7 +38,7 @@ class _Auxiliary(threading.Thread):
             log.exception("Failed to set up AUX pins")
             raise
 
-        log.debug("Aux pins set up successfully")
+        log.info("Aux pins set up successfully")
 
     def stop(self):
         self._stop_event.set()
@@ -116,7 +116,7 @@ class Door:
         stop Auxiliary thread
     cleanup():
         resets relays and clears GPIO pins
-    get_status():
+    status():
         check if doors position is closed, open, blocked, or not known
     move(opt=int):
         move door open or closed
@@ -144,10 +144,9 @@ class Door:
         self.SW5 = sw5
         self.travel_time = travel_time
 
-        self.status = None
         self.motion = 0
-        self.aux = None
-        self.aux_is_running = False
+        self.aux = _Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
+                              aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
         self._move_op_thread = threading.Thread()
 
         log.debug(f"off_state: {self.OFF_STATE}")
@@ -160,7 +159,7 @@ class Door:
         log.debug(f"SW5: {self.SW5}")
         log.debug(f"max_travel: {self.travel_time}")
 
-        log.debug("Main pins setting up...")
+        log.info("Main pins setting up...")
         try:
             GPIO.setup(self.RELAY1, GPIO.OUT, initial=self.OFF_STATE)
             GPIO.setup(self.RELAY2, GPIO.OUT, initial=self.OFF_STATE)
@@ -171,7 +170,12 @@ class Door:
             log.exception("Failed to setup main pins")
             raise IOError
         
-        log.debug("Main pins setup successfully")
+        log.info("Main pins setup successfully")
+    
+    @property
+    def aux_is_running(self):
+        """Returns the status of the Auxiliary thread"""
+        return self.aux.is_alive()
 
     def run_aux(self):
         """Creates an Auxiliary object and starts the thread"""
@@ -181,12 +185,10 @@ class Door:
                                       aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
                 self.aux.start()
 
-                self.aux_is_running = True
                 log.info("Auxiliary is Running")
             else:
                 log.warning("Auxiliary is already Running")
         except Exception:
-            self.aux_is_running = False
             log.exception("Auxiliary has failed to Run")
 
     def stop_aux(self):
@@ -196,8 +198,6 @@ class Door:
                 self.aux.stop()
                 self.aux.join()
 
-                self.aux = None
-                self.aux_is_running = False
                 log.info("Auxiliary has stopped Running")
             else:
                 log.warning("Auxiliary is not Running")
@@ -214,7 +214,8 @@ class Door:
         GPIO.cleanup()
         log.info("GPIO Cleared")
 
-    def get_status(self):
+    @property
+    def status(self):
         """
         Check door position
 
@@ -223,19 +224,19 @@ class Door:
         status (str): closed, open, blocked, moving or unknown
         """
         if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
-            self.status = 'closed'
+            status = 'Closed'
         elif GPIO.input(self.SW1) == 0 and GPIO.input(self.SW2) == 1:
-            self.status = 'open'
+            status = 'Open'
         elif GPIO.input(self.SW3) == 1:
-            self.status = 'blocked'
+            status = 'Blocked'
         elif door_in_motion['in_motion']:  # DEBUG Remove and replace with condition below?
-            self.status = door_in_motion['direction']
+            status = door_in_motion['direction']
         elif door_in_motion['in_motion'] or self.aux is not None and self.aux.in_motion:
-            self.status = door_in_motion['direction']
+            status = door_in_motion['direction']
         else:
-            self.status = 'unknown'
+            status = 'unknown'
 
-        return self.status
+        return status
 
     def _move_op(self, opt):
         """
@@ -299,7 +300,7 @@ class Door:
             self._move_op(2)
             return
 
-        log.info(f"Status: {self.get_status()}")
+        log.info(f"Status: {self.status}")
         log.info("[Operation Stop]")
 
     def move(self, opt):

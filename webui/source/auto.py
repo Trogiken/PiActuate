@@ -34,100 +34,82 @@ class _Scheduler(threading.Thread):
 
     def get_suntimes(self, requested_date):
         """Gets sunrise and sunset times (HH:MM) for requested date"""
-        rise_offset = timedelta(minutes=self.sunrise_offset)
-        set_offset = timedelta(minutes=self.sunset_offset)
+        year, month, day = requested_date.year, requested_date.month, requested_date.day
 
-        log.debug(f"Requested Date: {requested_date}")
-        log.debug(f"Sunrise Offset: {self.sunrise_offset} minutes")
-        log.debug(f"Sunset Offset: {self.sunset_offset} minutes")
+        try:
+            schedule = SolarTime().sun_utc(date(year, month, day), self.latitude, self.longitude)
+            localtz = timezone(self.zone)
+            sunrise = (schedule['sunrise'].astimezone(localtz) + timedelta(minutes=self.sunrise_offset)).strftime("%H:%M")
+            sunset = (schedule['sunset'].astimezone(localtz) + timedelta(minutes=self.sunset_offset)).strftime("%H:%M")
+            log.debug(f"Requested Date: {requested_date}, Sunrise Offset: {self.sunrise_offset}, Sunset Offset: {self.sunset_offset}")
+            log.debug(f"Sunrise: {sunrise}, Sunset: {sunset}")
+            return {'sunset': sunset, 'sunrise': sunrise}
+        except Exception as e:
+            raise Exception(f"An error occurred when figuring sun times: {e}")
+    
+    def get_active_times(self):
+        """Compares current time to sunrise and sunset times and returns active times accordingly"""
+        today_date = datetime.now(timezone(self.zone)).date()
+        tomorrow_date = today_date + timedelta(days=1)
+        try:
+            today_suntimes = self.get_suntimes(today_date)
+            tomorrow_suntimes = self.get_suntimes(tomorrow_date)
+        except Exception:
+            log.exception("Problem getting sun times")
+            
 
-        year = requested_date.year
-        month = requested_date.month
-        day = requested_date.day
-
-        requested_date = date(year, month, day)
-        localtz = timezone(self.zone)
-        lat, lon = self.latitude, self.longitude
-
-        sun = SolarTime()
-        schedule_ = sun.sun_utc(requested_date, lat, lon)
-        raw_sunset = schedule_['sunset'].astimezone(localtz)  # year-month-day hour:min:second-timezone
-        raw_sunrise = schedule_['sunrise'].astimezone(localtz)  # year-month-day hour:min:second-timezone
-
-        final_sunset = raw_sunset + set_offset
-        final_sunrise = raw_sunrise + rise_offset
-        pattern = r" (.*?)\-"
-
-        sunset = re.search(pattern, str(final_sunset)).group(1)
-        sunrise = re.search(pattern, str(final_sunrise)).group(1)
-
-        # Remove seconds from time
-        sunset = sunset[:len(sunset) - 3]
-        sunrise = sunrise[:len(sunrise) - 3]
-
-        return {'sunset': sunset, 'sunrise': sunrise}
+        # set the times that will be compared
+        current_time = datetime.now(timezone(self.zone)).strftime("%H:%M")
+        if current_time > today_suntimes['sunset']:
+            active_sunrise = tomorrow_suntimes['sunrise']
+            active_sunset = tomorrow_suntimes['sunset']
+        elif current_time < today_suntimes['sunset']:
+            active_sunrise = today_suntimes['sunrise']
+            active_sunset = today_suntimes['sunset']
+        else:
+            raise Exception(f"Something went wrong setting up active times: Current Time: {current_time}, Today Sun Times: {today_suntimes}, Tommorrow Sun Times: {tomorrow_suntimes}")
+        
+        return current_time, active_sunrise, active_sunset
 
     def run(self, *args, **kwargs):
         """Automation loop"""
-        while True:
-            today_date = date.today()
-            tomorrow_date = date.today() + timedelta(days=1)
-            today_suntimes = self.get_suntimes(today_date)
-            tomorrow_suntimes = self.get_suntimes(tomorrow_date)
+        while not self._stop_event.is_set():
+            try:
+                self.active_current, self.active_sunrise, self.active_sunset = self.get_active_times()
+            except Exception:
+                log.exception("Problem getting active times, stopping scheduler")
+                self._stop_event.set()
+                continue  # skip the rest of the loop
+                
 
-            request_refresh = False
-            while True:
-                if request_refresh:
+            # Compare rise and set to the current time
+            # Check if the door is open or closed, if it is open, close it, if it is closed, open it
+            if self.active_sunrise < self.active_current < self.active_sunset:
+                if self.door.status == 'Closed':
+                    log.info("Opening Door")
+                    self.door.move(2)
+            elif self.active_current < self.active_sunrise or self.active_current > self.active_sunset:
+                if self.door.status == 'Open':
+                    log.info("Closing Door")
+                    self.door.move(1)
+            else:
+                log.error("Something went wrong comparing times")
+
+
+            i = 0   # counter
+            while i != 60:
+                i += 1
+                self.active_current = datetime.now(timezone(self.zone)).strftime("%H:%M")
+                if self.active_current == '00:00':   # redundancy to make sure times are always refreshed
+                    self._refresh_event.set()
+                if self._stop_event.is_set():
+                    log.debug("Stopping...")
+                    return
+                if self._refresh_event.is_set(): # skip count down
                     log.debug("Refreshing...")
                     self._refresh_event.clear()
                     break
-                
-                current_date = date.today()
-                current_time = datetime.now(timezone(self.zone)).strftime("%H:%M")
-                current_status = self.door.get_status()
-                self.active_current = current_time
-
-                log.debug(f"Current Date: {current_date}")
-                log.debug(f"Current Time: {current_time}")
-                log.debug(f"Current Status: {current_status}")
-
-                if current_date == today_date:
-                    sunrise = today_suntimes['sunrise']
-                    sunset = today_suntimes['sunset']
-                elif current_date == tomorrow_date:
-                    sunrise = tomorrow_suntimes['sunrise']
-                    sunset = today_suntimes['sunset']
-                else:
-                    log.warning("Date comparison failed, refreshing data...")
-                    break
-
-                self.active_sunrise = sunrise
-                self.active_sunset = sunset
-                log.debug(f"Sunset set to [{sunset}]")
-                log.debug(f"Sunrise set to [{sunrise}]")
-
-                if sunrise <= current_time < sunset:
-                    if current_status == 'closed':
-                        log.info("Door Called Up")
-                        self.door.move(2)
-                        sleep(1)
-                        break
-                else:
-                    if current_status == 'open':
-                        log.info("Door Called Down")
-                        self.door.move(1)
-                        sleep(1)
-                        break
-                i = 0
-                while i != 60:  # Wait for some seconds, checking for stop event each second
-                    i += 1
-                    if self._stop_event.is_set():
-                        log.debug("Stopping...")
-                        return
-                    if self._refresh_event.is_set():
-                        request_refresh = True
-                        break
-                    sleep(1)
+                sleep(1)
 
 
 class Auto:
@@ -153,7 +135,7 @@ class Auto:
 
     Methods
     -------
-    run():
+    start():
         start the scheduler thread
     stop():
         stop the scheduler thread
@@ -181,22 +163,23 @@ class Auto:
 
         self.sch = _Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
                               sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)  # init variable
+    
+    @property
+    def is_running(self):
+        """Returns True if scheduler is running"""
+        return self.sch.is_alive()
 
-        self.is_running = False  # can be used externally to check scheduler thread status
-
-    def run(self):
+    def start(self):
         """Creates a scheduler object and starts the thread"""
         try:
             if not self.sch.is_alive():
                 self.sch = _Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
                                       sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)
                 self.sch.start()
-                self.is_running = True
                 log.info("Scheduler is Running")
             else:
-                log.warning("Scheduler is already Running")
+                log.info("Scheduler is already Running")
         except Exception:
-            self.is_running = False
             log.exception("Scheduler has failed to Run")
 
     def stop(self):
@@ -205,11 +188,9 @@ class Auto:
             if self.sch.is_alive():
                 self.sch.stop()
                 self.sch.join()
-
-                self.is_running = False
                 log.info("Scheduler has stopped Running")
             else:
-                log.warning("Scheduler is not Running")
+                log.info("Scheduler is not Running")
         except Exception:
             log.exception("Scheduler has failed to Stop")
 
