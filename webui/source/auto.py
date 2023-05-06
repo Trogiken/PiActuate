@@ -171,7 +171,7 @@ class Auto:
         """Returns True if scheduler is running"""
         return self.sch.is_alive()
 
-    def run(self):
+    def start(self):
         """Creates a scheduler object and starts the thread"""
         try:
             if not self.sch.is_alive():
