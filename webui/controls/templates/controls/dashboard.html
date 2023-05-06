@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'controls/status-update.js' %}"></script>
+<script src="{% static 'controls/engine-ops.js' %}"></script>
 <script src="{% static 'controls/includes/sidebar-active.js' %}"></script>
 {% endblock %}
 
@@ -21,21 +21,23 @@
     <section class="Form-container">
       <div class="Control-form">
         <h1>Door Controls</h1>
-        <form action="{% url 'door_up-post' %}" method="POST">
-          <button class="move-button" type="submit">
-            <div class="button-icon">
-              <ion-icon name="arrow-up-outline"></ion-icon>
-            </div>
-          </button>
-        </form>
-        <form action="{% url 'door_down-post' %}" method="POST">
-          <button class="move-button" type="submit">
-            <div class="button-icon">
-              <ion-icon name="arrow-down-outline"></ion-icon>
-            </div>
-          </button>
-        </form>
+        <button class="move-button" onclick="sendDoorCommand('open')">
+          <div class="button-icon">
+            <ion-icon name="arrow-up-outline"></ion-icon>
+          </div>
+        </button>
+        <button class="move-button" onclick="sendDoorCommand('close')">
+          <div class="button-icon">
+            <ion-icon name="arrow-down-outline"></ion-icon>
+          </div>
+        </button>
+        
         <label>Door Status: <span id="status_text"></span></label>
+
+        <div id="loading-overlay">
+          <div class="loading-spinner"></div>
+          <div id="loading-text">Loading...</div>
+        </div>
       </div>
 
       <hr>
