@@ -22,7 +22,7 @@
     color: #3f51b5;
     margin: .2rem auto;
     border-radius: 25%;
-    padding: 0;
+    padding: .2rem;
 }
 .move-button .button-icon ion-icon {
     vertical-align: middle;
