@@ -145,7 +145,8 @@ class Door:
         self.travel_time = travel_time
 
         self.motion = 0
-        self.aux = None
+        self.aux = _Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
+                              aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
         self._move_op_thread = threading.Thread()
 
         log.debug(f"off_state: {self.OFF_STATE}")
@@ -197,7 +198,6 @@ class Door:
                 self.aux.stop()
                 self.aux.join()
 
-                self.aux = None
                 log.info("Auxiliary has stopped Running")
             else:
                 log.warning("Auxiliary is not Running")
