@@ -1,8 +1,10 @@
 import json
 
 from channels.generic.websocket import WebsocketConsumer
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class DashboardConsumer(WebsocketConsumer):
+
+class DashboardConsumer(LoginRequiredMixin, WebsocketConsumer):
     def connect(self):
         self.accept()
 
@@ -20,7 +22,7 @@ class DashboardConsumer(WebsocketConsumer):
             ) # send door status
 
 
-class DoorMovementConsumer(WebsocketConsumer):
+class DoorMovementConsumer(LoginRequiredMixin, WebsocketConsumer):
     def connect(self):
         self.accept()
     
