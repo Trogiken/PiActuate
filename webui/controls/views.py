@@ -92,10 +92,10 @@ class DetailPostView(LoginRequiredMixin, View):
                     runtime.auto.stop()
 
             if form_data["auxillary"]:
-                if runtime.door.is_running is False:
+                if runtime.door.aux_is_running is False:
                     runtime.door.run_aux()
             else:
-                if runtime.door.is_running is True:
+                if runtime.door.aux_is_running is True:
                     runtime.door.stop_aux()
             messages.add_message(request, messages.SUCCESS, "Saved")
             return redirect("dashboard-page")
