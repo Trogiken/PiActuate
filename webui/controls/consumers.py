@@ -1,12 +1,15 @@
 import json
 
 from channels.generic.websocket import WebsocketConsumer
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class DashboardConsumer(LoginRequiredMixin, WebsocketConsumer):
+class DashboardConsumer(WebsocketConsumer):
     def connect(self):
-        self.accept()
+        # check if user is logged in before connecting to websocket
+        if self.scope['user'].is_authenticated:
+            self.accept()
+        else:
+            self.close(code=1000, reason='User is not authenticated')
 
     def disconnect(self, close_code):
         pass
@@ -24,7 +27,10 @@ class DashboardConsumer(LoginRequiredMixin, WebsocketConsumer):
 
 class DoorMovementConsumer(LoginRequiredMixin, WebsocketConsumer):
     def connect(self):
-        self.accept()
+        if self.scope['user'].is_authenticated:
+            self.accept()
+        else:
+            self.close(code=1000, reason='User is not authenticated')
     
     def disconnect(self, close_code):
         pass
