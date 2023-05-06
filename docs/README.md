@@ -22,8 +22,7 @@ Python 3.10+
 ## Installation and Start
 1. Download Repository
 2. Open a CLI session in the repositorys directory
-3. Install Requirements: `pip install -r /docs/requirements.txt`
-4. Finally, run the startup script: `chmod +x startup_script.sh && ./startup_script.sh`
+3. Run the startup script: `chmod +x startup_script.sh && ./startup_script.sh`
 
 Click [here](#creating-a-service) if you wish this script to run at boot
 
