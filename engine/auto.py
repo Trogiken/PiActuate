@@ -88,11 +88,15 @@ class _Scheduler(threading.Thread):
                 if self.door.status == 'Closed':
                     log.info("Opening Door")
                     self.door.move(2)
+                else:
+                    log.debug("Door is already open or blocked")
             elif self.active_current < self.active_sunrise or self.active_current >= self.active_sunset:
                 log.debug(f'Door close conditions met: Current Time: {self.active_current}')
                 if self.door.status == 'Open':
                     log.info("Closing Door")
                     self.door.move(1)
+                else:
+                    log.debug("Door is already closed or blocked")
             else:
                 log.error("Something went wrong comparing times")
 
