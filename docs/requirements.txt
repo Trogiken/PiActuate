@@ -1,5 +1,6 @@
 Django~=4.2
 channels~=4.0
+asgi_redis~=1.4.3
 daphne~=4.0
 RPi.GPIO~=0.7.1
 pytz~=2023.3
