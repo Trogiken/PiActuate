@@ -1,9 +1,9 @@
 #!/bin/bash
 DIR=$(dirname "$0")
 WEBUI="$DIR/webui/"
-GUNICORN_CONFIG="$DIR/config/gunicorn/gunicorn.conf.py"
-GUNICORN_RUN_DIR="/var/run/gunicorn"
-GUNICORN_LOG_DIR="/var/log/gunicorn"
+GUNICORN_CONFIG_DIR="$DIR/config/gunicorn/"
+GUNICORN_RUN_DIR="/var/run/gunicorn/"
+GUNICORN_LOG_DIR="/var/log/gunicorn/"
 cd "$DIR"
 # concatenat $DIR and the path to the file you want to run
 
@@ -19,7 +19,10 @@ python -m pip install -r docs/requirements.txt
 sudo apt-get install -y nginx
 clear
 
-touch -pv $GUNICORN_CONFIG
+sudo mkdir -pv $GUNICORN_CONFIG_DIR
+# make file in $GUNICORN_CONFIG_DIR
+touch $GUNICORN_CONFIG_DIR/gunicorn.conf.py
+sudo touch $GUNICORN_CONFIG_DIR
 sudo mkdir -pv $GUNICORN_RUN_DIR
 sudo mkdir -pv $GUNICORN_LOG_DIR
 # DEBUG sudo chown -cR ubuntu:ubuntu /var/{log,run}/gunicorn/
