@@ -44,7 +44,8 @@ pidfile = '/var/run/gunicorn/dev.pid'
 daemon = True" > config/gunicorn/gunicorn.conf.py
 
 clear
-cd webui
+
+cd $WEBUI
 gunicorn -c ../config/gunicorn/gunicorn.conf.py
 
 # ideally have use nginx as a proxy to filter traffic between the two
