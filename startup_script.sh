@@ -1,6 +1,6 @@
 #!/bin/bash
 DIR=$(dirname "$0")
-WEBUI="$DIR/webui"
+WEBUI="$DIR/webui/"
 GUNICORN_CONFIG="$DIR/config/gunicorn/gunicorn.conf.py"
 GUNICORN_RUN_DIR="/var/run/gunicorn"
 GUNICORN_LOG_DIR="/var/log/gunicorn"
