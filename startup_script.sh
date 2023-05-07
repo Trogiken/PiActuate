@@ -10,6 +10,7 @@ cd "$DIR"
 # Install dependencies
 python -m pip install --upgrade pip
 python -m pip install -r docs/requirements.txt
+sudo apt-get install -y nginx
 clear
 
 cd webui
