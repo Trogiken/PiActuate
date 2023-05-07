@@ -19,11 +19,11 @@ python -m pip install -r docs/requirements.txt
 sudo apt-get install -y nginx
 clear
 
-sudo mkdir -pv $GUNICORN_CONFIG_DIR
+mkdir -pv $GUNICORN_CONFIG_DIR
 # make file in $GUNICORN_CONFIG_DIR
 touch $GUNICORN_CONFIG_DIR/gunicorn.conf.py
-sudo mkdir -pv $GUNICORN_RUN_DIR
-sudo mkdir -pv $GUNICORN_LOG_DIR
+mkdir -pv $GUNICORN_RUN_DIR
+mkdir -pv $GUNICORN_LOG_DIR
 # DEBUG sudo chown -cR ubuntu:ubuntu /var/{log,run}/gunicorn/
 
 echo "
