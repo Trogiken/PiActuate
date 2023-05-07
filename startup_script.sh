@@ -22,7 +22,6 @@ clear
 sudo mkdir -pv $GUNICORN_CONFIG_DIR
 # make file in $GUNICORN_CONFIG_DIR
 touch $GUNICORN_CONFIG_DIR/gunicorn.conf.py
-sudo touch $GUNICORN_CONFIG_DIR
 sudo mkdir -pv $GUNICORN_RUN_DIR
 sudo mkdir -pv $GUNICORN_LOG_DIR
 # DEBUG sudo chown -cR ubuntu:ubuntu /var/{log,run}/gunicorn/
@@ -44,7 +43,7 @@ capture_output = True
 
 pidfile = '/var/run/gunicorn/dev.pid'
 
-daemon = True" > config/gunicorn/gunicorn.conf.py
+daemon = True" > $GUNICORN_CONFIG_DIR/gunicorn.conf.py
 
 clear
 
