@@ -13,4 +13,5 @@ python -m pip install -r docs/requirements.txt
 clear
 
 cd webui
-python manage.py runserver 0.0.0.0:8000
+# ideally have use nginx as a proxy to filter traffic between the two
+gunicorn app.wsgi:application -b 0.0.0.0 -p 8000 --reload & daphne app.asgi:application -b 0.0.0.0 -p 8089 &
