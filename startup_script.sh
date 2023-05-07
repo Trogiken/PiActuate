@@ -13,4 +13,4 @@ python -m pip install -r docs/requirements.txt
 clear
 
 cd webui
-daphne webui.asgi:application --port 8000 --bind 0.0.0.0
+python manage.py runserver 0.0.0.0:8000
