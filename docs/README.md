@@ -23,7 +23,7 @@ Python 3.10+
 1. Download Repository
 2. Set Environment Variables
   * SECRET_KEY : Cryptographic signing and encryption throughout app.
-    * Example: `export SECRET_KEY="not-secure-key-)*j23891A0239(i09asdfs0dfj"`
+    * Example: `export SECRET_KEY="not-secure-key-)*j23891A0239("`
     * If none is given, a random one will be assigned each run
   * IS_DEVELOPMENT : Application will run with debug mode on.
     * Example: `export IS_DEVELOPMENT="False"`

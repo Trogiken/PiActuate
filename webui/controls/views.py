@@ -9,8 +9,7 @@ from django.views.generic import View
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
+from asgiref.sync import sync_to_async
 
 
 from .forms import SystemConfigForm, UserLoginForm, DetailForm
@@ -22,7 +21,7 @@ from startup import Initialization
 
 runtime = None
 
-if SystemConfig.objects.exists() and StartupConfig.objects.exists() and runtime is None:
+if sync_to_async(SystemConfig.objects.exists()) and sync_to_async(StartupConfig.objects.exists()) and runtime is None:
         runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
 
