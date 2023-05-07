@@ -1,6 +1,12 @@
 #!/bin/bash
 DIR=$(dirname "$0")
+WEBUI="$DIR/webui"
+GUNICORN_CONFIG="$DIR/config/gunicorn/gunicorn.conf.py"
+GUNICORN_RUN_DIR="/var/run/gunicorn"
+GUNICORN_LOG_DIR="/var/log/gunicorn"
 cd "$DIR"
+# concatenat $DIR and the path to the file you want to run
+
 
 # Set environment variables (remove '#' to set a variable, or set them in your environment)
 #export SECRET_KEY=""
@@ -13,8 +19,11 @@ python -m pip install -r docs/requirements.txt
 sudo apt-get install -y nginx
 clear
 
-mkdir -pv config/gunicorn/
-touch config/gunicorn/gunicorn.conf.py
+touch -pv $GUNICORN_CONFIG
+sudo mkdir -pv $GUNICORN_RUN_DIR
+sudo mkdir -pv $GUNICORN_LOG_DIR
+# DEBUG sudo chown -cR ubuntu:ubuntu /var/{log,run}/gunicorn/
+
 echo "
 wsgi_app = 'webui.wsgi:application'
 
@@ -34,15 +43,9 @@ pidfile = '/var/run/gunicorn/dev.pid'
 
 daemon = True" > config/gunicorn/gunicorn.conf.py
 
-sudo mkdir -pv /var/{log,run}/gunicorn/
-# DEBUG sudo chown -cR ubuntu:ubuntu /var/{log,run}/gunicorn/
-
 clear
-
 cd webui
 gunicorn -c ../config/gunicorn/gunicorn.conf.py
 
-
-cd webui
 # ideally have use nginx as a proxy to filter traffic between the two
 # DEBUG gunicorn app.wsgi:application -b 0.0.0.0 -p 8000 --reload & daphne app.asgi:application -b 0.0.0.0 -p 8089 &
