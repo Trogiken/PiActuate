@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
     window.setInterval(getStatus, 1000);
   });
 function getStatus() {
-    statusSocket.send(JSON.stringify({
+  doorSocket.send(JSON.stringify({
         'message': 'get_status'
     }));
 }
-statusSocket.onmessage = function(e) {
+doorSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     if (data.signal === '200') {
       document.querySelector('#status_text').innerHTML = data.message;
