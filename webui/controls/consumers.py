@@ -5,10 +5,7 @@ from channels.generic.websocket import WebsocketConsumer
 
 class DoorConsumer(WebsocketConsumer): # DEBUG async consumer?
     def connect(self):
-        if self.scope['user'].is_authenticated:
-            self.accept()
-        else:
-            self.close(code=1000)
+        self.accept()
     
     def disconnect(self, code):
         return super().disconnect(code)
@@ -19,6 +16,7 @@ class DoorConsumer(WebsocketConsumer): # DEBUG async consumer?
         if data.get('message') == 'get_status':
             self.send(text_data=json.dumps({
                 "signal": "200",
+                "command": data.get('message'),
                 "message": runtime.door.status
                 })
             )
@@ -26,6 +24,7 @@ class DoorConsumer(WebsocketConsumer): # DEBUG async consumer?
             runtime.door.move(2)
             self.send(text_data=json.dumps({
                 "signal": "200",
+                "command": data.get('message'),
                 "message": "Door is opening"
                 })
             )
@@ -33,12 +32,14 @@ class DoorConsumer(WebsocketConsumer): # DEBUG async consumer?
             runtime.door.move(1)
             self.send(text_data=json.dumps({
                 "signal": "200",
+                "command": data.get('message'),
                 "message": "Door is closing"
                 })
             )
         else:
             self.send(text_data=json.dumps({
                 "signal": "400",
+                "command": data.get('message'),
                 "message": "Invalid request"
                 })
             )

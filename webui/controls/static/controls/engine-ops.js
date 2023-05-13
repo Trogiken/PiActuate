@@ -8,22 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
     window.setInterval(getStatus, 1000);
   });
 function getStatus() {
-  doorSocket.send(JSON.stringify({
-        'message': 'get_status'
-    }));
+  sendDoorCommand('get_status');
 }
-doorSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    if (data.signal === '200') {
-      document.querySelector('#status_text').innerHTML = data.message;
-    } else {
-      document.querySelector('#status_text').innerHTML = 'unknown';
-    }
-};
 
 // function that accepts a variable that sends 'open' or 'close' to the server. Also show loading animation while waiting for response.
 function sendDoorCommand(command) {
-  showLoading();
+  // if command does not equal 'get_status'
+  if (command !== 'get_status') {
+    showLoading();
+  }
   doorSocket.send(JSON.stringify({
       'message': command
   }));
@@ -31,14 +24,24 @@ function sendDoorCommand(command) {
 // on message from server, if response is 200, hide loading animation, if response is 400, show error message.
 doorSocket.onmessage = function(e) {
   const data = JSON.parse(e.data);
-  if (data.signal === '200') {
+  // if data.command does not equal 'get_status'
+  if (data.command !== 'get_status') {
+    if (data.signal === '200') {
       document.querySelector('#loading-text').innerHTML = 'Success: ' + data.message;
       setTimeout(hideLoading, 2000);
       hideLoading();
-  } else {
+    } else {
       document.querySelector('#loading-text').innerHTML = 'Error: ' + data.message;
       setTimeout(hideLoading, 2000);
       hideLoading();
+    }
+  }
+  // if data.command equals 'get_status'
+  if (data.signal === '200') {
+    document.querySelector('#status_text').innerHTML = data.message;
+  }
+  else {
+    document.querySelector('#status_text').innerHTML = 'unknown';
   }
 }
 
