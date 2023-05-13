@@ -1,7 +1,5 @@
 Django
 channels
-whitenoise
-asgi_redis
 gunicorn
 daphne
 RPi.GPIO

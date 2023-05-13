@@ -32,8 +32,6 @@ ALLOWED_HOSTS = [host.strip() for host in getenv('ALLOWED_HOSTS', "*").split(','
 # Application definition
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
-    'daphne',
     'controls',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,7 +43,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

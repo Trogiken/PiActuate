@@ -1,54 +1,127 @@
 #!/bin/bash
+# Resources: https://saurabhgujjar.medium.com/django-channels-with-daphne-gunicorn-and-nginx-on-digitalocean-all-in-one-guide-28625eead962
+
 DIR=$(dirname "$0")
 WEBUI="$DIR/webui/"
-GUNICORN_CONFIG_DIR="$DIR/config/gunicorn/"
-GUNICORN_RUN_DIR="/var/run/gunicorn/"
-GUNICORN_LOG_DIR="/var/log/gunicorn/"
-cd "$DIR"
-# concatenat $DIR and the path to the file you want to run
+ENV="$DIR/env/bin"
 
+USER="USERNAME"  # SET change to your username
+IP_ADDRESS="IP_ADDRESS"  # SET change to your ip address
 
 # Set environment variables (remove '#' to set a variable, or set them in your environment)
 #export SECRET_KEY=""
 #export IS_DEVELOPMENT=""
 #export ALLOWED_HOSTS=""
 
-# Install dependencies
+#############################################
+
+# Create and activate environment
 python -m pip install --upgrade pip
-python -m pip install -r docs/requirements.txt
-sudo apt-get install -y nginx
-clear
+sudo -H pip install virtualenv
+virtualenv $DIR/env
+source env/bin/activate
 
-mkdir -pv $GUNICORN_CONFIG_DIR
-# make file in $GUNICORN_CONFIG_DIR
-touch $GUNICORN_CONFIG_DIR/gunicorn.conf.py
-sudo mkdir -pv $GUNICORN_RUN_DIR
-mkdir -pv $GUNICORN_LOG_DIR
-# DEBUG sudo chown -cR ubuntu:ubuntu /var/{log,run}/gunicorn/
+# Install dependencies
+pip -m install -r docs/requirements.txt
+deactivate
+sudo apt-get install -y ngnix
+sudo systemctl start nginx
+sudo apt-get install -y ufw
+sudo ufw enable
 
+# Collect static files
+source $ENV/activate
+python $WEBUI/manage.py collectstatic --noinput
+deactivate
+
+# allow ports
+sudo ufw allow 8000
+sudo ufw allow 8001
+sudo ufw allow 80
+sudo ufw allow 'Nginx Full'
+
+#############################################
+
+# Configure Gunicorn
+sudo touch /etc/systemd/system/gunicorn.service
+# DEBUG sudo echo?
 echo "
-wsgi_app = 'webui.wsgi:application'
+[Unit]
+Description=gunicorn daemon
+After=network.target
+[Service]
+User=$USER
+Group=www-data
+WorkingDirectory=$DIR
+ExecStart=$ENV/gunicorn --access-logfile - --workers 1 --pythonpath $WEBUI --bind unix:$DIR.sock webui.wsgi:application
+Restart=on-failure  # DEBUG
+[Install]
+WantedBy=multi-user.target" >> /etc/systemd/system/gunicorn.service
 
-loglevel = 'debug'
+#############################################
 
-workers = 2
+# Configure Daphne
+sudo touch /etc/systemd/system/daphne.service
+# DEBUG sudo echo?
+echo "
+[Unit]
+Description=WebSocket Daphne Service
+After=network.target
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$DIR
+ExecStart=$ENV/python $ENV/daphne -b 0.0.0.0 -p 8001 webui.asgi:application
+RestartSec=3s
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target" >> /etc/systemd/system/daphne.service
 
-bind = '0.0.0.0:8000'
+#############################################
 
-reload = True
+# Configure Nginx
+sudo touch /etc/nginx/sites-available/webui
+# DEBUG sudo echo?
+echo "
+upstream channels-backend {
+    server localhost:8001;
+}
+server {
+    listen 80;
+    server_name $IP_ADDRESS;
 
-accesslog = errorlog = '/var/log/gunicorn/gunicorn.log'
+    location /static/ {
+        alias $WEBUI/staticfiles/;
+    }
 
-capture_output = True
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:$DIR.sock;
+    }
 
-pidfile = '/var/run/gunicorn/gunicorn.pid'
+    location /ws/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_redirect off;
+        proxy_pass http://127.0.0.1:8001;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host \$server_name;
+    }
+}" >> /etc/nginx/sites-available/webui
 
-daemon = True" > $GUNICORN_CONFIG_DIR/gunicorn.conf.py
+sudo ln -s /etc/nginx/sites-available/webui /etc/nginx/sites-enabled
 
-clear
+#############################################
 
-cd $WEBUI
-gunicorn -c ../config/gunicorn/gunicorn.conf.py
+# Start services
+sudo systemctl daemon-reload
 
-# ideally have use nginx as a proxy to filter traffic between the two
-# DEBUG gunicorn app.wsgi:application -b 0.0.0.0 -p 8000 --reload & daphne app.asgi:application -b 0.0.0.0 -p 8089 &
+sudo systemctl start gunicorn.service
+sudo systemctl start daphne.service
+sudo systemctl restart nginx.service
+sudo systemctl enable gunicorn.service
+sudo systemctl enable daphne.service
+sudo systemctl enable nginx.service
