@@ -19,10 +19,10 @@ IP_ADDRESS="IP_ADDRESS"  # SET change to your ip address
 python -m pip install --upgrade pip
 sudo -H pip install virtualenv
 virtualenv $DIR/env
-source env/bin/activate
+source $ENV/activate
 
 # Install dependencies
-pip install -r docs/requirements.txt
+pip install -r $DIR/docs/requirements.txt
 deactivate
 sudo apt-get install -y ngnix
 sudo systemctl start nginx
