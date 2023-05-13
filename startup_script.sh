@@ -27,7 +27,6 @@ deactivate
 sudo apt-get install -y ngnix
 sudo systemctl start nginx
 sudo apt-get install -y ufw
-sudo ufw enable
 
 # Collect static files
 source $ENV/activate
@@ -35,10 +34,13 @@ python $WEBUI/manage.py collectstatic --noinput
 deactivate
 
 # allow ports
+sudo ufw allow 5900  # DEBUG for VNC
+
 sudo ufw allow 8000
 sudo ufw allow 8001
 sudo ufw allow 80
 sudo ufw allow 'Nginx Full'
+sudo ufw enable
 
 #############################################
 
@@ -53,7 +55,7 @@ User=$USER
 Group=www-data
 WorkingDirectory=$DIR
 ExecStart=$ENV/gunicorn --access-logfile - --workers 1 --pythonpath $WEBUI --bind unix:$DIR.sock webui.wsgi:application
-Restart=on-failure  # DEBUG
+Restart=on-failure
 [Install]
 WantedBy=multi-user.target" > /etc/systemd/system/gunicorn.service'
 
