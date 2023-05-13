@@ -35,13 +35,11 @@ doorSocket.onmessage = function(e) {
       setTimeout(hideLoading, 2000);
       hideLoading();
     }
-  }
-  // if data.signal equals '200' and data.command equals 'get_status' 
-  else {
+  } else {
     if (data.signal === '200') {
-      document.querySelector('#door-status').innerHTML = data.message;
+      document.querySelector('#status_text').innerHTML = data.message;
     } else {
-      document.querySelector('#door-status').innerHTML = 'Unknown';
+      document.querySelector('#status_text').innerHTML = 'Unknown';
     }
   }
 }
