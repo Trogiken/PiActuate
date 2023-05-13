@@ -8,7 +8,7 @@ class DoorConsumer(WebsocketConsumer): # DEBUG async consumer?
         if self.scope['user'].is_authenticated:
             self.accept()
         else:
-            self.close(code=1000, reason='User is not authenticated')
+            self.close(code=1000)
     
     def disconnect(self, code):
         return super().disconnect(code)
