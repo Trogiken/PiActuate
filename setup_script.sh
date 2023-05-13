@@ -128,3 +128,6 @@ sudo systemctl restart nginx.service
 sudo systemctl enable gunicorn.service
 sudo systemctl enable daphne.service
 sudo systemctl enable nginx.service
+# Restart services incase they are already running
+sudo systemctl restart gunicorn.service
+sudo systemctl restart daphne.service

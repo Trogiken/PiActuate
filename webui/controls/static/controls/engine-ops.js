@@ -36,12 +36,13 @@ doorSocket.onmessage = function(e) {
       hideLoading();
     }
   }
-  // if data.command equals 'get_status'
-  if (data.signal === '200') {
-    document.querySelector('#status_text').innerHTML = data.message;
-  }
+  // if data.signal equals '200' and data.command equals 'get_status' 
   else {
-    document.querySelector('#status_text').innerHTML = 'unknown';
+    if (data.signal === '200') {
+      document.querySelector('#door-status').innerHTML = data.message;
+    } else {
+      document.querySelector('#door-status').innerHTML = 'Unknown';
+    }
   }
 }
 
