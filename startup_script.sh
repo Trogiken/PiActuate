@@ -45,7 +45,7 @@ sudo ufw allow 'Nginx Full'
 # Configure Gunicorn
 sudo touch /etc/systemd/system/gunicorn.service
 # DEBUG sudo echo?
-sudo echo "
+sudo sh -c 'echo "
 [Unit]
 Description=gunicorn daemon
 After=network.target
@@ -63,7 +63,7 @@ WantedBy=multi-user.target" >> /etc/systemd/system/gunicorn.service
 # Configure Daphne
 sudo touch /etc/systemd/system/daphne.service
 # DEBUG sudo echo?
-sudo echo "
+sudo sh -c 'echo "
 [Unit]
 Description=WebSocket Daphne Service
 After=network.target
@@ -82,7 +82,7 @@ WantedBy=multi-user.target" >> /etc/systemd/system/daphne.service
 # Configure Nginx
 sudo touch /etc/nginx/sites-available/webui
 # DEBUG sudo echo?
-sudo echo "
+sudo sh -c 'echo "
 upstream channels-backend {
     server localhost:8001;
 }
