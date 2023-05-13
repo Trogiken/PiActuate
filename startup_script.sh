@@ -1,7 +1,7 @@
 #!/bin/bash
 # Resources: https://saurabhgujjar.medium.com/django-channels-with-daphne-gunicorn-and-nginx-on-digitalocean-all-in-one-guide-28625eead962
 
-DIR=$(dirname "$0")
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 WEBUI="$DIR/webui/"
 ENV="$DIR/env/bin"
 
@@ -76,7 +76,7 @@ ExecStart=$ENV/python $ENV/daphne -b 0.0.0.0 -p 8001 webui.asgi:application
 RestartSec=3s
 Restart=on-failure
 [Install]
-WantedBy=multi-user.target'
+WantedBy=multi-user.target
 EOF
 
 #############################################
