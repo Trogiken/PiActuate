@@ -43,7 +43,7 @@ sudo ufw allow 'Nginx Full'
 #############################################
 
 # Configure Gunicorn
-sudo rm -f /etc/systemd/system/gunicorn.service && sudo touch /etc/systemd/system/gunicorn.service
+sudo touch /etc/systemd/system/gunicorn.service
 sudo sh -c 'echo "
 [Unit]
 Description=gunicorn daemon
@@ -55,12 +55,12 @@ WorkingDirectory=$DIR
 ExecStart=$ENV/gunicorn --access-logfile - --workers 1 --pythonpath $WEBUI --bind unix:$DIR.sock webui.wsgi:application
 Restart=on-failure  # DEBUG
 [Install]
-WantedBy=multi-user.target" >> /etc/systemd/system/gunicorn.service'
+WantedBy=multi-user.target" > /etc/systemd/system/gunicorn.service'
 
 #############################################
 
 # Configure Daphne
-sudo rm -f /etc/systemd/system/daphne.service && sudo touch /etc/systemd/system/daphne.service
+touch /etc/systemd/system/daphne.service
 sudo sh -c 'echo "
 [Unit]
 Description=WebSocket Daphne Service
@@ -73,12 +73,12 @@ ExecStart=$ENV/python $ENV/daphne -b 0.0.0.0 -p 8001 webui.asgi:application
 RestartSec=3s
 Restart=on-failure
 [Install]
-WantedBy=multi-user.target" >> /etc/systemd/system/daphne.service'
+WantedBy=multi-user.target" > /etc/systemd/system/daphne.service'
 
 #############################################
 
 # Configure Nginx
-sudo rm -f /etc/nginx/sites-available/webui && sudo touch /etc/nginx/sites-available/webui
+sudo touch /etc/nginx/sites-available/webui
 sudo sh -c 'echo "
 upstream channels-backend {
     server localhost:8001;
@@ -107,7 +107,7 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host \$server_name;
     }
-}" >> /etc/nginx/sites-available/webui'
+}" > /etc/nginx/sites-available/webui'
 
 sudo ln -s /etc/nginx/sites-available/webui /etc/nginx/sites-enabled
 
