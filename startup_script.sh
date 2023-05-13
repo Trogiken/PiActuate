@@ -22,7 +22,7 @@ virtualenv $DIR/env
 source env/bin/activate
 
 # Install dependencies
-pip -m install -r docs/requirements.txt
+pip install -r docs/requirements.txt
 deactivate
 sudo apt-get install -y ngnix
 sudo systemctl start nginx
