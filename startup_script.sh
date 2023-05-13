@@ -46,7 +46,7 @@ sudo ufw enable
 
 # Configure Gunicorn
 sudo touch /etc/systemd/system/gunicorn.service
-sudo -E sh -c "echo '
+sudo cat <<EOF > /etc/systemd/system/gunicorn.service
 [Unit]
 Description=gunicorn daemon
 After=network.target
@@ -57,13 +57,14 @@ WorkingDirectory=$DIR
 ExecStart=$ENV/gunicorn --access-logfile - --workers 1 --pythonpath $WEBUI --bind unix:$DIR.sock webui.wsgi:application
 Restart=on-failure
 [Install]
-WantedBy=multi-user.target' > /etc/systemd/system/gunicorn.service"
+WantedBy=multi-user.target
+EOF
 
 #############################################
 
 # Configure Daphne
 sudo touch /etc/systemd/system/daphne.service
-sudo -E sh -c "echo '
+sudo cat <<EOF > /etc/systemd/system/daphne.service
 [Unit]
 Description=WebSocket Daphne Service
 After=network.target
@@ -75,13 +76,14 @@ ExecStart=$ENV/python $ENV/daphne -b 0.0.0.0 -p 8001 webui.asgi:application
 RestartSec=3s
 Restart=on-failure
 [Install]
-WantedBy=multi-user.target' > /etc/systemd/system/daphne.service"
+WantedBy=multi-user.target'
+EOF
 
 #############################################
 
 # Configure Nginx
 sudo touch /etc/nginx/sites-available/webui
-sudo -E sh -c 'echo "
+sudo cat <<EOF > /etc/nginx/sites-available/webui
 upstream channels-backend {
     server localhost:8001;
 }
@@ -109,7 +111,8 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host \$server_name;
     }
-}" > /etc/nginx/sites-available/webui'
+}
+EOF
 
 sudo ln -s /etc/nginx/sites-available/webui /etc/nginx/sites-enabled
 
