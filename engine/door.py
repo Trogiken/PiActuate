@@ -222,7 +222,7 @@ class Door:
 
         Returns
         -------
-        status (str): closed, open, blocked, moving or unknown
+        status (str): Closed, Open, Blocked, Extending, Retracting or Unknown
         """
         if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
             status = 'Closed'
@@ -235,7 +235,7 @@ class Door:
         elif door_in_motion['in_motion'] or self.aux is not None and self.aux.in_motion:
             status = door_in_motion['direction']
         else:
-            status = 'unknown'
+            status = 'Unknown'
 
         return status
 
