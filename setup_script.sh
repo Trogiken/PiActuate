@@ -55,6 +55,7 @@ User=$USER
 Group=www-data
 WorkingDirectory=$DIR
 ExecStart=$ENV/gunicorn --access-logfile - --workers 1 --pythonpath $WEBUI --bind unix:$DIR.sock webui.wsgi:application
+RestartSec=3s
 Restart=on-failure
 [Install]
 WantedBy=multi-user.target
@@ -71,7 +72,7 @@ After=network.target
 [Service]
 Type=simple
 User=$USER
-WorkingDirectory=$DIR
+WorkingDirectory=$WEBUI
 ExecStart=$ENV/python $ENV/daphne -b 0.0.0.0 -p 8001 webui.asgi:application
 RestartSec=3s
 Restart=on-failure

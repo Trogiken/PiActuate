@@ -30,7 +30,7 @@ Python 3.10+
 You're done!
 3 Services have been made that will start at boot and all dependancies have been neatly packed into a virtual environment in the REPO directory
 
-_You may need to adjust the version of python or make an absolute path to python in the startup script_  # TODO more specific
+_You may need to adjust the version of python or pip that is used such as changing python -> python3 and pip -> pip3_
 
 ## System Config
 
