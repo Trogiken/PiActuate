@@ -20,25 +20,19 @@ Python 3.10+
   - Open and Close Buttons
 
 ## Installation and Start
-1. Download Repository
-2. Set Environment Variables
-  * SECRET_KEY : Cryptographic signing and encryption throughout app.
-    * Example: `export SECRET_KEY="not-secure-key-)*j23891A0239("`
-    * If none is given, a random one will be assigned each run
-  * IS_DEVELOPMENT : Application will run with debug mode on.
-    * Example: `export IS_DEVELOPMENT="False"`
-    * If none is given, will be set to True
-  * ALLOWED_HOSTS : Valid host names Django can serve.
-    * Example: `export ALLOWED_HOSTS="192.1.1.1,172.200.20.1,hostname.com"`
-    * If none is given, will be set to a wildcard
-3. Open a CLI session in the repositorys directory
-4. Run the startup script: `chmod +x startup_script.sh && ./startup_script.sh`
+1. Download/Clone the Repository two subfolders deep `/home/Projects/DOOR-REPO/REPO`
+  * This is so that the REPO.sock file is placed in the DOOR-REPO directory; for organization
+2. Open a CLI session in the REPO directory
+3. Set Environment Variables # TODO use file version of getenv
+4. Change $USER and $IP_ADDRESS in the setup script: `sudo nano ./setup_script.sh`
+5.  Run `chmod +x ./setup_script.sh && sudo ./setup_script.sh`
 
-Click [here](#creating-a-service) if you wish this script to run at boot
+You're done!
+3 Services have been made that will start at boot and all dependancies have been neatly packed into a virtual environment in the REPO directory
 
-_You may need to adjust the version of python or make an absolute path to python in the startup script_
+_You may need to adjust the version of python or make an absolute path to python in the startup script_  # TODO more specific
 
-## App Config
+## System Config
 
 | Variable        | Purpose                                   |
 |-----------------|-------------------------------------------|
@@ -60,40 +54,6 @@ _You may need to adjust the version of python or make an absolute path to python
 See the official python documentation [here](https://docs.python.org/3/library/logging.config.html)
 
 When editing the logging config be sure to use correct syntax and formatting to avoid crashing
-
-## Creating a Service
-#### 1. Create a service file
-``sudo nano /usr/lib/systemd/system/SERVICE_NAME.service``
-
-#### 2. Create Script
-```
-[Unit]
-Description=Door Control Service
-After=multi-user.target
-
-[Service]
-Type=simple
-User=USER-NAME
-ExecStart=path/to/startup_script.sh
-
-[Install]
-WantedBy=multi-user.target
-```
-After saving this script run `sudo systemctl daemon-reload` to pick up the changes
-#### 3. Enable the service
-``sudo systemctl enable SERVICE_NAME``
-
-Allows the service script to run at boot
-
-#### 4. Start the service
-``sudo systemctl start SERVICE_NAME``
-
-Run the service
-
-#### 5. Check the status
-``sudo systemctl status SERVICE_NAME``
-
-Show if the service is running or not
 
 [^1]: If **Off** state of relay is _true_ (Send Power), _false_ (No Power)
 [^2]: For a list of zones run the following: `import pytz`, then enter `pytz.all_timezones`
