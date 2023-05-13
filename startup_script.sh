@@ -46,7 +46,7 @@ sudo ufw enable
 
 # Configure Gunicorn
 sudo touch /etc/systemd/system/gunicorn.service
-sudo -E sh -c 'echo "
+sudo -E sh -c "echo '
 [Unit]
 Description=gunicorn daemon
 After=network.target
@@ -57,13 +57,13 @@ WorkingDirectory=$DIR
 ExecStart=$ENV/gunicorn --access-logfile - --workers 1 --pythonpath $WEBUI --bind unix:$DIR.sock webui.wsgi:application
 Restart=on-failure
 [Install]
-WantedBy=multi-user.target" > /etc/systemd/system/gunicorn.service'
+WantedBy=multi-user.target' > /etc/systemd/system/gunicorn.service"
 
 #############################################
 
 # Configure Daphne
 sudo touch /etc/systemd/system/daphne.service
-sudo -E sh -c 'echo "
+sudo -E sh -c "echo '
 [Unit]
 Description=WebSocket Daphne Service
 After=network.target
@@ -75,7 +75,7 @@ ExecStart=$ENV/python $ENV/daphne -b 0.0.0.0 -p 8001 webui.asgi:application
 RestartSec=3s
 Restart=on-failure
 [Install]
-WantedBy=multi-user.target" > /etc/systemd/system/daphne.service'
+WantedBy=multi-user.target' > /etc/systemd/system/daphne.service"
 
 #############################################
 
