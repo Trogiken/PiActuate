@@ -6,9 +6,8 @@ WEBUI="$DIR/webui/"
 ENV="$DIR/pythonenv/bin"
 
 source $DIR/webenv
-$USER = $USER
-$IP_ADDRESS = $IP_ADDRESS
-deactivate
+USER=$USER
+IP_ADDRESS=$IP_ADDRESS
 
 #############################################
 
