@@ -25,18 +25,18 @@ Python 3.10+
 2. Open a CLI session in the REPO directory
 3. Set the environment variables in webenv: `nano ./webenv`
   * SECRET_KEY : Cryptographic signing and encryption throughout app.
-    * Example: export SECRET_KEY="not-secure-key-)*j23891A0239("
+    * Example: `SECRET_KEY="not-secure-key-)*j23891A0239("`
     * If none is given, a random one will be assigned each run
   * IS_DEVELOPMENT : Application will run with debug mode on.
-    * Example: export IS_DEVELOPMENT="False"
+    * Example: `IS_DEVELOPMENT="False"`
     * If none is given, will be set to True
   * ALLOWED_HOSTS : Valid host names Django can serve.
-    * Example: export ALLOWED_HOSTS="192.1.1.1,172.200.20.1,hostname.com"
+    * Example: `ALLOWED_HOSTS="192.1.1.1,172.200.20.1,hostname.com"`
     * If none is given, will be set to a wildcard
 4. Run `chmod +x ./setup_script.sh && sudo ./setup_script.sh`
 
 You're done!
-3 Services have been made that will start at boot and all dependancies have been neatly packed into a virtual environment in the REPO directory
+3 Services (Nginx, Gunicorn, and Daphne) have been made that will start at boot and all dependancies have been neatly packed into a virtual environment in the REPO directory
 
 _You may need to adjust the version of python or pip that is used such as changing python -> python3 and pip -> pip3_
 
