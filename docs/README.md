@@ -63,6 +63,8 @@ See the official python documentation [here](https://docs.python.org/3/library/l
 
 When editing the logging config be sure to use correct syntax and formatting to avoid crashing
 
+If something is not working quite right you may change handlers -> file -> level from INFO to DEBUG. This will show more detailed logs to make it easier to troubleshoot.
+
 [^1]: If **Off** state of relay is _true_ (Send Power), _false_ (No Power)
 [^2]: For a list of zones run the following: `import pytz`, then enter `pytz.all_timezones`
 [^3]: Find the movement rate of door and the distance it must travel. Add an additional 4 - 6 seconds
