@@ -23,9 +23,8 @@ Python 3.10+
 1. Download/Clone the Repository two subfolders deep `/home/Projects/DOOR-REPO/REPO`
   * This is so that the REPO.sock file is placed in the DOOR-REPO directory; for organization
 2. Open a CLI session in the REPO directory
-3. Set Environment Variables # TODO use file version of getenv
-4. Change $USER and $IP_ADDRESS in the setup script: `sudo nano ./setup_script.sh`
-5.  Run `chmod +x ./setup_script.sh && sudo ./setup_script.sh`
+3. Set the environment variables in webenv: `nano ./webenv`
+4. Run `chmod +x ./setup_script.sh && sudo ./setup_script.sh`
 
 You're done!
 3 Services have been made that will start at boot and all dependancies have been neatly packed into a virtual environment in the REPO directory

@@ -3,22 +3,19 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 WEBUI="$DIR/webui/"
-ENV="$DIR/env/bin"
+ENV="$DIR/pythonenv/bin"
 
-USER="USERNAME"  # SET change to your username
-IP_ADDRESS="IP_ADDRESS"  # SET change to your ip address
-
-# Set environment variables (remove '#' to set a variable, or set them in your environment)
-#export SECRET_KEY=""
-#export IS_DEVELOPMENT=""
-#export ALLOWED_HOSTS=""
+source $DIR/webenv
+$USER = $USER
+$IP_ADDRESS = $IP_ADDRESS
+deactivate
 
 #############################################
 
 # Create and activate environment
 python -m pip install --upgrade pip
 sudo -H pip install virtualenv
-virtualenv $DIR/env
+virtualenv $DIR/pythonenv
 source $ENV/activate
 
 # Install dependencies

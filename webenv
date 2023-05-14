@@ -1,0 +1,8 @@
+# Uncomment and enter the value between the double quotes
+# WARNING: USER and IP_ADDRESS are requried!
+
+# USER=""
+# IP_ADDRESS=""
+# IS_DEVELOPMENT=""
+# ALLOWED_HOSTS=""
+# SECRET_KEY=""
