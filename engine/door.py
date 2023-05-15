@@ -232,7 +232,7 @@ class Door:
             status = 'Blocked'
         elif door_in_motion['in_motion']:  # DEBUG Remove and replace with condition below?
             status = door_in_motion['direction']
-        elif door_in_motion['in_motion'] or self.aux is not None and self.aux.in_motion:
+        elif door_in_motion['in_motion'] or self.aux is not None and self.aux.in_motion:  # BUG 
             status = door_in_motion['direction']
         else:
             status = 'Unknown'
@@ -252,7 +252,7 @@ class Door:
         """
         log.info("[Operation Start]")
 
-        if self.aux is not None:
+        if self.aux is not None:  # BUG Does not seem to work, perhaps check if thread is alive?
             if self.aux.in_motion:  # If an auxiliary button is being pressed
                 log.error("Auxiliary Active; Canceling Operation")
                 return
