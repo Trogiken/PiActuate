@@ -24,6 +24,12 @@ Python 3.10+
   * This is so that the REPO.sock file is placed in the DOOR-REPO directory; for organization
 2. Open a CLI session in the REPO directory
 3. Set the environment variables in webenv: `nano ./webenv`
+  * USER : The user that will run the services and servers.
+    * Example: `USER="rpi-user"`
+    * This is requried for the program to function properly
+  * SERVER_NAME : IPv4 address or domain used for gateway.
+    * Example: `IP_ADDRESS="192.168.1.10"`
+    * This is requried for the program to function properly
   * SECRET_KEY : Cryptographic signing and encryption throughout app.
     * Example: `SECRET_KEY="not-secure-key-)*j23891A0239("`
     * If none is given, a random one will be assigned each run
@@ -31,7 +37,7 @@ Python 3.10+
     * Example: `IS_DEVELOPMENT="False"`
     * If none is given, will be set to True
   * ALLOWED_HOSTS : Valid host names Django can serve.
-    * Example: `ALLOWED_HOSTS="192.1.1.1,172.200.20.1,hostname.com"`
+    * Example: `ALLOWED_HOSTS="192.168.1.10,172.200.20.1,hostname.com"`
     * If none is given, will be set to a wildcard
 4. Run `chmod +x ./setup_script.sh && sudo ./setup_script.sh`
 

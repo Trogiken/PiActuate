@@ -2,7 +2,7 @@
 # WARNING: USER and IP_ADDRESS are requried!
 
 # USER=""
-# IP_ADDRESS=""
+# SERVER_NAME=""
 # IS_DEVELOPMENT=""
 # ALLOWED_HOSTS=""
 # SECRET_KEY=""

@@ -7,7 +7,7 @@ ENV="$DIR/pythonenv/bin"
 
 source $DIR/webenv
 USER=$USER
-IP_ADDRESS=$IP_ADDRESS
+SERVER_NAME=$SERVER_NAME
 
 #############################################
 
@@ -86,7 +86,7 @@ upstream channels-backend {
 }
 server {
     listen 80;
-    server_name $IP_ADDRESS;
+    server_name $SERVER_NAME;
 
     location /static/ {
         alias $WEBUI/staticfiles/;
