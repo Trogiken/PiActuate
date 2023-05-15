@@ -10,30 +10,39 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from dotenv import load_dotenv
 from pathlib import Path
+from os import getenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+WEBENV = Path(__file__).resolve().parent.parent.parent / 'webenv'
+
+load_dotenv(WEBENV)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# TODO REMOVE THIS BEFORE PRODUCTION
-SECRET_KEY = 'django-insecure--3+5=stkp)1@yc(=ggbe=04$3lm*=j7s7!km0)q!8$)mvh@g!j'
+from django.core.management.utils import get_random_secret_key
+SECRET_KEY = getenv('SECRET_KEY', get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+IS_DEVELOPMENT = getenv('IS_DEVELOPMENT').casefold()
+if IS_DEVELOPMENT == 'false':
+    IS_DEVELOPMENT = False
+elif IS_DEVELOPMENT == 'true':
+    IS_DEVELOPMENT = True
+else:
+    IS_DEVELOPMENT = True
+DEBUG = IS_DEVELOPMENT
 
-# TODO REMOVE THIS BEFORE PRODUCTION
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = [host.strip() for host in getenv('ALLOWED_HOSTS', "*").split(',')]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
     'controls',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -123,7 +132,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # where all static files are served from
 # MEDIA_ROOT = BASE_DIR / 'media'
 
 STATICFILES_DIRS = [

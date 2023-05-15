@@ -1,45 +1,46 @@
-const statusSocket = new WebSocket(
+const doorSocket = new WebSocket(
     'ws://'
     + window.location.host
-    + '/ws/dashboard/status/'
+    + '/ws/engine/door/'
   );
+
 document.addEventListener('DOMContentLoaded', function() {
     window.setInterval(getStatus, 1000);
   });
 function getStatus() {
-    statusSocket.send(JSON.stringify({
-        'message': 'get_status'
-    }));
+  sendDoorCommand('get_status');
 }
-statusSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    document.querySelector('#status_text').innerHTML = data.message;
-};
 
-
-const movementSocket = new WebSocket(
-  'ws://'
-  + window.location.host
-  + '/ws/door/movement/'
-);
 // function that accepts a variable that sends 'open' or 'close' to the server. Also show loading animation while waiting for response.
 function sendDoorCommand(command) {
-  showLoading();
-  movementSocket.send(JSON.stringify({
+  // if command does not equal 'get_status'
+  if (command !== 'get_status') {
+    showLoading();
+  }
+  doorSocket.send(JSON.stringify({
       'message': command
   }));
 }
 // on message from server, if response is 200, hide loading animation, if response is 400, show error message.
-movementSocket.onmessage = function(e) {
+doorSocket.onmessage = function(e) {
   const data = JSON.parse(e.data);
-  if (data.signal === '200') {
+  // if data.command does not equal 'get_status'
+  if (data.command !== 'get_status') {
+    if (data.signal === '200') {
       document.querySelector('#loading-text').innerHTML = 'Success: ' + data.message;
       setTimeout(hideLoading, 2000);
       hideLoading();
-  } else {
+    } else {
       document.querySelector('#loading-text').innerHTML = 'Error: ' + data.message;
       setTimeout(hideLoading, 2000);
       hideLoading();
+    }
+  } else {
+    if (data.signal === '200') {
+      document.querySelector('#status_text').innerHTML = data.message;
+    } else {
+      document.querySelector('#status_text').innerHTML = 'Unknown';
+    }
   }
 }
 

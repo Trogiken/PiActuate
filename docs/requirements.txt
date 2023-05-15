@@ -1,6 +1,8 @@
-Django~=4.2
-channels~=4.0
-daphne~=4.0
-RPi.GPIO~=0.7.1
-pytz~=2023.3
-solartime~=0.1b1
+python-dotenv
+Django
+channels
+gunicorn
+daphne
+RPi.GPIO
+pytz
+solartime
