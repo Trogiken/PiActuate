@@ -59,6 +59,7 @@ class Initialization:
                 raise ValueError(f'Logging config format is invalid | {convertError}')
 
         if not os.path.exists(logdir):
+            # deepcode ignore UpdateAPI: <Creates 1 sub dirctory in root path, not multiple subs>
             os.mkdir(logdir)
 
         try:

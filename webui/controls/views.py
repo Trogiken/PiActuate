@@ -20,7 +20,7 @@ from startup import Initialization
 
 runtime = None
 
-if SystemConfig.objects.exists() and StartupConfig.objects.exists() and runtime is None:
+if SystemConfig.objects.exists() and StartupConfig.objects.exists():
         runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
 
