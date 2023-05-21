@@ -104,11 +104,6 @@ class Initialization:
         try:  # Create Door Object
             self._log.info('Creating Door Object')
 
-            if SyC.off_state == 'True':
-                SyC.off_state = True
-            else:
-                SyC.off_state = False
-
             from door import Door
             self.door = Door(board_mode=str(SyC.board_mode), off_state=SyC.off_state, relay1=int(SyC.relay1),
                              relay2=int(SyC.relay2), sw1=int(SyC.switch1), sw2=int(SyC.switch2), sw3=int(SyC.switch3),
