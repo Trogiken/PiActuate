@@ -134,6 +134,8 @@ class Auto:
         add or sub minutes from time
     sunset_offset : int
         add or sub minutes from time
+    scheduler : object
+        scheduler thread object
 
     Methods
     -------
@@ -163,21 +165,15 @@ class Auto:
         self.zone = zone
         self.door = door
 
-        self.sch = _Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
-                              sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)  # init variable
-    
-    @property
-    def is_running(self):
-        """Returns True if scheduler is running"""
-        return self.sch.is_alive()
+        self.scheduler = threading.Thread()
 
     def start(self):
         """Creates a scheduler object and starts the thread"""
         try:
-            if not self.sch.is_alive():
-                self.sch = _Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
+            if not self.scheduler.is_alive():
+                self.scheduler = _Scheduler(door=self.door, zone=self.zone, longitude=self.longitude, latitude=self.latitude,
                                       sunset_offset=self.sunset_offset, sunrise_offset=self.sunrise_offset)
-                self.sch.start()
+                self.scheduler.start()
                 log.info("Scheduler is Running")
             else:
                 log.info("Scheduler is already Running")
@@ -187,9 +183,9 @@ class Auto:
     def stop(self):
         """Stops the scheduler thread"""
         try:
-            if self.sch.is_alive():
-                self.sch.stop()
-                self.sch.join()
+            if self.scheduler.is_alive():
+                self.scheduler.stop()
+                self.scheduler.join()
                 log.info("Scheduler has stopped Running")
             else:
                 log.info("Scheduler is not Running")
@@ -199,19 +195,19 @@ class Auto:
     def set_sunrise_offset(self, value):
         """Changes Auto() and _Scheduler() attribute "sunrise_offset" to (value)"""
         self.sunrise_offset = value
-        if self.sch.is_alive():
-            self.sch.sunrise_offset = value
+        if self.scheduler.is_alive():
+            self.scheduler.sunrise_offset = value
 
     def set_sunset_offset(self, value):
         """Changes Auto() and _Scheduler() attribute "sunset_offset" to (value)"""
         self.sunset_offset = value
-        if self.sch.is_alive():
-            self.sch.sunset_offset = value
+        if self.scheduler.is_alive():
+            self.scheduler.sunset_offset = value
 
     def refresh(self):
         """Calls scheduler thread event 'refresh()'"""
-        if self.sch.is_alive():
-            self.sch.refresh()
+        if self.scheduler.is_alive():
+            self.scheduler.refresh()
 
     def active_sunrise(self):
         """
@@ -219,10 +215,10 @@ class Auto:
 
         Returns:
         -------
-        sch.active_sunrise (str): 00:00 string format
+        scheduler.active_sunrise (str): 00:00 string format
         """
-        if self.sch.is_alive():
-            return self.sch.active_sunrise
+        if self.scheduler.is_alive():
+            return self.scheduler.active_sunrise
         else:
             return None
 
@@ -232,10 +228,10 @@ class Auto:
 
         Returns:
         -------
-        sch.active_sunset (str): 00:00 string format
+        scheduler.active_sunset (str): 00:00 string format
         """
-        if self.sch.is_alive():
-            return self.sch.active_sunset
+        if self.scheduler.is_alive():
+            return self.scheduler.active_sunset
         else:
             return None
     
@@ -245,9 +241,9 @@ class Auto:
 
         Returns:
         -------
-        sch.active_current (str): 00:00 string format
+        scheduler.active_current (str): 00:00 string format
         """
-        if self.sch.is_alive():
-            return self.sch.active_current
+        if self.scheduler.is_alive():
+            return self.scheduler.active_current
         else:
             return None

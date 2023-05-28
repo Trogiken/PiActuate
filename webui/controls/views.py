@@ -58,7 +58,7 @@ class DetailPostView(LoginRequiredMixin, View):
             startup_config = StartupConfig.objects.first()
             form_data = detail_form.cleaned_data
             startup_config.automation = form_data["automation"]
-            startup_config.auxillary = form_data["auxillary"]
+            startup_config.auxiliary = form_data["auxiliary"]
             startup_config.sunrise_offset = form_data["sunrise_offset"]
             startup_config.sunset_offset = form_data["sunset_offset"]
             startup_config.save()
@@ -69,20 +69,20 @@ class DetailPostView(LoginRequiredMixin, View):
                     runtime.auto.set_sunrise_offset(int(form_data["sunrise_offset"]))
                 if runtime.auto.sunset_offset != int(form_data["sunset_offset"]):
                     runtime.auto.set_sunset_offset(int(form_data["sunset_offset"]))
-                if runtime.auto.is_running is False:
+                if runtime.auto.scheduler.is_alive() is False:
                     runtime.auto.start()
                 else:
                     runtime.auto.refresh()
                 sleep(1)  # give the scheduler time to update
             else:
-                if runtime.auto.is_running is True:
+                if runtime.auto.scheduler.is_alive() is True:
                     runtime.auto.stop()
 
-            if form_data["auxillary"]:
-                if runtime.door.aux_is_running is False:
+            if form_data["auxiliary"]:
+                if runtime.door.auxiliary.is_alive() is False:
                     runtime.door.run_aux()
             else:
-                if runtime.door.aux_is_running is True:
+                if runtime.door.auxiliary.is_alive() is True:
                     runtime.door.stop_aux()
             messages.add_message(request, messages.SUCCESS, "Saved")
             return redirect("dashboard-page")
@@ -101,12 +101,12 @@ class DashboardView(LoginRequiredMixin, View):
         if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page
             return redirect("systemconfig-page")
         
-        # check if automation or auxillary running states are different from the database
+        # check if automation or auxiliary running states are different from the database
         startup_config = StartupConfig.objects.first()
         if startup_config.automation is True and runtime.auto.is_running is False:
             startup_config.automation = False
-        if startup_config.auxillary is True and runtime.door.aux_is_running is False:
-            startup_config.auxillary = False
+        if startup_config.auxiliary is True and runtime.door.aux.is_alive() is False:
+            startup_config.auxiliary = False
         startup_config.save()
 
         return render(request, "controls/dashboard.html", {

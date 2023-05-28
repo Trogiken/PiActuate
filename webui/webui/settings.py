@@ -29,12 +29,10 @@ from django.core.management.utils import get_random_secret_key
 SECRET_KEY = getenv('SECRET_KEY', get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-IS_DEVELOPMENT = getenv('IS_DEVELOPMENT').casefold()
+IS_DEVELOPMENT = getenv('IS_DEVELOPMENT', 'True').casefold()
 if IS_DEVELOPMENT == 'false':
     IS_DEVELOPMENT = False
 elif IS_DEVELOPMENT == 'true':
-    IS_DEVELOPMENT = True
-else:
     IS_DEVELOPMENT = True
 DEBUG = IS_DEVELOPMENT
 

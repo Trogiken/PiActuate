@@ -10,10 +10,7 @@ except (ImportError, ModuleNotFoundError):
     log.exception("Failed to import RPi.GPIO")
     raise
 
-door_in_motion = {'in_motion': False, 'direction': 'None'}
-
-
-class _Auxiliary(threading.Thread):
+class Auxiliary(threading.Thread):
     def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, off_state, relay1, relay2):
         super().__init__()
         self.AUX_SW1 = aux_sw1  # trigger relay1
@@ -24,11 +21,11 @@ class _Auxiliary(threading.Thread):
         self.OFF_STATE = off_state
         self.RELAY1 = relay1
         self.RELAY2 = relay2
+
         self.motion = 0
-
         self.in_motion = False
-
         self._stop_event = threading.Event()
+        self._pause_event = threading.Event()
 
         log.info("AUX pins setting up...")
         try:
@@ -40,6 +37,17 @@ class _Auxiliary(threading.Thread):
 
         log.info("Aux pins set up successfully")
 
+    def pause(self):
+        log.debug("Auxiliary Paused")
+        self._pause_event.set()
+    
+    def paused(self):
+        return self._pause_event.is_set()
+
+    def resume(self):
+        log.debug("Auxiliary Resumed")
+        self._pause_event.clear()
+
     def stop(self):
         self._stop_event.set()
 
@@ -47,12 +55,10 @@ class _Auxiliary(threading.Thread):
         return self._stop_event.is_set()
 
     def run(self, *args, **kwargs):
-        while True:
-            if self.stopped():
-                log.debug("Stopping...")
-                GPIO.output(self.RELAY1, self.OFF_STATE)
-                GPIO.output(self.RELAY2, self.OFF_STATE)
-                return
+        while not self.stopped():
+            while self.paused():
+                time.sleep(0.1)
+
             if GPIO.input(self.AUX_SW1) == 1:
                 self.motion = 1
                 self.in_motion = True
@@ -62,23 +68,22 @@ class _Auxiliary(threading.Thread):
             else:
                 self.motion = 0
 
-            if self.in_motion and not door_in_motion['in_motion']:
+            if self.in_motion:
                 if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
                     self.in_motion = True
                     if GPIO.input(self.AUX_SW5) == 1:
-                        GPIO.output(self.RELAY1, self.OFF_STATE)
-                        GPIO.output(self.RELAY2, self.OFF_STATE)
+                        self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
                     else:
-                        GPIO.output(self.RELAY1, not self.OFF_STATE)
-                        GPIO.output(self.RELAY2, self.OFF_STATE)
+                        self._trigger_relays(not self.OFF_STATE, self.OFF_STATE)
                 elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
-                    GPIO.output(self.RELAY1, self.OFF_STATE)
-                    GPIO.output(self.RELAY2, not self.OFF_STATE)
+                    self._trigger_relays(self.OFF_STATE, not self.OFF_STATE)
                 else:
-                    GPIO.output(self.RELAY1, self.OFF_STATE)
-                    GPIO.output(self.RELAY2, self.OFF_STATE)
+                    self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
                     self.in_motion = False
 
+    def _trigger_relays(self, relay1_state, relay2_state):
+        GPIO.output(self.RELAY1, relay1_state)
+        GPIO.output(self.RELAY2, relay2_state)
 
 class Door:
     """
@@ -108,6 +113,8 @@ class Door:
         pint of aux_switch2
     travel_time : int
         maximum seconds relays remain triggered
+    auxiliary: object
+        auxiliary thread object
 
     Methods
     -------
@@ -146,8 +153,7 @@ class Door:
         self.travel_time = travel_time
 
         self.motion = 0
-        self.aux = _Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
-                              aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
+        self.auxiliary = threading.Thread()
         self._move_op_thread = threading.Thread()
 
         log.debug(f"off_state: {self.OFF_STATE}")
@@ -172,20 +178,14 @@ class Door:
             raise IOError
         
         log.info("Main pins setup successfully")
-    
-    @property
-    def aux_is_running(self):
-        """Returns the status of the Auxiliary thread"""
-        return self.aux.is_alive()
 
     def run_aux(self):
         """Creates an Auxiliary object and starts the thread"""
         try:
-            if self.aux_is_running is False:
-                self.aux = _Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
-                                      aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
-                self.aux.start()
-
+            if not self.auxiliary.is_alive():
+                self.auxiliary = Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
+                                     aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
+                self.auxiliary.start()
                 log.info("Auxiliary is Running")
             else:
                 log.warning("Auxiliary is already Running")
@@ -195,10 +195,9 @@ class Door:
     def stop_aux(self):
         """Stops the Auxiliary thread and destroys the object"""
         try:
-            if self.aux_is_running is True:
-                self.aux.stop()
-                self.aux.join()
-
+            if self.auxiliary.is_alive():
+                self.auxiliary.stop()
+                self.auxiliary.join()
                 log.info("Auxiliary has stopped Running")
             else:
                 log.warning("Auxiliary is not Running")
@@ -224,16 +223,23 @@ class Door:
         -------
         status (str): Closed, Open, Blocked, Extending, Retracting or Unknown
         """
-        if GPIO.input(self.SW1) == 1 and GPIO.input(self.SW2) == 0:
+        sw1_state = GPIO.input(self.SW1)
+        sw2_state = GPIO.input(self.SW2)
+        sw3_state = GPIO.input(self.SW3)
+
+        if sw1_state == 1 and sw2_state == 0:
             status = 'Closed'
-        elif GPIO.input(self.SW1) == 0 and GPIO.input(self.SW2) == 1:
+        elif sw1_state == 0 and sw2_state == 1:
             status = 'Open'
-        elif GPIO.input(self.SW3) == 1:
+        elif sw3_state == 1:
             status = 'Blocked'
-        elif door_in_motion['in_motion']:  # DEBUG Remove and replace with condition below?
-            status = door_in_motion['direction']
-        elif door_in_motion['in_motion'] or self.aux is not None and self.aux.in_motion:  # BUG 
-            status = door_in_motion['direction']
+        elif self._move_op_thread.is_alive() or self.auxiliary.in_motion:
+            if self.motion == 1 or self.auxiliary.motion == 1:
+                status = 'Extending'
+            elif self.motion == 2 or self.auxiliary.motion == 2:
+                status = 'Retracting'
+            else:
+                status = 'Unknown'
         else:
             status = 'Unknown'
 
@@ -252,10 +258,9 @@ class Door:
         """
         log.info("[Operation Start]")
 
-        if self.aux is not None:  # BUG Does not seem to work, perhaps check if thread is alive?
-            if self.aux.in_motion:  # If an auxiliary button is being pressed
-                log.error("Auxiliary Active; Canceling Operation")
-                return
+        if self.auxiliary.is_alive() and self.auxiliary.in_motion:
+            log.error("Auxiliary Active; Canceling Operation")
+            return
 
         if opt == 1:
             self.motion = 1  # close
@@ -264,15 +269,15 @@ class Door:
         else:
             log.error('Invalid Option')
             return
+        
         log.debug(f"Motion = {self.motion}")
+        self.auxiliary.pause()  # pause auxiliary thread to prevent interference while moving
 
         time_exceeded = True
         blocked = False
-        global door_in_motion
         start = time.time()
         while time.time() < start + self.travel_time:  # Timer
             if self.motion == 1 and GPIO.input(self.SW1) == 0:  # Requested down and limit switch not triggered
-                door_in_motion = {'in_motion': True, 'direction': 'Extending'}
                 if GPIO.input(self.SW3) == 1:  # Block switch triggered
                     GPIO.output(self.RELAY1, self.OFF_STATE)
                     GPIO.output(self.RELAY2, self.OFF_STATE)
@@ -281,31 +286,30 @@ class Door:
                     GPIO.output(self.RELAY1, not self.OFF_STATE)
                     GPIO.output(self.RELAY2, self.OFF_STATE)
             elif self.motion == 2 and GPIO.input(self.SW2) == 0:  # Requested up and limit switch not triggered
-                door_in_motion = {'in_motion': True, 'direction': 'Retracting'}
                 GPIO.output(self.RELAY1, self.OFF_STATE)
                 GPIO.output(self.RELAY2, not self.OFF_STATE)
-            else:  # Motion related limit switch is triggered
+            else:  # Motion-related limit switch is triggered
                 time_exceeded = False
                 blocked = False
                 break
+
         # Reset motion and relays
         self.motion = 0
+        self.auxiliary.resume()
         GPIO.output(self.RELAY1, self.OFF_STATE)
         GPIO.output(self.RELAY2, self.OFF_STATE)
-        door_in_motion = {'in_motion': False, 'direction': 'None'}
 
         if time_exceeded:
             log.warning(f'Exceeded travel time of {self.travel_time} seconds')
         if blocked:  # Open door if blocked=True and timer exceeded
             log.warning("Door blocked; Opening Door")
             self._move_op(2)
-            return
 
         log.info(f"Status: {self.status}")
         log.info("[Operation Stop]")
 
     def move(self, opt):
-        """creates _move_op thread if there isn't one"""
+        """Creates _move_op thread if there isn't one"""
         if not self._move_op_thread.is_alive():
             self._move_op_thread = threading.Thread(target=self._move_op, args=(opt,))
             self._move_op_thread.start()

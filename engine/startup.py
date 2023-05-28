@@ -136,7 +136,7 @@ class Initialization:
         if StC.automation:
             self._log.debug('Running Automation')
             self.auto.start()
-        if StC.auxillary:
+        if StC.auxiliary:
             self._log.debug('Running Auxiliary Switches')
             self.door.run_aux()
 

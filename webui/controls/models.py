@@ -47,7 +47,7 @@ class StartupConfig(models.Model):
     # property function to give sunrise and sunset time?
 
     automation = models.BooleanField(default=False, verbose_name="Automation", help_text="Toggle automation on or off")
-    auxillary = models.BooleanField(default=False, verbose_name="Auxillary", help_text="Toggle auxillary on or off")
+    auxiliary = models.BooleanField(default=False, verbose_name="Auxiliary", help_text="Toggle auxiliary on or off")
     sunrise_offset = models.IntegerField(default=0, verbose_name="Sunrise Offset", help_text="Add or subtract minutes from sunrise")
     sunset_offset = models.IntegerField(default=0, verbose_name="Sunset Offset", help_text="Add or subtract minutes from sunset")
 
