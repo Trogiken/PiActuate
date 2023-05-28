@@ -105,7 +105,7 @@ class DashboardView(LoginRequiredMixin, View):
         startup_config = StartupConfig.objects.first()
         if startup_config.automation is True and runtime.auto.is_running is False:
             startup_config.automation = False
-        if startup_config.auxiliary is True and runtime.door.aux.is_alive() is False:
+        if startup_config.auxiliary is True and runtime.door.auxiliary.is_alive() is False:
             startup_config.auxiliary = False
         startup_config.save()
 
