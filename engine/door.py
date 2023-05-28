@@ -233,10 +233,10 @@ class Door:
             status = 'Open'
         elif sw3_state == 1:
             status = 'Blocked'
-        elif self._move_op_thread.is_alive() or self.auxiliary.in_motion:
-            if self.motion == 1 or self.auxiliary.motion == 1:
+        elif self._move_op_thread.is_alive() or (self.auxiliary.is_alive() and self.auxiliary.in_motion):
+            if self.motion == 1 or (self.auxiliary.is_alive() and self.auxiliary.motion == 1):
                 status = 'Extending'
-            elif self.motion == 2 or self.auxiliary.motion == 2:
+            elif self.motion == 2 or (self.auxiliary.is_alive() and self.auxiliary.motion == 2):
                 status = 'Retracting'
             else:
                 status = 'Unknown'
