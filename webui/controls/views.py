@@ -103,7 +103,7 @@ class DashboardView(LoginRequiredMixin, View):
         
         # check if automation or auxiliary running states are different from the database
         startup_config = StartupConfig.objects.first()
-        if startup_config.automation is True and runtime.auto.is_running is False:
+        if startup_config.automation is True and runtime.auto.scheduler.is_alive() is False:
             startup_config.automation = False
         if startup_config.auxiliary is True and runtime.door.auxiliary.is_alive() is False:
             startup_config.auxiliary = False
