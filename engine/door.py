@@ -271,7 +271,8 @@ class Door:
             return
         
         log.debug(f"Motion = {self.motion}")
-        self.auxiliary.pause()  # pause auxiliary thread to prevent interference while moving
+        if self.auxiliary.is_alive():
+            self.auxiliary.pause()  # pause auxiliary thread to prevent interference while moving
 
         time_exceeded = True
         blocked = False
@@ -295,7 +296,8 @@ class Door:
 
         # Reset motion and relays
         self.motion = 0
-        self.auxiliary.resume()
+        if self.auxiliary.is_alive() and self.auxiliary.paused():
+            self.auxiliary.resume()
         GPIO.output(self.RELAY1, self.OFF_STATE)
         GPIO.output(self.RELAY2, self.OFF_STATE)
 
