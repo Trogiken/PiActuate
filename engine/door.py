@@ -38,14 +38,14 @@ class Auxiliary(threading.Thread):
         log.info("Aux pins set up successfully")
 
     def pause(self):
-        log.debug("Auxiliary Paused")
+        log.debug("Auxiliary Pause Requested")
         self._pause_event.set()
     
     def paused(self):
         return self._pause_event.is_set()
 
     def resume(self):
-        log.debug("Auxiliary Resumed")
+        log.debug("Auxiliary Resume Requested")
         self._pause_event.clear()
 
     def stop(self):
@@ -56,9 +56,6 @@ class Auxiliary(threading.Thread):
 
     def run(self, *args, **kwargs):
         while not self.stopped():
-            while self.paused():
-                time.sleep(0.1)
-
             if GPIO.input(self.AUX_SW1) == 1:
                 self.motion = 1
                 self.in_motion = True
@@ -68,7 +65,11 @@ class Auxiliary(threading.Thread):
             else:
                 self.motion = 0
 
-            if self.in_motion:
+            if self.in_motion and not self.paused():
+                if self.paused():
+                    self.motion = 0
+                    log.error("Auxiliary run loop continued while paused")
+
                 if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
                     self.in_motion = True
                     if GPIO.input(self.AUX_SW5) == 1:
@@ -226,6 +227,7 @@ class Door:
         sw1_state = GPIO.input(self.SW1)
         sw2_state = GPIO.input(self.SW2)
         sw3_state = GPIO.input(self.SW3)
+        status = 'Unknown'
 
         if sw1_state == 1 and sw2_state == 0:
             status = 'Closed'
@@ -238,10 +240,6 @@ class Door:
                 status = 'Extending'
             elif self.motion == 2 or (self.auxiliary.is_alive() and self.auxiliary.motion == 2):
                 status = 'Retracting'
-            else:
-                status = 'Unknown'
-        else:
-            status = 'Unknown'
 
         return status
 
@@ -313,8 +311,8 @@ class Door:
     def move(self, opt):
         """Creates _move_op thread if there isn't one"""
         if not self._move_op_thread.is_alive():
+            log.info("Movement thread started")
             self._move_op_thread = threading.Thread(target=self._move_op, args=(opt,))
             self._move_op_thread.start()
-            log.info("Movement thread started")
         else:
             log.info("Door already in motion")
