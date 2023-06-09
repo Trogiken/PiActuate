@@ -5,6 +5,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 WEBUI="$DIR/webui/"
 ENV="$DIR/pythonenv/bin"
 
+GUNICORN_NAME="gunicorn.service"
+DAPHNE_NAME="daphne.service"
+
 source $DIR/webenv
 USER=$USER
 SERVER_NAME=$SERVER_NAME
@@ -41,8 +44,8 @@ sudo ufw enable
 #############################################
 
 # Configure Gunicorn
-sudo touch /etc/systemd/system/gunicorn.service
-sudo cat <<EOF > /etc/systemd/system/gunicorn.service
+sudo touch /etc/systemd/system/$GUNICORN_NAME
+sudo cat <<EOF > /etc/systemd/system/$GUNICORN_NAME
 [Unit]
 Description=gunicorn daemon
 After=network.target
@@ -60,8 +63,8 @@ EOF
 #############################################
 
 # Configure Daphne
-sudo touch /etc/systemd/system/daphne.service
-sudo cat <<EOF > /etc/systemd/system/daphne.service
+sudo touch /etc/systemd/system/$DAPHNE_NAME
+sudo cat <<EOF > /etc/systemd/system/$DAPHNE_NAME
 [Unit]
 Description=WebSocket Daphne Service
 After=network.target
@@ -118,12 +121,20 @@ sudo ln -s /etc/nginx/sites-available/webui /etc/nginx/sites-enabled
 # Start services
 sudo systemctl daemon-reload
 
-sudo systemctl start gunicorn.service
-sudo systemctl start daphne.service
 sudo systemctl restart nginx.service
 sudo systemctl enable gunicorn.service
 sudo systemctl enable daphne.service
 sudo systemctl enable nginx.service
+
 # Restart services incase they are already running
-sudo systemctl restart gunicorn.service
-sudo systemctl restart daphne.service
+if systemctl is-active --quiet $GUNICORN_NAME; then
+    sudo systemctl restart $GUNICORN_NAME
+else
+    sudo systemctl start $GUNICORN_NAME
+fi
+
+if systemctl is-active --quiet $DAPHNE_NAME; then
+    sudo systemctl restart $DAPHNE_NAME
+else
+    sudo systemctl start $DAPHNE_NAME
+fi
