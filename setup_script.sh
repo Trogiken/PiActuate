@@ -20,7 +20,7 @@ source $ENV/activate
 # Install dependencies
 pip install -r $DIR/docs/requirements.txt
 deactivate
-sudo apt-get install -y ngnix
+sudo apt-get install -y nginx
 sudo systemctl start nginx
 sudo apt-get install -y ufw
 
