@@ -3,6 +3,8 @@ import os
 import logging.config
 from pathlib import Path
 
+runtime = None  # Global variable for runtime
+
 
 class Initialization:
     """
@@ -156,8 +158,11 @@ class Initialization:
         except Exception:
             self._log.exception("Error loading objects")
             raise
-
+        
+        global runtime
+        runtime = self
         self._log.info("Initialization Complete!")
+
     
     def destroy(self):
         """Shutdown the door and exit the program"""

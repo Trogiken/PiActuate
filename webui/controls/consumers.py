@@ -1,6 +1,10 @@
 import json
+import os
+import sys
 
 from channels.generic.websocket import WebsocketConsumer
+
+
 
 
 class DoorConsumer(WebsocketConsumer):
@@ -10,7 +14,8 @@ class DoorConsumer(WebsocketConsumer):
 
     def connect(self):
         if self.runtime is None:
-            from controls.views import runtime
+            sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
+            from start import runtime  # import runtime in connect to avoid None import
             self.runtime = runtime
         self.accept()
     

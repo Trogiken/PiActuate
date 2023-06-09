@@ -16,12 +16,10 @@ from .models import SystemConfig, StartupConfig
 
 # append root directory to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
-from startup import Initialization
-
-runtime = None
+from start import runtime, Initialization
 
 if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-        runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
+        Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
 
 def backend_init():
@@ -30,7 +28,7 @@ def backend_init():
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
         if runtime is not None:
             runtime.destroy()
-        runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
+        Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
 
 class RedirectToLoginView(View):
