@@ -47,35 +47,40 @@ class Auxiliary(threading.Thread):
         return self._stop_event.is_set()
 
     def run(self, *args, **kwargs):
+        relays_prev_triggered = False  # Flag to track if the relays have been triggered
+
         while not self.stopped():
             if not self.paused():
                 if GPIO.input(self.AUX_SW1) == 1:
                     self.motion = 1
-                    self.in_motion = True
                 elif GPIO.input(self.AUX_SW2) == 1:
                     self.motion = 2
-                    self.in_motion = True
                 else:
                     self.motion = 0
-                    self.in_motion = False
 
                 if self.paused():
                     self.motion = 0
                     self.in_motion = False
                     log.error("Auxiliary run loop continued while paused")
                 
-                if self.in_motion:  # so that the else statement doesn't repedetly trigger
+                if self.motion == 1 or self.motion == 2:  # so that the else statement doesn't repedetly trigger
+                    relays_prev_triggered = True
+                    self.in_motion = True
+
                     if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
-                        self.in_motion = True
-                        if GPIO.input(self.AUX_SW5) == 1:
+                        if GPIO.input(self.AUX_SW5) == 1:  # block switch triggered, do nothing
                             self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
                         else:
                             self._trigger_relays(not self.OFF_STATE, self.OFF_STATE)
                     elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
                         self._trigger_relays(self.OFF_STATE, not self.OFF_STATE)
-                    else:
+                    else:  # Motion-related limit switch is triggered
                         self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
                         self.in_motion = False
+                else:
+                    if relays_prev_triggered:  # reset relays without repeadetly triggering
+                        self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
+                        relays_prev_triggered = False
             else:
                 self.in_motion = False
                 self.motion = 0
