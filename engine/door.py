@@ -11,7 +11,7 @@ except (ImportError, ModuleNotFoundError):
     raise
 
 class Auxiliary(threading.Thread):
-    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, off_state, relay1, relay2):
+    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, off_state, relay1, relay2, pause_event):
         super().__init__()
         self.AUX_SW1 = aux_sw1  # trigger relay1
         self.AUX_SW2 = aux_sw2  # trigger relay2
@@ -21,11 +21,11 @@ class Auxiliary(threading.Thread):
         self.OFF_STATE = off_state
         self.RELAY1 = relay1
         self.RELAY2 = relay2
+        self.pause_event = pause_event  # interthread communication
 
         self.motion = 0
         self.in_motion = False
         self._stop_event = threading.Event()
-        self._pause_event = threading.Event()
 
         log.info("AUX pins setting up...")
         try:
@@ -36,17 +36,9 @@ class Auxiliary(threading.Thread):
             raise
 
         log.info("Aux pins set up successfully")
-
-    def pause(self):
-        log.debug("Auxiliary Pause Requested")
-        self._pause_event.set()
     
     def paused(self):
-        return self._pause_event.is_set()
-
-    def resume(self):
-        log.debug("Auxiliary Resume Requested")
-        self._pause_event.clear()
+        return self.pause_event.is_set()
 
     def stop(self):
         self._stop_event.set()
@@ -56,31 +48,40 @@ class Auxiliary(threading.Thread):
 
     def run(self, *args, **kwargs):
         while not self.stopped():
-            if GPIO.input(self.AUX_SW1) == 1:
-                self.motion = 1
-                self.in_motion = True
-            elif GPIO.input(self.AUX_SW2) == 1:
-                self.motion = 2
-                self.in_motion = True
-            else:
-                self.motion = 0
+            if not self.paused():
+                if GPIO.input(self.AUX_SW1) == 1:
+                    self.motion = 1
+                    self.in_motion = True
+                elif GPIO.input(self.AUX_SW2) == 1:
+                    self.motion = 2
+                    self.in_motion = True
+                else:
+                    self.motion = 0
+                    self.in_motion = False
 
-            if self.in_motion and not self.paused():
                 if self.paused():
                     self.motion = 0
-                    log.error("Auxiliary run loop continued while paused")
-
-                if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
-                    self.in_motion = True
-                    if GPIO.input(self.AUX_SW5) == 1:
-                        self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
-                    else:
-                        self._trigger_relays(not self.OFF_STATE, self.OFF_STATE)
-                elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
-                    self._trigger_relays(self.OFF_STATE, not self.OFF_STATE)
-                else:
-                    self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
                     self.in_motion = False
+                    log.error("Auxiliary run loop continued while paused")
+                
+                if self.in_motion:  # so that the else statement doesn't repedetly trigger
+                    if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
+                        self.in_motion = True
+                        if GPIO.input(self.AUX_SW5) == 1:
+                            self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
+                        else:
+                            self._trigger_relays(not self.OFF_STATE, self.OFF_STATE)
+                    elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
+                        self._trigger_relays(self.OFF_STATE, not self.OFF_STATE)
+                    else:
+                        self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
+                        self.in_motion = False
+            else:
+                self.in_motion = False
+                self.motion = 0
+                time.sleep(0.5)
+                continue
+
 
     def _trigger_relays(self, relay1_state, relay2_state):
         GPIO.output(self.RELAY1, relay1_state)
@@ -156,6 +157,7 @@ class Door:
         self.motion = 0
         self.auxiliary = threading.Thread()
         self._move_op_thread = threading.Thread()
+        self.auxiliary_pause_event = threading.Event()  # interthread communication
 
         log.debug(f"off_state: {self.OFF_STATE}")
         log.debug(f"RELAY1: {self.RELAY1}")
@@ -185,7 +187,7 @@ class Door:
         try:
             if not self.auxiliary.is_alive():
                 self.auxiliary = Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
-                                     aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
+                                     aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2, pause_event=self.auxiliary_pause_event)
                 self.auxiliary.start()
                 log.info("Auxiliary is Running")
             else:
@@ -259,6 +261,8 @@ class Door:
         if self.auxiliary.is_alive() and self.auxiliary.in_motion:
             log.error("Auxiliary Active; Canceling Operation")
             return
+        if self.auxiliary.is_alive():
+            self.auxiliary_pause_event.set()  # pause auxiliary thread to prevent interference while moving
 
         if opt == 1:
             self.motion = 1  # close
@@ -269,8 +273,6 @@ class Door:
             return
         
         log.debug(f"Motion = {self.motion}")
-        if self.auxiliary.is_alive():
-            self.auxiliary.pause()  # pause auxiliary thread to prevent interference while moving
 
         time_exceeded = True
         blocked = False
@@ -294,8 +296,8 @@ class Door:
 
         # Reset motion and relays
         self.motion = 0
-        if self.auxiliary.is_alive() and self.auxiliary.paused():
-            self.auxiliary.resume()
+        if self.auxiliary.is_alive() and self.auxiliary_pause_event.paused():
+            self.auxiliary_pause_event.clear()
         GPIO.output(self.RELAY1, self.OFF_STATE)
         GPIO.output(self.RELAY2, self.OFF_STATE)
 
