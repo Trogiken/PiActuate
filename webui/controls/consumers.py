@@ -5,8 +5,6 @@ import sys
 from channels.generic.websocket import WebsocketConsumer
 
 
-
-
 class DoorConsumer(WebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -15,8 +13,8 @@ class DoorConsumer(WebsocketConsumer):
     def connect(self):
         if self.runtime is None:
             sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
-            from start import runtime  # import runtime in connect to avoid None import
-            self.runtime = runtime
+            from runtime import Runtime  # import runtime in connect to avoid None import
+            self.runtime = Runtime()
         self.accept()
     
     def disconnect(self, code):

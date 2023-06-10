@@ -3,10 +3,8 @@ import os
 import logging.config
 from pathlib import Path
 
-runtime = None  # Global variable for runtime
 
-
-class Initialization:
+class Runtime(object):
     """
     Setup runtime objects and verify functionality
 
@@ -34,19 +32,27 @@ class Initialization:
     _start():
         Run the private methods in correct order
     """
-    def __init__(self, system_config, startup_config):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Runtime, cls).__new__(cls)
+        return cls._instance
+    
+    def __init__(self, system_config, startup_config, init=False):
         """Constructs all necessary attributes for the Initialization object"""
-        self._home = str(Path(__file__).resolve().parents[1])
-        self._source = str(Path(__file__).resolve().parents[0])
-        self._log = None
+        if init:
+            self._home = str(Path(__file__).resolve().parents[1])
+            self._source = str(Path(__file__).resolve().parents[0])
+            self._log = None
 
 
-        self.door = None
-        self.auto = None
-        self.system_config = system_config
-        self.startup_config = startup_config
+            self.door = None
+            self.auto = None
+            self.system_config = system_config
+            self.startup_config = startup_config
 
-        self._start()
+            self._start()
 
     def _logging_config_load(self):
         """Init logging config (Load First)"""
@@ -158,9 +164,7 @@ class Initialization:
         except Exception:
             self._log.exception("Error loading objects")
             raise
-        
-        global runtime
-        runtime = self
+
         self._log.info("Initialization Complete!")
 
     
