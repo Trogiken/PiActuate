@@ -26,7 +26,7 @@ def backend_init():
     """Init backend"""
     global runtime
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-        if runtime is not None:
+        if Runtime._instance is not None:
             runtime.destroy()
         runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first(), init=True)
 
