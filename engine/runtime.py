@@ -39,9 +39,12 @@ class Runtime(object):
             cls._instance = super(Runtime, cls).__new__(cls)
         return cls._instance
     
-    def __init__(self, system_config, startup_config, init=False):
+    def __init__(self, system_config=None, startup_config=None, init=False):
         """Constructs all necessary attributes for the Initialization object"""
         if init:
+            if system_config is None or startup_config is None:
+                raise ValueError("System Config or Startup Config is None")
+
             self._home = str(Path(__file__).resolve().parents[1])
             self._source = str(Path(__file__).resolve().parents[0])
             self._log = None
