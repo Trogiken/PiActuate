@@ -19,7 +19,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 from runtime import Runtime
 
 if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-    runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first(), init=True)
+    runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
 
 def backend_init():
@@ -28,7 +28,7 @@ def backend_init():
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
         if Runtime._instance is not None:
             runtime.destroy()
-        runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first(), init=True)
+        runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
 
 class RedirectToLoginView(View):

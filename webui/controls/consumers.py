@@ -14,7 +14,7 @@ class DoorConsumer(WebsocketConsumer):
         if self.runtime is None:
             sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
             from runtime import Runtime  # import runtime in connect to avoid None import
-            self.runtime = Runtime()
+            self.runtime = Runtime.getInstance()
         self.accept()
     
     def disconnect(self, code):
