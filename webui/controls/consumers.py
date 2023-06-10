@@ -4,17 +4,13 @@ import sys
 
 from channels.generic.websocket import WebsocketConsumer
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
+from runtime import Runtime  # import runtime in connect to avoid None import
+runtime = Runtime.getInstance()
+
 
 class DoorConsumer(WebsocketConsumer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.runtime = None
-
     def connect(self):
-        if self.runtime is None:
-            sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
-            from runtime import Runtime  # import runtime in connect to avoid None import
-            self.runtime = Runtime.getInstance()
         self.accept()
     
     def disconnect(self, code):
@@ -26,11 +22,11 @@ class DoorConsumer(WebsocketConsumer):
             self.send(text_data=json.dumps({
                 "signal": "200",
                 "command": data.get('message'),
-                "message": self.runtime.door.status
+                "message": runtime.door.status
                 })
             )
         elif data.get('message') == 'open':
-            self.runtime.door.move(2)
+            runtime.door.move(2)
             self.send(text_data=json.dumps({
                 "signal": "200",
                 "command": data.get('message'),
@@ -38,7 +34,7 @@ class DoorConsumer(WebsocketConsumer):
                 })
             )
         elif data.get('message') == 'close':
-            self.runtime.door.move(1)
+            runtime.door.move(1)
             self.send(text_data=json.dumps({
                 "signal": "200",
                 "command": data.get('message'),

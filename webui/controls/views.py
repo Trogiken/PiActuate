@@ -18,6 +18,8 @@ from .models import SystemConfig, StartupConfig
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
 from runtime import Runtime
 
+runtime = None
+
 if SystemConfig.objects.exists() and StartupConfig.objects.exists():
     runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
@@ -26,7 +28,7 @@ def backend_init():
     """Init backend"""
     global runtime
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-        if Runtime._instance is not None:
+        if Runtime.getInstance() is not None:
             runtime.destroy()
         runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
 
