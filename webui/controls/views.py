@@ -19,7 +19,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 from runtime import Runtime
 
 if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-    Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first(), init=True)
+    runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first(), init=True)
 
 
 def backend_init():
