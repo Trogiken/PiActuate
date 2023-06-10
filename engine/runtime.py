@@ -35,9 +35,8 @@ class Runtime(object):
     _instance = None
 
     def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            if kwargs.get('init', False):
-                cls._instance = super(Runtime, cls).__new__(cls)
+        if not cls._instance or kwargs.get('init', False):
+            cls._instance = super(Runtime, cls).__new__(cls)
         return cls._instance
     
     def __init__(self, system_config=None, startup_config=None, init=False):
