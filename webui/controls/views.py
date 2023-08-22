@@ -1,48 +1,41 @@
 from django.shortcuts import render
-
-from time import sleep
-import os
-import sys
-
 from django.contrib.auth.views import LoginView
 from django.views.generic import View
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-
 from .forms import SystemConfigForm, UserLoginForm, DetailForm
 from .models import SystemConfig, StartupConfig
 
-# append root directory to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
-from runtime import Runtime
+from time import sleep
+import requests
+import pickle
+
 
 runtime = None
 
 if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-    runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
+    # TODO Configure api
+    pass
 
 
 def backend_init():
     """Init backend"""
-    global runtime
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
         if Runtime.getInstance() is not None:
             runtime.destroy()
-        runtime = Runtime(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
+        # TODO Configure api
 
 
 class RedirectToLoginView(View):
     """Redirects to login page"""
-
     def get(self, request):
         return redirect("login")
 
 
 class UserLoginView(LoginView):
     """Login view for the user"""
-
     authentication_form = UserLoginForm
     redirect_authenticated_user = True
 
@@ -52,6 +45,8 @@ class UserLoginView(LoginView):
 
 
 class DetailPostView(LoginRequiredMixin, View):
+    # TODO Fix this view
+
     def post(self, request):
         detail_form = DetailForm(request.POST)
         if detail_form.is_valid():
@@ -96,6 +91,8 @@ class DetailPostView(LoginRequiredMixin, View):
 
 # do the same as above but with a view class
 class DashboardView(LoginRequiredMixin, View):
+    # TODO Fix this view
+
     """View for the dashboard page"""
     def get(self, request):
         if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page

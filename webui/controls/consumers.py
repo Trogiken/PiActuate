@@ -1,12 +1,6 @@
+import requests
 import json
-import os
-import sys
-
 from channels.generic.websocket import WebsocketConsumer
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
-from runtime import Runtime  # import runtime in connect to avoid None import
-runtime = Runtime.getInstance()
 
 
 class DoorConsumer(WebsocketConsumer):
