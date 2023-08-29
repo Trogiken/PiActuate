@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from source import Runtime
 import options as opt
 
@@ -19,14 +19,11 @@ app = FastAPI()
 # TODO Use request bodys instead of query params to send data
 
 
-def ensure_runtime(func):
-    """Decorator to ensure that runtime is initialized"""
-    def wrapper(*args, **kwargs):
-        global runtime
-        if runtime is None:
-            return {"message": "Runtime instance is not initialized"}, 500
-        return func(*args, **kwargs)
-    return wrapper
+# FIXME This decorator causes the interactive docs to not work properly
+def ensure_runtime():
+    if runtime is None:
+        raise HTTPException(status_code=500, detail="Runtime not initialized")
+    return runtime
 
 
 @app.get("/")
@@ -46,9 +43,7 @@ def configure(system_config, startup_config):
 
 
 @app.get("/auto/{option}")
-@ensure_runtime
-def get_auto(option: opt.GetAuto):
-    global runtime
+def get_auto(option: opt.GetAuto, runtime: Runtime = Depends(ensure_runtime)):
     if option == opt.GetAuto.sunrise_offset:
         return {"sunrise_offset": runtime.auto.sunrise_offset}
     elif option == opt.GetAuto.sunset_offset:
@@ -66,9 +61,7 @@ def get_auto(option: opt.GetAuto):
 
 
 @app.post("/auto/{option}")
-@ensure_runtime
-def post_auto(option: opt.PostAuto):
-    global runtime
+def post_auto(option: opt.PostAuto, runtime: Runtime = Depends(ensure_runtime)):
     if option == opt.PostAuto.sunrise_offset:
         runtime.auto.sunrise_offset = option
         return {"message": "Success"}
@@ -89,9 +82,7 @@ def post_auto(option: opt.PostAuto):
 
 
 @app.get("/door/{option}")
-@ensure_runtime
-def get_door(option: opt.GetDoor):
-    global runtime
+def get_door(option: opt.GetDoor, runtime: Runtime = Depends(ensure_runtime)):
     if option == opt.GetDoor.status:
         return {"status": runtime.door.status()}
     else:
@@ -99,9 +90,7 @@ def get_door(option: opt.GetDoor):
 
 
 @app.post("/door/{option}")
-@ensure_runtime
-def post_door(option: opt.PostDoor):
-    global runtime
+def post_door(option: opt.PostDoor, runtime: Runtime = Depends(ensure_runtime)):
     if option == opt.PostDoor.open:
         runtime.door.open()
         return {"message": "Success"}
@@ -113,9 +102,7 @@ def post_door(option: opt.PostDoor):
 
 
 @app.get("/aux/{option}")
-@ensure_runtime
-def get_aux(option: opt.GetAux):
-    global runtime
+def get_aux(option: opt.GetAux, runtime: Runtime = Depends(ensure_runtime)):
     if option == opt.GetAux.is_alive:
         return {"is_alive": runtime.aux.is_alive()}
     else:
@@ -123,9 +110,7 @@ def get_aux(option: opt.GetAux):
 
 
 @app.post("/aux/{option}")
-@ensure_runtime
-def post_aux(option: opt.PostAux):
-    global runtime
+def post_aux(option: opt.PostAux, runtime: Runtime = Depends(ensure_runtime)):
     if option == opt.PostAux.run_aux:
         runtime.aux.run_aux()
         return {"message": "Success"}
