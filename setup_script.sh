@@ -56,8 +56,8 @@ After=network.target
 [Service]
 User=$USER
 Group=www-data
-WorkingDirectory=$DIR
-ExecStart=$ENV/uvicorn --host 0.0.0.0 --port 8002 --root-path $DIR engine.api:app
+WorkingDirectory=$DIR/engine
+ExecStart=$ENV/uvicorn --host 0.0.0.0 --port 8002 api:app
 RestartSec=3s
 Restart=on-failure
 [Install]
