@@ -19,6 +19,16 @@ app = FastAPI()
 # TODO Use request bodys instead of query params to send data
 
 
+def ensure_runtime(func):
+    """Decorator to ensure that runtime is initialized"""
+    def wrapper(*args, **kwargs):
+        global runtime
+        if runtime is None:
+            return {"message": "Runtime instance is not initialized"}, 500
+        return func(*args, **kwargs)
+    return wrapper
+
+
 @app.get("/")
 def root():
     return {"message": "Runtime API"}
@@ -36,6 +46,7 @@ def configure(system_config, startup_config):
 
 
 @app.get("/auto/{option}")
+@ensure_runtime
 def get_auto(option: opt.GetAuto):
     global runtime
     if option == opt.GetAuto.sunrise_offset:
@@ -55,6 +66,7 @@ def get_auto(option: opt.GetAuto):
 
 
 @app.post("/auto/{option}")
+@ensure_runtime
 def post_auto(option: opt.PostAuto):
     global runtime
     if option == opt.PostAuto.sunrise_offset:
@@ -77,6 +89,7 @@ def post_auto(option: opt.PostAuto):
 
 
 @app.get("/door/{option}")
+@ensure_runtime
 def get_door(option: opt.GetDoor):
     global runtime
     if option == opt.GetDoor.status:
@@ -86,6 +99,7 @@ def get_door(option: opt.GetDoor):
 
 
 @app.post("/door/{option}")
+@ensure_runtime
 def post_door(option: opt.PostDoor):
     global runtime
     if option == opt.PostDoor.open:
@@ -99,6 +113,7 @@ def post_door(option: opt.PostDoor):
 
 
 @app.get("/aux/{option}")
+@ensure_runtime
 def get_aux(option: opt.GetAux):
     global runtime
     if option == opt.GetAux.is_alive:
@@ -108,6 +123,7 @@ def get_aux(option: opt.GetAux):
 
 
 @app.post("/aux/{option}")
+@ensure_runtime
 def post_aux(option: opt.PostAux):
     global runtime
     if option == opt.PostAux.run_aux:
