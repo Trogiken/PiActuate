@@ -36,6 +36,8 @@ deactivate
 # allow ports
 sudo ufw allow 5900  # DEBUG for VNC
 
+
+# FIXME Close all ports except ngnix, why were these opened?
 sudo ufw allow 8000
 sudo ufw allow 8001
 sudo ufw allow 8002
@@ -63,9 +65,6 @@ WantedBy=multi-user.target
 EOF
 
 #############################################
-
-# TODO Verify that socket file works on correct port, or just use the
-# host and port option in the gunicorn command
 
 # Configure Gunicorn
 sudo touch /etc/systemd/system/$GUNICORN_NAME
