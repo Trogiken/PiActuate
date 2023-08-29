@@ -7,6 +7,7 @@ ENV="$DIR/pythonenv/bin"
 
 GUNICORN_NAME="gunicorn.service"
 DAPHNE_NAME="daphne.service"
+UVICORN_NAME="uvicorn.service"
 
 source $DIR/webenv
 USER=$USER
@@ -37,11 +38,34 @@ sudo ufw allow 5900  # DEBUG for VNC
 
 sudo ufw allow 8000
 sudo ufw allow 8001
+sudo ufw allow 8002
 sudo ufw allow 80
 sudo ufw allow 'Nginx Full'
 sudo ufw enable
 
 #############################################
+
+# Configure Uvicorn # DEBUG Untested
+sudo touch /etc/systemd/system/$UVICORN_NAME
+sudo cat <<EOF > /etc/systemd/system/$UVICORN_NAME
+[Unit]
+Description=Uvicorn daemon
+After=network.target
+[Service]
+User=$USER
+Group=www-data
+WorkingDirectory=$DIR
+ExecStart=$ENV/uvicorn --host 0.0.0.0 --port 8002 --root-path $DIR engine.api:app
+RestartSec=3s
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
+EOF
+
+#############################################
+
+# TODO Verify that socket file works on correct port, or just use the
+# host and port option in the gunicorn command
 
 # Configure Gunicorn
 sudo touch /etc/systemd/system/$GUNICORN_NAME

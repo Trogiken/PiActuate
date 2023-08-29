@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from source.runtime import Runtime
+from source import Runtime
 import options as opt
 
 runtime = Runtime.getInstance()
