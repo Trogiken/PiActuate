@@ -22,12 +22,11 @@ app = FastAPI()
 def ensure_runtime():
     if runtime is None:
         raise HTTPException(status_code=500, detail="Runtime not initialized")
-    return runtime
 
 
 @app.get("/")
 def root():
-    return {"message": "Leah sexy"}
+    return {"message": "Runtime API"}
 
 
 @app.post("/configure")
@@ -41,7 +40,7 @@ def configure(system_config, startup_config):
 
 
 @app.post("/destroy")
-def destroy(runtime: Runtime = Depends(ensure_runtime)):
+def destroy(_: Runtime = Depends(ensure_runtime)):
     try:
         runtime.destroy()
     except Exception as e:
@@ -49,7 +48,7 @@ def destroy(runtime: Runtime = Depends(ensure_runtime)):
     return {"message": "Success"}
 
 @app.get("/auto/{option}")
-def get_auto(option: opt.GetAuto, runtime: Runtime = Depends(ensure_runtime)):
+def get_auto(option: opt.GetAuto, _: Runtime = Depends(ensure_runtime)):
     match option:
         case opt.GetAuto.sunrise_offset:
             return {"sunrise_offset": runtime.auto.sunrise_offset}
@@ -68,7 +67,7 @@ def get_auto(option: opt.GetAuto, runtime: Runtime = Depends(ensure_runtime)):
 
 
 @app.post("/auto/{option}")
-def post_auto(option: opt.PostAuto, runtime: Runtime = Depends(ensure_runtime)):
+def post_auto(option: opt.PostAuto, _: Runtime = Depends(ensure_runtime)):
     match option:
         case opt.PostAuto.sunrise_offset:
             runtime.auto.sunrise_offset = option
@@ -86,7 +85,7 @@ def post_auto(option: opt.PostAuto, runtime: Runtime = Depends(ensure_runtime)):
 
 
 @app.get("/door/{option}")
-def get_door(option: opt.GetDoor, runtime: Runtime = Depends(ensure_runtime)):
+def get_door(option: opt.GetDoor, _: Runtime = Depends(ensure_runtime)):
     match option:
         case opt.GetDoor.status:
             return {"status": runtime.door.status()}
@@ -95,7 +94,7 @@ def get_door(option: opt.GetDoor, runtime: Runtime = Depends(ensure_runtime)):
 
 
 @app.post("/door/{option}")
-def post_door(option: opt.PostDoor, runtime: Runtime = Depends(ensure_runtime)):
+def post_door(option: opt.PostDoor, _: Runtime = Depends(ensure_runtime)):
     match option:
         case opt.PostDoor.open:
             runtime.door.open()
@@ -107,7 +106,7 @@ def post_door(option: opt.PostDoor, runtime: Runtime = Depends(ensure_runtime)):
 
 
 @app.get("/aux/{option}")
-def get_aux(option: opt.GetAux, runtime: Runtime = Depends(ensure_runtime)):
+def get_aux(option: opt.GetAux, _: Runtime = Depends(ensure_runtime)):
     match option:
         case opt.GetAux.is_alive:
             return {"is_alive": runtime.aux.is_alive()}
@@ -116,7 +115,7 @@ def get_aux(option: opt.GetAux, runtime: Runtime = Depends(ensure_runtime)):
 
 
 @app.post("/aux/{option}")
-def post_aux(option: opt.PostAux, runtime: Runtime = Depends(ensure_runtime)):
+def post_aux(option: opt.PostAux, _: Runtime = Depends(ensure_runtime)):
     match option:
         case opt.PostAux.run_aux:
             runtime.aux.run_aux()
