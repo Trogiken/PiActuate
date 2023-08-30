@@ -47,6 +47,7 @@ def destroy(_: Runtime = Depends(ensure_runtime)):
         return {"message": "Failed", "error": f"{e}"}, 400
     return {"message": "Success"}
 
+
 @app.get("/auto/{option}")
 def get_auto(option: opt.GetAuto, _: Runtime = Depends(ensure_runtime)):
     match option:
