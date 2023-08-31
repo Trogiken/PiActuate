@@ -26,7 +26,8 @@ def ensure_runtime():
 
 @app.get("/")
 def root():
-    return {"message": "Runtime API"}
+    return {"message": "Runtime API",
+            "routes": ["/configure", "/destroy", "/auto/{option}", "/door/{option}", "/aux/{option}"]}
 
 
 @app.post("/configure")

@@ -28,6 +28,7 @@ load_dotenv(WEBENV)
 from django.core.management.utils import get_random_secret_key
 SECRET_KEY = getenv('SECRET_KEY', get_random_secret_key())
 
+# BUG https://github.com/Trogiken/chicken-door/projects/2#card-90371943
 # SECURITY WARNING: don't run with debug turned on in production!
 IS_DEVELOPMENT = getenv('IS_DEVELOPMENT', 'True').casefold()
 if IS_DEVELOPMENT == 'false':
