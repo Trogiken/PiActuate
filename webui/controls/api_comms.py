@@ -1,6 +1,7 @@
 import requests
 
 # TODO Improve docstrings
+# TODO Add error handling for if the api cannot be reached
 class ApiComms:
     """Class for communicating with the api"""
 
