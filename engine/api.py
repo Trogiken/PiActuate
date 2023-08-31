@@ -25,6 +25,7 @@ app = FastAPI()
 # Start this api
 # uvicorn main:app --host 0.0.0.0 --port 8000
 
+# TODO Secure this api with HTTPS or CORS
 # TODO Configure setup_script.sh to start api server on boot
 
 # TODO POST configure: If you transmit the database object as a dict, the way runtime accesses it
