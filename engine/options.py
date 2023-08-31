@@ -15,5 +15,5 @@ class PostDoor(int, Enum):
 
 
 class PostAux(str, Enum):
-    run_aux = "run_aux"
-    stop_aux = "stop_aux"
+    start = "start"
+    stop = "stop"

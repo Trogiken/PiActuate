@@ -1,6 +1,6 @@
 import requests
 
-
+# TODO Improve docstrings
 class ApiComms:
     """Class for communicating with the api"""
 
@@ -10,11 +10,17 @@ class ApiComms:
     
     def _get_request(self, endpoint=""):
         """Get request"""
-        return requests.get(url=self.api_url + endpoint, headers=self.headers)
+        request = requests.get(url=self.api_url + endpoint, headers=self.headers)
+        if request.status_code == 522:
+            request = None
+        return request
 
     def _post_request(self, endpoint, data=None):
         """Post request"""
-        return requests.post(url=self.api_url + endpoint, headers=self.headers, data=data)
+        request = requests.post(url=self.api_url + endpoint, headers=self.headers, data=data)
+        if request.status_code == 522:
+            request = None
+        return request
 
     def configure(self, system_config, startup_config):
         """Configure api"""
@@ -24,6 +30,10 @@ class ApiComms:
         }
         return self._post_request("configure", data=data)  # DEBUG
     
+    def get_api(self):
+        """Return api root"""
+        return self._get_request()
+    
     def destroy(self):
         """Destroy api"""
         return self._post_request("destroy")
@@ -32,13 +42,25 @@ class ApiComms:
         """Return auto data"""
         return self._get_request("auto")
     
+    def get_aux(self):
+        """Return aux data"""
+        return self._get_request("aux")
+    
     def get_door(self):
         """Return door data"""
         return self._get_request("door")
     
-    def get_aux(self):
+    def get_door_status(self):
+        """Return door data"""
+        return self._get_request("door")["data"].get("status")
+    
+    def get_aux_alive(self):
         """Return aux data"""
-        return self._get_request("aux")
+        return self._get_request("aux")["data"].get("is_alive")
+    
+    def get_auto_alive(self):
+        """Return auto data"""
+        return self._get_request("auto")["data"].get("is_alive")
     
     def close_door(self):
         """Close door"""

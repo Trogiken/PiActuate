@@ -212,9 +212,9 @@ def get_aux(_: Runtime = Depends(ensure_runtime)):
 def post_aux(option: opt.PostAux, _: Runtime = Depends(ensure_runtime)):
     try:
         match option:
-            case opt.PostAux.run_aux:
+            case opt.PostAux.start:
                 runtime.aux.run_aux()
-            case opt.PostAux.stop_aux:
+            case opt.PostAux.stop:
                 runtime.aux.stop_aux()
             case _:
                 return JSONResponse(content={
