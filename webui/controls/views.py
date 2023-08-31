@@ -26,7 +26,7 @@ if SystemConfig.objects.exists() and StartupConfig.objects.exists():
 def backend_init():
     """Init backend"""
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-        if api.get_api is not None:
+        if api.get_api() is not None:
             api.destroy()
         data = {
             "system_config": pickle.dumps(SystemConfig.objects.first()),
