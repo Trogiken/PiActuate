@@ -22,7 +22,7 @@ if SystemConfig.objects.exists() and StartupConfig.objects.exists():
 def backend_init():
     """Init backend"""
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-        if api.get_api() is not None:
+        if api.runtime_alive():
             api.destroy()
         api.configure(pickle.dumps(SystemConfig.objects.first()), pickle.dumps(StartupConfig.objects.first()))
 

@@ -18,7 +18,7 @@ class ApiComms:
 
     def _post_request(self, endpoint, data=None):
         """Post request"""
-        request = requests.post(url=self.api_url + endpoint, headers=self.headers, data=data)
+        request = requests.post(url=self.api_url + endpoint, headers=self.headers, json=data)
         if request.status_code == 522:
             request = None
         return request
@@ -31,9 +31,12 @@ class ApiComms:
         }
         return self._post_request("configure", data=data)  # DEBUG
     
-    def get_api(self):
-        """Return api root"""
-        return self._get_request()
+    def runtime_alive(self):
+        """Spoof function to check if runtime is alive"""
+        request = self._get_request("door") # Call endpoint that requires runtime
+        if request is None:
+            return False
+        return True
     
     def destroy(self):
         """Destroy api"""
