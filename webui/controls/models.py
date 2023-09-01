@@ -9,15 +9,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class SystemConfig(models.Model):
     # BUG https://github.com/Trogiken/chicken-door/projects/2#card-90372024
-    class OffState(models.TextChoices):
-        POWER_ON = True, 'On'
-        POWER_OFF = False, 'Off'
-    
-    class BoardMode(models.TextChoices):
-        BCM = 'BCM', 'BCM'
-        BOARD = 'BOARD', 'BOARD'
 
-    board_mode = models.CharField(max_length=5, choices=BoardMode.choices, default=BoardMode.BCM, verbose_name="Board Mode", help_text="GPIO pin numbering mode")
+    board_mode = models.CharField(max_length=5, choices=[("BCM", "BCM"), ("BOARD", "BOARD")], default=("BCM", "BCM"), verbose_name="Board Mode", help_text="GPIO pin numbering mode")
     relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 1", help_text="Extending Motion")
     relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 2", help_text="Retraction Motion")
     switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 1", help_text="Extend Limit")
@@ -25,7 +18,7 @@ class SystemConfig(models.Model):
     switch3 = models.IntegerField(default=19, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 3", help_text="Door path is blocked")
     switch4 = models.IntegerField(default=23, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 4", help_text="Aux switch for 'Relay 1'")
     switch5 = models.IntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 5", help_text="Aux switch for 'Relay 2'")
-    off_state = models.BooleanField(choices=OffState.choices, default=OffState.POWER_ON, verbose_name="Off State", help_text="Power setting for relay off state")
+    off_state = models.BooleanField(choices=[(True, "On"), (False, "Off")], default=True, verbose_name="Off State", help_text="Power setting for relay off state")
     timezone = models.CharField(max_length=100, verbose_name="Timezone", help_text="Timezone of hardware")
     longitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Longitude", help_text="Longitudinal location of hardware")
     latitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Latitude", help_text="Latitudinal location of hardware")

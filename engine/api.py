@@ -117,33 +117,32 @@ def get_auto(_: Runtime = Depends(ensure_runtime)):
 @app.post("/auto")
 def post_auto(option: opt.PostAuto, value: int=None, _: Runtime = Depends(ensure_runtime)):
     try:
-        match option:
-            case opt.PostAuto.sunrise_offset:
-                runtime.auto.sunrise_offset = value
-            case opt.PostAuto.sunset_offset:
-                runtime.auto.sunset_offset = value
-            case opt.PostAuto.start:
-                runtime.auto.start()
-            case opt.PostAuto.stop:
-                runtime.auto.stop()
-            case opt.PostAuto.refresh:
-                runtime.auto.refresh()
-            case _:
-                return JSONResponse(content={
-                    ResponseModel(route="/auto",
-                                message=f"'{option}' is not a valid option",
-                                error="Invalid option"
-                                )}, status_code=400)
+        if opt.PostAuto.sunrise_offset:
+            runtime.auto.sunrise_offset = value
+        elif opt.PostAuto.sunset_offset:
+            runtime.auto.sunset_offset = value
+        elif opt.PostAuto.start:
+            runtime.auto.start()
+        elif opt.PostAuto.stop:
+            runtime.auto.stop()
+        elif opt.PostAuto.refresh:
+            runtime.auto.refresh()
+        else:
+            return JSONResponse(content={
+                ResponseModel(route="/auto",
+                              message=f"'{option}' is not a valid option",
+                              error="Invalid option"
+                              )}, status_code=400)
         response = JSONResponse(content={
             ResponseModel(route="/auto",
-                        message="Automation Endpoint",
-                        )}, status_code=200)
+                          message="Automation Endpoint",
+                          )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
             ResponseModel(route="/auto",
-                        message="An error occurred",
-                        error=f"{e}"
-                        )}, status_code=500)
+                          message="An error occurred",
+                          error=f"{e}"
+                          )}, status_code=500)
     return response
 
 
@@ -167,17 +166,16 @@ def get_door(_: Runtime = Depends(ensure_runtime)):
 @app.post("/door")
 def post_door(option: opt.PostDoor, _: Runtime = Depends(ensure_runtime)):
     try:
-        match option:
-            case opt.PostDoor.open:
-                runtime.door.move(option)
-            case opt.PostDoor.close:
-                runtime.door.move(option)
-            case _:
-                return JSONResponse(content={
-                    ResponseModel(route="/door",
-                                message=f"'{option}' is not a valid option",
-                                error="Invalid option"
-                                )}, status_code=400)
+        if opt.PostDoor.open:
+            runtime.door.move(option)
+        elif opt.PostDoor.close:
+            runtime.door.move(option)
+        else:
+            return JSONResponse(content={
+                ResponseModel(route="/door",
+                              message=f"'{option}' is not a valid option",
+                              error="Invalid option"
+                              )}, status_code=400)
         response = JSONResponse(content={
             ResponseModel(route="/door",
                         message="Door Endpoint",
@@ -211,25 +209,24 @@ def get_aux(_: Runtime = Depends(ensure_runtime)):
 @app.post("/aux")
 def post_aux(option: opt.PostAux, _: Runtime = Depends(ensure_runtime)):
     try:
-        match option:
-            case opt.PostAux.start:
-                runtime.aux.run_aux()
-            case opt.PostAux.stop:
-                runtime.aux.stop_aux()
-            case _:
-                return JSONResponse(content={
-                    ResponseModel(route="/aux",
-                                message=f"'{option}' is not a valid option",
-                                error="Invalid option"
-                                )}, status_code=400)
+        if opt.PostAux.start:
+            runtime.aux.run_aux()
+        elif opt.PostAux.stop:
+            runtime.aux.stop_aux()
+        else:
+            return JSONResponse(content={
+                ResponseModel(route="/aux",
+                              message=f"'{option}' is not a valid option",
+                              error="Invalid option"
+                              )}, status_code=400)
         response = JSONResponse(content={
             ResponseModel(route="/aux",
-                        message="Auxiliary Endpoint",
-                        )}, status_code=200)
+                          message="Auxiliary Endpoint",
+                          )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
             ResponseModel(route="/aux",
-                        message="An error occurred",
-                        error=f"{e}"
-                        )}, status_code=500)
+                          message="An error occurred",
+                          error=f"{e}"
+                          )}, status_code=500)
     return response
