@@ -1,48 +1,40 @@
 from django.shortcuts import render
-
-from time import sleep
-import os
-import sys
-
 from django.contrib.auth.views import LoginView
 from django.views.generic import View
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-
 from .forms import SystemConfigForm, UserLoginForm, DetailForm
 from .models import SystemConfig, StartupConfig
 
-# append root directory to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
-from startup import Initialization
+from time import sleep
+from .api_comms import ApiComms
+import pickle
 
-runtime = None
+api = ApiComms()
 
-if SystemConfig.objects.exists() and StartupConfig.objects.exists() and runtime is None:
-        runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
+# Not First time startup condition
+if SystemConfig.objects.exists() and StartupConfig.objects.exists():
+    api.configure(pickle.dumps(SystemConfig.objects.first()), pickle.dumps(StartupConfig.objects.first()))
 
 
 def backend_init():
     """Init backend"""
-    global runtime
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-        if runtime is not None:
-            runtime.destroy()
-        runtime = Initialization(system_config=SystemConfig.objects.first(), startup_config=StartupConfig.objects.first())
+        if api.get_api() is not None:
+            api.destroy()
+        api.configure(pickle.dumps(SystemConfig.objects.first()), pickle.dumps(StartupConfig.objects.first()))
 
 
 class RedirectToLoginView(View):
     """Redirects to login page"""
-
     def get(self, request):
         return redirect("login")
 
 
 class UserLoginView(LoginView):
     """Login view for the user"""
-
     authentication_form = UserLoginForm
     redirect_authenticated_user = True
 
@@ -52,66 +44,73 @@ class UserLoginView(LoginView):
 
 
 class DetailPostView(LoginRequiredMixin, View):
+    # TODO Fix this view
+
     def post(self, request):
         detail_form = DetailForm(request.POST)
         if detail_form.is_valid():
             startup_config = StartupConfig.objects.first()
             form_data = detail_form.cleaned_data
             startup_config.automation = form_data["automation"]
-            startup_config.auxillary = form_data["auxillary"]
+            startup_config.auxiliary = form_data["auxiliary"]
             startup_config.sunrise_offset = form_data["sunrise_offset"]
             startup_config.sunset_offset = form_data["sunset_offset"]
             startup_config.save()
 
             # update runtime data with new values
+            # DEBUG: Return values
+            auto = api.get_auto().get("data")
             if form_data["automation"]:
-                if runtime.auto.sunrise_offset != int(form_data["sunrise_offset"]):
-                    runtime.auto.set_sunrise_offset(int(form_data["sunrise_offset"]))
-                if runtime.auto.sunset_offset != int(form_data["sunset_offset"]):
-                    runtime.auto.set_sunset_offset(int(form_data["sunset_offset"]))
-                if runtime.auto.is_running is False:
-                    runtime.auto.start()
+                if auto.get("sunrise_offset") != int(form_data["sunrise_offset"]):
+                    api.alter_auto("sunrise_offset", int(form_data["sunrise_offset"]))
+                if auto.get("sunset_offset") != int(form_data["sunset_offset"]):
+                    api.alter_auto("sunset_offset", int(form_data["sunset_offset"]))
+                if api.get_auto_alive() is False:
+                    api.alter_auto("start")
                 else:
-                    runtime.auto.refresh()
+                    api.alter_auto("refresh")
                 sleep(1)  # give the scheduler time to update
             else:
-                if runtime.auto.is_running is True:
-                    runtime.auto.stop()
+                if api.get_auto_alive() is True:
+                    api.alter_auto("stop")
 
-            if form_data["auxillary"]:
-                if runtime.door.aux_is_running is False:
-                    runtime.door.run_aux()
+            if form_data["auxiliary"]:
+                if api.get_aux_alive() is False:
+                    api.alter_aux("start")
             else:
-                if runtime.door.aux_is_running is True:
-                    runtime.door.stop_aux()
+                if api.get_aux_status() is True:
+                    api.alter_aux("stop")
             messages.add_message(request, messages.SUCCESS, "Saved")
             return redirect("dashboard-page")
         else:
             messages.add_message(request, messages.ERROR, "Problem Saving")
             return render(request, "controls/dashboard.html", {
                 "detail_form": detail_form,
-                "active_times": {'sunrise': runtime.auto.active_sunrise(), 'sunset': runtime.auto.active_sunset(), 'current': runtime.auto.active_current()},
+                "active_times": {'sunrise': auto.get("active_sunrise"), 'sunset': auto.get("active_sunset"), 'current': auto.get("active_current")},
             })
     
 
 # do the same as above but with a view class
 class DashboardView(LoginRequiredMixin, View):
+    # TODO Fix this view
+
     """View for the dashboard page"""
     def get(self, request):
         if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page
             return redirect("systemconfig-page")
         
-        # check if automation or auxillary running states are different from the database
+        # check if automation or auxiliary running states are different from the database
         startup_config = StartupConfig.objects.first()
-        if startup_config.automation is True and runtime.auto.is_running is False:
+        if startup_config.automation is True and api.get_auto_alive() is False:
             startup_config.automation = False
-        if startup_config.auxillary is True and runtime.door.aux_is_running is False:
-            startup_config.auxillary = False
+        if startup_config.auxiliary is True and api.get_aux_alive() is False:
+            startup_config.auxiliary = False
         startup_config.save()
 
+        auto = api.get_auto().get("data")
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),
-            "active_times": {'sunrise': runtime.auto.active_sunrise(), 'sunset': runtime.auto.active_sunset(), 'current': runtime.auto.active_current()},
+            "active_times": {'sunrise': auto.get("active_sunrise"), 'sunset': auto.get("active_sunset"), 'current': auto.get("active_current")},
         })
 
 

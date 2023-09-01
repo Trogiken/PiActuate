@@ -4,9 +4,18 @@ const doorSocket = new WebSocket(
     + '/ws/engine/door/'
   );
 
+function stopWebSocket() {
+  clearInterval(intervalId);
+  doorSocket.close();
+};
+
 document.addEventListener('DOMContentLoaded', function() {
-    window.setInterval(getStatus, 1000);
-  });
+    intervalId = window.setInterval(getStatus, 1000);
+});
+window.addEventListener('beforeunload', function() {
+    stopWebSocket();
+});
+
 function getStatus() {
   sendDoorCommand('get_status');
 }
