@@ -145,11 +145,18 @@ sudo ln -s /etc/nginx/sites-available/webui /etc/nginx/sites-enabled
 sudo systemctl daemon-reload
 
 sudo systemctl restart nginx.service
+sudo systemctl enable uvicorn.service
 sudo systemctl enable gunicorn.service
 sudo systemctl enable daphne.service
 sudo systemctl enable nginx.service
 
 # Restart services incase they are already running
+if systemctl is-active --quiet $UVICORN_NAME; then
+    sudo systemctl restart $UVICORN_NAME
+else
+    sudo systemctl start $UVICORN_NAME
+fi
+
 if systemctl is-active --quiet $GUNICORN_NAME; then
     sudo systemctl restart $GUNICORN_NAME
 else

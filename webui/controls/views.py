@@ -9,18 +9,14 @@ from .forms import SystemConfigForm, UserLoginForm, DetailForm
 from .models import SystemConfig, StartupConfig
 
 from time import sleep
-from api_comms import ApiComms
+from .api_comms import ApiComms
 import pickle
 
 api = ApiComms()
 
 # Not First time startup condition
 if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-    data = {
-        "system_config": pickle.dumps(SystemConfig.objects.first()),
-        "startup_config": pickle.dumps(StartupConfig.objects.first())
-    }
-    api.configure(data)
+    api.configure(pickle.dumps(SystemConfig.objects.first()), pickle.dumps(StartupConfig.objects.first()))
 
 
 def backend_init():
@@ -28,11 +24,7 @@ def backend_init():
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
         if api.get_api() is not None:
             api.destroy()
-        data = {
-            "system_config": pickle.dumps(SystemConfig.objects.first()),
-            "startup_config": pickle.dumps(StartupConfig.objects.first())
-        }
-        api.configure(data)
+        api.configure(pickle.dumps(SystemConfig.objects.first()), pickle.dumps(StartupConfig.objects.first()))
 
 
 class RedirectToLoginView(View):

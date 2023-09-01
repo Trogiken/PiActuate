@@ -3,7 +3,7 @@ import os
 import logging.config
 from pathlib import Path
 
-
+# DEBUG Location change may cause logging issues
 class Runtime(object):
     """
     Setup runtime objects and verify functionality
