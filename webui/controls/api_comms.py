@@ -1,4 +1,5 @@
 import requests
+import pickle
 
 # TODO Improve docstrings
 # TODO Add error handling for if the api cannot be reached
@@ -18,18 +19,18 @@ class ApiComms:
 
     def _post_request(self, endpoint, data=None):
         """Post request"""
-        request = requests.post(url=self.api_url + endpoint, headers=self.headers, json=data)
+        request = requests.post(url=self.api_url + endpoint, headers=self.headers, data=data)
         if request.status_code == 522:
             request = None
         return request
 
     def configure(self, system_config, startup_config):
         """Configure api"""
-        data = {
+        pkl_data = pickle.dumps({
             "system_config": system_config,
             "startup_config": startup_config
-        }
-        return self._post_request("configure", data=data)  # DEBUG
+        })
+        return self._post_request("configure", data=pkl_data)  # DEBUG
     
     def runtime_alive(self):
         """Spoof function to check if runtime is alive"""

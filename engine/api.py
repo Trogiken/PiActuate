@@ -40,6 +40,11 @@ class ResponseModel(BaseModel):
     data: dict = None
 
 
+class ConfigureRequest(BaseModel):
+    system_config: bytes
+    startup_config: bytes
+
+
 def ensure_runtime():
     if runtime is None:
         raise HTTPException(status_code=522, detail="Runtime not initialized")
@@ -52,7 +57,7 @@ def root():
 
 
 @app.post("/configure")
-def configure(config_data):
+def configure(config_data: ConfigureRequest):
     global runtime
     try:
         system_config = pickle.loads(config_data.system_config)
@@ -112,7 +117,6 @@ def get_auto(_: Runtime = Depends(ensure_runtime)):
     return response
 
     
-
 
 @app.post("/auto")
 def post_auto(option: opt.PostAuto, value: int=None, _: Runtime = Depends(ensure_runtime)):

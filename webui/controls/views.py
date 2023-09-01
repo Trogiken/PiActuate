@@ -10,13 +10,12 @@ from .models import SystemConfig, StartupConfig
 
 from time import sleep
 from .api_comms import ApiComms
-import pickle
 
 api = ApiComms()
 
 # Not First time startup condition
 if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-    api.configure(pickle.dumps(SystemConfig.objects.first()), pickle.dumps(StartupConfig.objects.first()))
+    api.configure(SystemConfig.objects.first(), StartupConfig.objects.first())
 
 
 def backend_init():
@@ -24,7 +23,7 @@ def backend_init():
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
         if api.runtime_alive():
             api.destroy()
-        api.configure(pickle.dumps(SystemConfig.objects.first()), pickle.dumps(StartupConfig.objects.first()))
+        api.configure(SystemConfig.objects.first(), StartupConfig.objects.first())
 
 
 class RedirectToLoginView(View):
