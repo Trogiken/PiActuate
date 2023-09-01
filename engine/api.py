@@ -55,7 +55,7 @@ def root():
     return {"message": "Runtime API",
             "routes": ["/configure", "/destroy", "/auto", "/door", "/aux"]}
 
-
+# BUG This is not working properly
 @app.post("/configure")
 def configure(config_data: ConfigureRequest):
     global runtime

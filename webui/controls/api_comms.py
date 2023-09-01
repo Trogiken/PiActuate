@@ -8,7 +8,7 @@ class ApiComms:
 
     def __init__(self):
         self.api_url = "http://localhost:8002/"
-        self.headers = {'Content-Type': 'application/json'} # DEBUG 
+        self.headers = {'Content-Type': 'application/json'} # DEBUG Might not work with configure request
     
     def _get_request(self, endpoint=""):
         """Get request"""
@@ -24,6 +24,7 @@ class ApiComms:
             request = None
         return request
 
+    # BUG This is not working
     def configure(self, system_config, startup_config):
         """Configure api"""
         pkl_data = pickle.dumps({
