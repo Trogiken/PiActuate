@@ -3,7 +3,7 @@ import os
 import logging.config
 from pathlib import Path
 
-
+# DEBUG Location change may cause logging issues
 class Runtime(object):
     """
     Setup runtime objects and verify functionality
@@ -121,7 +121,7 @@ class Runtime(object):
             else:
                 SyC.off_state = False
 
-            from door import Door
+            from source.door import Door  # DEBUG Location changed
             self.door = Door(board_mode=str(SyC.board_mode), off_state=SyC.off_state, relay1=int(SyC.relay1),
                              relay2=int(SyC.relay2), sw1=int(SyC.switch1), sw2=int(SyC.switch2), sw3=int(SyC.switch3),
                              sw4=int(SyC.switch4), sw5=int(SyC.switch5), travel_time=int(SyC.travel_time))
@@ -132,7 +132,7 @@ class Runtime(object):
         try:  # Create Auto Object
             self._log.info('Creating Auto Object')
 
-            from auto import Auto
+            from source.auto import Auto  # DEBUG Location Changed
             self.auto = Auto(door=self.door, zone=str(SyC.timezone),
                              latitude=float(SyC.latitude), longitude=float(SyC.longitude),
                              sunrise_offset=int(StC.sunrise_offset),

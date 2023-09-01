@@ -7,6 +7,7 @@ ENV="$DIR/pythonenv/bin"
 
 GUNICORN_NAME="gunicorn.service"
 DAPHNE_NAME="daphne.service"
+UVICORN_NAME="uvicorn.service"
 
 source $DIR/webenv
 USER=$USER
@@ -35,11 +36,33 @@ deactivate
 # allow ports
 sudo ufw allow 5900  # DEBUG for VNC
 
+
+# FIXME Close all ports except ngnix, why were these opened?
 sudo ufw allow 8000
 sudo ufw allow 8001
+sudo ufw allow 8002
 sudo ufw allow 80
 sudo ufw allow 'Nginx Full'
 sudo ufw enable
+
+#############################################
+
+# Configure Uvicorn # DEBUG Untested
+sudo touch /etc/systemd/system/$UVICORN_NAME
+sudo cat <<EOF > /etc/systemd/system/$UVICORN_NAME
+[Unit]
+Description=Uvicorn daemon
+After=network.target
+[Service]
+User=$USER
+Group=www-data
+WorkingDirectory=$DIR/engine
+ExecStart=$ENV/uvicorn --host 0.0.0.0 --port 8002 api:app
+RestartSec=3s
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
+EOF
 
 #############################################
 
@@ -122,11 +145,18 @@ sudo ln -s /etc/nginx/sites-available/webui /etc/nginx/sites-enabled
 sudo systemctl daemon-reload
 
 sudo systemctl restart nginx.service
+sudo systemctl enable uvicorn.service
 sudo systemctl enable gunicorn.service
 sudo systemctl enable daphne.service
 sudo systemctl enable nginx.service
 
 # Restart services incase they are already running
+if systemctl is-active --quiet $UVICORN_NAME; then
+    sudo systemctl restart $UVICORN_NAME
+else
+    sudo systemctl start $UVICORN_NAME
+fi
+
 if systemctl is-active --quiet $GUNICORN_NAME; then
     sudo systemctl restart $GUNICORN_NAME
 else

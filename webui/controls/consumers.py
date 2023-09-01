@@ -1,12 +1,9 @@
+import requests
 import json
-import os
-import sys
-
 from channels.generic.websocket import WebsocketConsumer
+from api_comms import ApiComms
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine')))
-from runtime import Runtime  # import runtime in connect to avoid None import
-runtime = Runtime.getInstance()
+api = ApiComms()
 
 
 class DoorConsumer(WebsocketConsumer):
@@ -22,11 +19,11 @@ class DoorConsumer(WebsocketConsumer):
             self.send(text_data=json.dumps({
                 "signal": "200",
                 "command": data.get('message'),
-                "message": runtime.door.status
+                "message": api.get_door_status()
                 })
             )
         elif data.get('message') == 'open':
-            runtime.door.move(2)
+            api.open_door()
             self.send(text_data=json.dumps({
                 "signal": "200",
                 "command": data.get('message'),
@@ -34,7 +31,7 @@ class DoorConsumer(WebsocketConsumer):
                 })
             )
         elif data.get('message') == 'close':
-            runtime.door.move(1)
+            api.close_door()
             self.send(text_data=json.dumps({
                 "signal": "200",
                 "command": data.get('message'),

@@ -1,6 +1,9 @@
+requests
 python-dotenv
+fastapi
 Django
 channels
+uvicorn
 gunicorn
 daphne
 RPi.GPIO

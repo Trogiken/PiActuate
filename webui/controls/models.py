@@ -8,6 +8,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class SystemConfig(models.Model):
+    # BUG https://github.com/Trogiken/chicken-door/projects/2#card-90372024
     class OffState(models.TextChoices):
         POWER_ON = True, 'On'
         POWER_OFF = False, 'Off'
