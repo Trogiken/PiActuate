@@ -11,15 +11,13 @@ Status Codes:
     522: Runtime not initialized
 """
 
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from source import Runtime
 import options as opt
-import pickle
 
 runtime = Runtime.getInstance()
-
 app = FastAPI()
 
 # Start this api
@@ -37,17 +35,24 @@ class BasicModel(BaseModel):
     route: str
     message: str
 
+    class Config:
+        frozen = True
 
 class ErrorModel(BaseModel):
     route: str
     message: str
     error: str
 
+    class Config:
+        frozen = True
 
 class DataModel(BaseModel):
     route: str
     message: str
     data: dict
+
+    class Config:
+        frozen = True
 
 
 class ConfigureRequest(BaseModel):
@@ -86,7 +91,7 @@ def configure(config_data: ConfigureRequest):
         response = JSONResponse(content={
             ErrorModel(route="/configure",
                           message="An error occurred",
-                          error=f"{e}"
+                          error=f"{str(e)}"
                           )}, status_code=500)
     return response
 
