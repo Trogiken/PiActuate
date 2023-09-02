@@ -5,28 +5,27 @@ import requests
 import json
 
 # TODO Improve docstrings
-# TODO Add error handling for if the api cannot be reached
 class ApiComms:
     """Class for communicating with the api"""
     api_url = "http://localhost:8002/"
     default_header = {'Content-Type': 'application/json'}
 
-
     def _get_request(self, endpoint="", headers=default_header):
         """Get request"""
         request = requests.get(url=ApiComms.api_url + endpoint, headers=headers)
-        if request.status_code == 522:
-            request = None
+        if request.status_code != 200 and request.status_code != 522:
+            # TODO Add error handling
+            pass
         return request
 
     def _post_request(self, endpoint, json=None, headers=default_header):
         """Post request"""
         request = requests.post(url=ApiComms.api_url + endpoint, headers=headers, json=json)
-        if request.status_code == 522:
-            request = None
+        if request.status_code != 200 and request.status_code != 522:
+            # TODO Add error handling
+            pass
         return request
 
-    # BUG This is not working
     def configure(self):
         # Convert individual objects to dictionaries
         system_config_data = serializers.serialize("json", [SystemConfig.objects.first()])
@@ -46,7 +45,7 @@ class ApiComms:
     def runtime_alive(self):
         """Spoof function to check if runtime is alive"""
         request = self._get_request("door") # Call endpoint that requires runtime
-        if request is None:
+        if request.status_code == 522:
             return False
         return True
     
@@ -80,16 +79,29 @@ class ApiComms:
     
     def close_door(self):
         """Close door"""
-        return self._post_request("door?option=1")
+        data = {
+            "option": 1
+        }
+        return self._post_request("door", json=data)
     
     def open_door(self):
         """Open door"""
-        return self._post_request("door?option=2")
+        data = {
+            "option": 2
+        }
+        return self._post_request("door", json=data)
     
     def alter_auto(self, key, value=None):  # DEBUG: None value might cause issues (Int expected)
         """Alter auto"""
-        return self._post_request(f"auto?option={key}&value={value}")
+        data = {
+            "option": key,
+            "value": value
+        }
+        return self._post_request(f"auto", json=data)
 
     def alter_aux(self, key):
         """Alter aux"""
-        return self._post_request(f"aux?option={key}")
+        data = {
+            "option": key
+        }
+        return self._post_request(f"aux", json=data)

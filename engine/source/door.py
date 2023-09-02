@@ -162,6 +162,10 @@ class Door:
         self.motion = 0
         self.auxiliary = threading.Thread()
         self._move_op_thread = threading.Thread()
+        # BUG Double initialization is fixed but logically pause event is not working
+        # When this event is made and passed into the aux thread initialization, 
+        # it is not the same event that is being used in the aux thread, just the 
+        # current state of the event is being passed in.
         self.auxiliary_pause_event = threading.Event()  # interthread communication
 
         log.debug(f"off_state: {self.OFF_STATE}")

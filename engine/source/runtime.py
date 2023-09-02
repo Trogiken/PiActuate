@@ -106,8 +106,8 @@ class Runtime(object):
     def _load_objects(self):
         """Load system config and create objects, then run stored states (Load Last)"""
         
-        self._log.info(f"System Config: {self.system_config.keys()}")
-        self._log.info(f"Startup Config: {self.startup_config.keys()}")
+        self._log.info(f"System Config: {self.system_config}")
+        self._log.info(f"Startup Config: {self.startup_config}")
 
         SyC = self.system_config
         StC = self.startup_config
