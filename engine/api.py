@@ -32,12 +32,22 @@ app = FastAPI()
 # will not work. You need to transmit the object itself. Try to use pickle to serialize
 # the object and send it over the wire. Then deserialize it on the other end.
 
-
-class ResponseModel(BaseModel):
+# TODO Make these models inherit from the BaseModel class
+class BasicModel(BaseModel):
     route: str
     message: str
-    error: str = None
-    data: dict = None
+
+
+class ErrorModel(BaseModel):
+    route: str
+    message: str
+    error: str
+
+
+class DataModel(BaseModel):
+    route: str
+    message: str
+    data: dict
 
 
 class ConfigureRequest(BaseModel):
@@ -69,12 +79,12 @@ def configure(config_data: ConfigureRequest):
         # runtime = Runtime(system_config, startup_config)
 
         response = JSONResponse(content={
-            ResponseModel(route="/configure",
+            BasicModel(route="/configure",
                           message="Configure Endpoint",
                           )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
-            ResponseModel(route="/configure",
+            ErrorModel(route="/configure",
                           message="An error occurred",
                           error=f"{e}"
                           )}, status_code=500)
@@ -87,12 +97,12 @@ def destroy(_: Runtime = Depends(ensure_runtime)):
         runtime.destroy()
 
         response = JSONResponse(content={
-            ResponseModel(route="/destroy",
+            BasicModel(route="/destroy",
                           message="Destroy Endpoint",
                           )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
-            ResponseModel(route="/destroy",
+            ErrorModel(route="/destroy",
                           message="An error occurred",
                           error=f"{e}"
                           )}, status_code=500)
@@ -103,7 +113,7 @@ def destroy(_: Runtime = Depends(ensure_runtime)):
 def get_auto(_: Runtime = Depends(ensure_runtime)):
     try:
         response = JSONResponse(content={
-            ResponseModel(route="/auto",
+            DataModel(route="/auto",
                           message="Automation Endpoint",
                           data={"sunrise_offset": runtime.auto.sunrise_offset,
                                 "sunset_offset": runtime.auto.sunset_offset,
@@ -114,7 +124,7 @@ def get_auto(_: Runtime = Depends(ensure_runtime)):
                             )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
-            ResponseModel(route="/auto",
+            ErrorModel(route="/auto",
                           message="An error occurred",
                           error=f"{e}"
                           )}, status_code=500)
@@ -137,17 +147,17 @@ def post_auto(option: opt.PostAuto, value: int=None, _: Runtime = Depends(ensure
             runtime.auto.refresh()
         else:
             return JSONResponse(content={
-                ResponseModel(route="/auto",
-                              message=f"'{option}' is not a valid option",
-                              error="Invalid option"
-                              )}, status_code=400)
+                ErrorModel(route="/auto",
+                           message=f"'{option}' is not a valid option",
+                           error="Invalid option"
+                           )}, status_code=400)
         response = JSONResponse(content={
-            ResponseModel(route="/auto",
+            BasicModel(route="/auto",
                           message="Automation Endpoint",
                           )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
-            ResponseModel(route="/auto",
+            ErrorModel(route="/auto",
                           message="An error occurred",
                           error=f"{e}"
                           )}, status_code=500)
@@ -158,13 +168,13 @@ def post_auto(option: opt.PostAuto, value: int=None, _: Runtime = Depends(ensure
 def get_door(_: Runtime = Depends(ensure_runtime)):
     try:
         response = JSONResponse(content={
-            ResponseModel(route="/door",
+            DataModel(route="/door",
                           message="Door Endpoint",
                           data={"status": runtime.door.status()}
                           )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
-            ResponseModel(route="/door",
+            ErrorModel(route="/door",
                           message="An error occurred",
                           error=f"{e}"
                           )}, status_code=500)
@@ -180,17 +190,17 @@ def post_door(option: opt.PostDoor, _: Runtime = Depends(ensure_runtime)):
             runtime.door.move(option)
         else:
             return JSONResponse(content={
-                ResponseModel(route="/door",
+                ErrorModel(route="/door",
                               message=f"'{option}' is not a valid option",
                               error="Invalid option"
                               )}, status_code=400)
         response = JSONResponse(content={
-            ResponseModel(route="/door",
+            BasicModel(route="/door",
                         message="Door Endpoint",
                         )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
-            ResponseModel(route="/door",
+            ErrorModel(route="/door",
                         message="An error occurred",
                         error=f"{e}"
                         )}, status_code=500)
@@ -201,13 +211,13 @@ def post_door(option: opt.PostDoor, _: Runtime = Depends(ensure_runtime)):
 def get_aux(_: Runtime = Depends(ensure_runtime)):
     try:
         response = JSONResponse(content={
-            ResponseModel(route="/aux",
+            DataModel(route="/aux",
                           message="Auxiliary Endpoint",
                           data={"is_alive": runtime.aux.is_alive()}
                           )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
-            ResponseModel(route="/aux",
+            ErrorModel(route="/aux",
                           message="An error occurred",
                           error=f"{e}"
                           )}, status_code=500)
@@ -223,17 +233,17 @@ def post_aux(option: opt.PostAux, _: Runtime = Depends(ensure_runtime)):
             runtime.aux.stop_aux()
         else:
             return JSONResponse(content={
-                ResponseModel(route="/aux",
+                ErrorModel(route="/aux",
                               message=f"'{option}' is not a valid option",
                               error="Invalid option"
                               )}, status_code=400)
         response = JSONResponse(content={
-            ResponseModel(route="/aux",
+            BasicModel(route="/aux",
                           message="Auxiliary Endpoint",
                           )}, status_code=200)
     except Exception as e:
         response = JSONResponse(content={
-            ResponseModel(route="/aux",
+            ErrorModel(route="/aux",
                           message="An error occurred",
                           error=f"{e}"
                           )}, status_code=500)
