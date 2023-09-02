@@ -117,9 +117,9 @@ class Runtime(object):
             self._log.info('Creating Door Object')
 
             from source.door import Door  # DEBUG Location changed
-            self.door = Door(board_mode=str(SyC.board_mode), off_state=SyC.off_state, relay1=int(SyC.relay1),
-                             relay2=int(SyC.relay2), sw1=int(SyC.switch1), sw2=int(SyC.switch2), sw3=int(SyC.switch3),
-                             sw4=int(SyC.switch4), sw5=int(SyC.switch5), travel_time=int(SyC.travel_time))
+            self.door = Door(board_mode=str(SyC["board_mode"]), off_state=SyC["off_state"], relay1=int(SyC["relay1"]),
+                             relay2=int(SyC["relay2"]), sw1=int(SyC["switch1"]), sw2=int(SyC["switch2"]), sw3=int(SyC["switch3"]),
+                             sw4=int(SyC["switch4"]), sw5=int(SyC["switch5"]), travel_time=int(SyC["travel_time"]))
             self._log.info("Door object created")
         except BaseException:
             raise AttributeError("Problem Creating Door Object")
@@ -128,10 +128,10 @@ class Runtime(object):
             self._log.info('Creating Auto Object')
 
             from source.auto import Auto  # DEBUG Location Changed
-            self.auto = Auto(door=self.door, zone=str(SyC.timezone),
-                             latitude=float(SyC.latitude), longitude=float(SyC.longitude),
-                             sunrise_offset=int(StC.sunrise_offset),
-                             sunset_offset=int(StC.sunset_offset),
+            self.auto = Auto(door=self.door, zone=str(SyC["timezone"]),
+                             latitude=float(SyC["latitude"]), longitude=float(SyC["longitude"]),
+                             sunrise_offset=int(StC["sunrise_offset"]),
+                             sunset_offset=int(StC["sunset_offset"]),
                              )
             self._log.info("Automation object created")
         except BaseException:
@@ -139,10 +139,10 @@ class Runtime(object):
 
         # Execute Saved States
         self._log.debug('Executing Saved States...')
-        if StC.automation:
+        if StC["automation"]:
             self._log.debug('Running Automation')
             self.auto.start()
-        if StC.auxiliary:
+        if StC["auxiliary"]:
             self._log.debug('Running Auxiliary Switches')
             self.door.run_aux()
 

@@ -27,11 +27,8 @@ def configure(config_data: dict):
     try:
         system_config = config_data.get('system_config')
         startup_config = config_data.get('startup_config')
-        print(system_config)
-        print(startup_config)
 
-        # TODO Make runtime get from the dictionary instead of the db method
-        # runtime = Runtime(system_config, startup_config)
+        runtime = Runtime(system_config, startup_config)
 
         response = JSONResponse(content={
             "route": "/configure",
