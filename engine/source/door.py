@@ -63,6 +63,7 @@ class Auxiliary(threading.Thread):
                 while GPIO.input(self.AUX_SW1) == 1 or GPIO.input(self.AUX_SW2) == 1:
                     relays_prev_triggered = True
                     self.in_motion = True
+                    self.motion = 1 if GPIO.input(self.AUX_SW1) == 1 else 2
 
                     if GPIO.input(self.AUX_SW1) == 1 and GPIO.input(self.AUX_SW3) == 0:  # Requested down and limit switch not triggered
                         if GPIO.input(self.AUX_SW5) == 1:  # block switch triggered, do nothing
@@ -77,8 +78,10 @@ class Auxiliary(threading.Thread):
                     self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
                     relays_prev_triggered = False
                     self.in_motion = False
+                    self.motion = 0
             else:
                 self.in_motion = False
+                self.motion = 0
                 time.sleep(0.5)
                 continue
 
