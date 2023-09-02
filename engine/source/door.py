@@ -38,15 +38,18 @@ class Auxiliary(threading.Thread):
         log.info("Aux pins set up successfully")
     
     def pause(self):
+        log.debug("Auxiliary paused")
         self.pause_event.set()
     
     def resume(self):
+        log.debug("Auxiliary resumed")
         self.pause_event.clear()
     
     def paused(self):
         return self.pause_event.is_set()
 
     def stop(self):
+        log.debug("Auxiliary stopped")
         self._stop_event.set()
 
     def stopped(self):
@@ -56,7 +59,7 @@ class Auxiliary(threading.Thread):
         relays_prev_triggered = False  # Flag to track if the relays have been triggered
 
         while not self.stopped():
-            if not self.paused():
+            if not self.paused():  # This is not in the while loop because it would cause the thread to stop
                 if GPIO.input(self.AUX_SW1) == 1:
                     self.motion = 1
                 elif GPIO.input(self.AUX_SW2) == 1:
@@ -168,10 +171,6 @@ class Door:
         self.motion = 0
         self.auxiliary = threading.Thread()
         self._move_op_thread = threading.Thread()
-        # BUG Double initialization is fixed but logically pause event is not working
-        # When this event is made and passed into the aux thread initialization, 
-        # it is not the same event that is being used in the aux thread, just the 
-        # current state of the event is being passed in.
 
         log.debug(f"off_state: {self.OFF_STATE}")
         log.debug(f"RELAY1: {self.RELAY1}")
@@ -276,6 +275,7 @@ class Door:
             log.error("Auxiliary Active; Canceling Operation")
             return
         if self.auxiliary.is_alive():
+            log.info("Pausing Auxiliary")
             self.auxiliary.pause()  # pause auxiliary thread to prevent interference while moving
 
         if opt == 1:
@@ -311,6 +311,7 @@ class Door:
         # Reset motion and relays
         self.motion = 0
         if self.auxiliary.is_alive() and self.auxiliary.paused():
+            log.info("Resuming Auxiliary")
             self.auxiliary.resume()
         GPIO.output(self.RELAY1, self.OFF_STATE)
         GPIO.output(self.RELAY2, self.OFF_STATE)
