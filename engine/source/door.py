@@ -11,7 +11,7 @@ except (ImportError, ModuleNotFoundError):
     raise
 
 class Auxiliary(threading.Thread):
-    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, off_state, relay1, relay2, pause_event):
+    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, off_state, relay1, relay2):
         super().__init__()
         self.AUX_SW1 = aux_sw1  # trigger relay1
         self.AUX_SW2 = aux_sw2  # trigger relay2
@@ -21,7 +21,7 @@ class Auxiliary(threading.Thread):
         self.OFF_STATE = off_state
         self.RELAY1 = relay1
         self.RELAY2 = relay2
-        self.pause_event = pause_event  # interthread communication
+        self.pause_event = threading.Event()
 
         self.motion = 0
         self.in_motion = False
@@ -36,6 +36,12 @@ class Auxiliary(threading.Thread):
             raise
 
         log.info("Aux pins set up successfully")
+    
+    def pause(self):
+        self.pause_event.set()
+    
+    def resume(self):
+        self.pause_event.clear()
     
     def paused(self):
         return self.pause_event.is_set()
@@ -166,7 +172,6 @@ class Door:
         # When this event is made and passed into the aux thread initialization, 
         # it is not the same event that is being used in the aux thread, just the 
         # current state of the event is being passed in.
-        self.auxiliary_pause_event = threading.Event()  # interthread communication
 
         log.debug(f"off_state: {self.OFF_STATE}")
         log.debug(f"RELAY1: {self.RELAY1}")
@@ -196,7 +201,7 @@ class Door:
         try:
             if not self.auxiliary.is_alive():
                 self.auxiliary = Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
-                                     aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2, pause_event=self.auxiliary_pause_event)
+                                     aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
                 self.auxiliary.start()
                 log.info("Auxiliary is Running")
             else:
@@ -271,7 +276,7 @@ class Door:
             log.error("Auxiliary Active; Canceling Operation")
             return
         if self.auxiliary.is_alive():
-            self.auxiliary_pause_event.set()  # pause auxiliary thread to prevent interference while moving
+            self.auxiliary.pause()  # pause auxiliary thread to prevent interference while moving
 
         if opt == 1:
             self.motion = 1  # close
@@ -305,8 +310,8 @@ class Door:
 
         # Reset motion and relays
         self.motion = 0
-        if self.auxiliary.is_alive() and self.auxiliary_pause_event.paused():
-            self.auxiliary_pause_event.clear()
+        if self.auxiliary.is_alive() and self.auxiliary.paused():
+            self.auxiliary.resume()
         GPIO.output(self.RELAY1, self.OFF_STATE)
         GPIO.output(self.RELAY2, self.OFF_STATE)
 
