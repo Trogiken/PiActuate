@@ -67,9 +67,9 @@ def get_auto(_: Runtime = Depends(ensure_runtime)):
             "message": "Automation Endpoint",
             "data": {"sunrise_offset": runtime.auto.sunrise_offset,
                     "sunset_offset": runtime.auto.sunset_offset,
-                    "active_sunrise": runtime.auto.active_sunrise,
-                    "active_sunset": runtime.auto.active_sunset,
-                    "active_current": runtime.auto.active_current,
+                    "active_sunrise": runtime.auto.active_sunrise(),
+                    "active_sunset": runtime.auto.active_sunset(),
+                    "active_current": runtime.auto.active_current(),
                     "is_alive": runtime.auto.scheduler.is_alive()}
         }, status_code=200)
     except Exception as e:

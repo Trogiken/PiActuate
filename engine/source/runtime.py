@@ -44,7 +44,7 @@ class Runtime(object):
         if system_config is None or startup_config is None:
             raise ValueError("System Config or Startup Config is None")
 
-        self._home = str(Path(__file__).resolve().parents[1])
+        self._home = str(Path(__file__).resolve().parents[2])
         self._source = str(Path(__file__).resolve().parents[0])
         self._log = None
 
@@ -106,8 +106,8 @@ class Runtime(object):
     def _load_objects(self):
         """Load system config and create objects, then run stored states (Load Last)"""
         
-        self._log.info(f"System Config: {vars(self.system_config)}")
-        self._log.info(f"Startup Config: {vars(self.startup_config)}")
+        self._log.info(f"System Config: {self.system_config.keys()}")
+        self._log.info(f"Startup Config: {self.startup_config.keys()}")
 
         SyC = self.system_config
         StC = self.startup_config

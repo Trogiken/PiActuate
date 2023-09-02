@@ -59,7 +59,7 @@ class DetailPostView(LoginRequiredMixin, View):
 
             # update runtime data with new values
             # DEBUG: Return values
-            auto = api.get_auto().get("data")
+            auto = api.get_auto().json()["data"]
             if form_data["automation"]:
                 if auto.get("sunrise_offset") != int(form_data["sunrise_offset"]):
                     api.alter_auto("sunrise_offset", int(form_data["sunrise_offset"]))
@@ -107,7 +107,7 @@ class DashboardView(LoginRequiredMixin, View):
             startup_config.auxiliary = False
         startup_config.save()
 
-        auto = api.get_auto().get("data")
+        auto = api.get_auto().json()["data"]
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),
             "active_times": {'sunrise': auto.get("active_sunrise"), 'sunset': auto.get("active_sunset"), 'current': auto.get("active_current")},
