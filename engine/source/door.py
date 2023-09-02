@@ -59,7 +59,7 @@ class Auxiliary(threading.Thread):
         relays_prev_triggered = False  # Flag to track if the relays have been triggered
 
         while not self.stopped():
-            if not self.paused():  # This is not in the while loop because it would cause the thread to stop
+            if not self.paused():
                 if GPIO.input(self.AUX_SW1) == 1:
                     self.motion = 1
                 elif GPIO.input(self.AUX_SW2) == 1:
@@ -67,12 +67,7 @@ class Auxiliary(threading.Thread):
                 else:
                     self.motion = 0
 
-                if self.paused():
-                    self.motion = 0
-                    self.in_motion = False
-                    log.error("Auxiliary run loop continued while paused")
-                
-                if self.motion == 1 or self.motion == 2:  # so that the else statement doesn't repedetly trigger
+                if self.motion == 1 or self.motion == 2:
                     relays_prev_triggered = True
                     self.in_motion = True
 
