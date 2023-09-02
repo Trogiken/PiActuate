@@ -60,34 +60,25 @@ class Auxiliary(threading.Thread):
 
         while not self.stopped():
             if not self.paused():
-                if GPIO.input(self.AUX_SW1) == 1:
-                    self.motion = 1
-                elif GPIO.input(self.AUX_SW2) == 1:
-                    self.motion = 2
-                else:
-                    self.motion = 0
-
-                if self.motion == 1 or self.motion == 2:
+                while GPIO.input(self.AUX_SW1) == 1 or GPIO.input(self.AUX_SW2) == 1:
                     relays_prev_triggered = True
                     self.in_motion = True
 
-                    if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
+                    if GPIO.input(self.AUX_SW1) == 1 and GPIO.input(self.AUX_SW3) == 0:  # Requested down and limit switch not triggered
                         if GPIO.input(self.AUX_SW5) == 1:  # block switch triggered, do nothing
                             self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
                         else:
                             self._trigger_relays(not self.OFF_STATE, self.OFF_STATE)
-                    elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
+                    elif GPIO.input(self.AUX_SW2) == 1 and GPIO.input(self.AUX_SW4) == 0:  # Requested up and limit switch not triggered
                         self._trigger_relays(self.OFF_STATE, not self.OFF_STATE)
                     else:  # Motion-related limit switch is triggered
-                        self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
-                        self.in_motion = False
-                else:
-                    if relays_prev_triggered:  # reset relays without repeadetly triggering
-                        self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
-                        relays_prev_triggered = False
+                        break
+                if relays_prev_triggered:  # reset relays without repeadetly triggering
+                    self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
+                    relays_prev_triggered = False
+                    self.in_motion = False
             else:
                 self.in_motion = False
-                self.motion = 0
                 time.sleep(0.5)
                 continue
 
