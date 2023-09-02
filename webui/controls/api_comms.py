@@ -70,11 +70,11 @@ class ApiComms:
         """Return door data"""
         return self._get_request("door").json()["data"]["status"]
     
-    def get_aux_alive(self):
+    def get_aux_status(self):
         """Return aux data"""
         return self._get_request("aux").json()["data"]["is_alive"]
     
-    def get_auto_alive(self):
+    def get_auto_status(self):
         """Return auto data"""
         return self._get_request("auto").json()["data"]["is_alive"]
     

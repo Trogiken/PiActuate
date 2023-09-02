@@ -65,17 +65,17 @@ class DetailPostView(LoginRequiredMixin, View):
                     api.alter_auto("sunrise_offset", int(form_data["sunrise_offset"]))
                 if auto.get("sunset_offset") != int(form_data["sunset_offset"]):
                     api.alter_auto("sunset_offset", int(form_data["sunset_offset"]))
-                if api.get_auto_alive() is False:
+                if api.get_auto_status() is False:
                     api.alter_auto("start")
                 else:
                     api.alter_auto("refresh")
                 sleep(1)  # give the scheduler time to update
             else:
-                if api.get_auto_alive() is True:
+                if api.get_auto_status() is True:
                     api.alter_auto("stop")
 
             if form_data["auxiliary"]:
-                if api.get_aux_alive() is False:
+                if api.get_aux_status() is False:
                     api.alter_aux("start")
             else:
                 if api.get_aux_status() is True:
@@ -101,9 +101,9 @@ class DashboardView(LoginRequiredMixin, View):
         
         # check if automation or auxiliary running states are different from the database
         startup_config = StartupConfig.objects.first()
-        if startup_config.automation is True and api.get_auto_alive() is False:
+        if startup_config.automation is True and api.get_auto_status() is False:
             startup_config.automation = False
-        if startup_config.auxiliary is True and api.get_aux_alive() is False:
+        if startup_config.auxiliary is True and api.get_aux_status() is False:
             startup_config.auxiliary = False
         startup_config.save()
 

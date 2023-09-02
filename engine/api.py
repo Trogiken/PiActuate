@@ -117,7 +117,7 @@ def get_door(_: Runtime = Depends(ensure_runtime)):
         response = JSONResponse(content={
             "route": "/door",
             "message": "Door Endpoint",
-            "data": {"status": runtime.door.status()}
+            "data": {"status": runtime.door.status}
         }, status_code=200)
     except Exception as e:
         response = JSONResponse(content={

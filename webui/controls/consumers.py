@@ -1,7 +1,7 @@
 import requests
 import json
 from channels.generic.websocket import WebsocketConsumer
-from api_comms import ApiComms
+from .api_comms import ApiComms
 
 api = ApiComms()
 
