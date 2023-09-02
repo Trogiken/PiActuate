@@ -143,7 +143,7 @@ def get_door(_: Runtime = Depends(ensure_runtime)):
     return response
 
 @app.post("/door")
-def post_door(request: opt.PostDoor, _: Runtime = Depends(ensure_runtime)):
+def post_door(request: DoorPostRequest, _: Runtime = Depends(ensure_runtime)):
     try:
         if request.option == opt.PostDoor.open:
             runtime.door.move(2)

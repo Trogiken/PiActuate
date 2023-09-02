@@ -91,7 +91,7 @@ class ApiComms:
         }
         return self._post_request("door", json=data)
     
-    def alter_auto(self, key, value=None):  # DEBUG: None value might cause issues (Int expected)
+    def alter_auto(self, key, value=0):  # DEBUG: If offset key used without value, value defaults to 0
         """Alter auto"""
         data = {
             "option": key,
