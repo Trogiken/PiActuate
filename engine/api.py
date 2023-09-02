@@ -99,9 +99,9 @@ def get_auto(_: Runtime = Depends(ensure_runtime)):
 def post_auto(request: AutoPostRequest, _: Runtime = Depends(ensure_runtime)):
     try:
         if request.option == opt.PostAuto.sunrise_offset:
-            runtime.auto.sunrise_offset = request.value
+            runtime.auto.set_sunrise_offset(request.value)
         elif request.option == opt.PostAuto.sunset_offset:
-            runtime.auto.sunset_offset = request.value
+            runtime.auto.set_sunset_offset(request.value)
         elif request.option == opt.PostAuto.start:
             runtime.auto.start()
         elif request.option == opt.PostAuto.stop:
