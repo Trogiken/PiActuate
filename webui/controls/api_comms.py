@@ -2,7 +2,7 @@ from django.core import serializers
 from django.http import JsonResponse
 from .models import SystemConfig, StartupConfig
 import requests
-import pickle
+import json
 
 # TODO Improve docstrings
 # TODO Add error handling for if the api cannot be reached
@@ -28,12 +28,20 @@ class ApiComms:
 
     # BUG This is not working
     def configure(self):
-        """Configure api"""
+        # Convert individual objects to dictionaries
+        system_config_data = serializers.serialize("json", [SystemConfig.objects.first()])
+        startup_config_data = serializers.serialize("json", [StartupConfig.objects.first()])
+
+        # Convert serialized data to dictionaries
+        system_config_data = json.loads(system_config_data)
+        startup_config_data = json.loads(startup_config_data)
+
         data = {
-            "system_config": serializers.serialize("json", SystemConfig.objects.first()),
-            "startup_config": serializers.serialize("json", StartupConfig.objects.first())
+            "system_config": system_config_data[0]['fields'],  # Extract fields from the serialized data
+            "startup_config": startup_config_data[0]['fields']
         }
-        return self._post_request("configure", json=data)  # DEBUG
+
+        return self._post_request("configure", json=data)
     
     def runtime_alive(self):
         """Spoof function to check if runtime is alive"""
