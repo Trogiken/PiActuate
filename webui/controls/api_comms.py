@@ -5,11 +5,10 @@ import pickle
 # TODO Add error handling for if the api cannot be reached
 class ApiComms:
     """Class for communicating with the api"""
+    api_url = "http://localhost:8002/"
+    default_header = {'Content-Type': 'application/json'}
 
-    def __init__(self):
-        self.api_url = "http://localhost:8002/"
-        self.headers = {'Content-Type': 'application/json'} # DEBUG Might not work with configure request
-    
+
     def _get_request(self, endpoint=""):
         """Get request"""
         request = requests.get(url=self.api_url + endpoint, headers=self.headers)
@@ -17,9 +16,9 @@ class ApiComms:
             request = None
         return request
 
-    def _post_request(self, endpoint, data=None):
+    def _post_request(self, endpoint, data=None, headers=default_header):
         """Post request"""
-        request = requests.post(url=self.api_url + endpoint, headers=self.headers, data=data)
+        request = requests.post(url=self.api_url + endpoint, headers=headers, data=data)
         if request.status_code == 522:
             request = None
         return request
@@ -31,7 +30,7 @@ class ApiComms:
             "system_config": system_config,
             "startup_config": startup_config
         })
-        return self._post_request("configure", data=pkl_data)  # DEBUG
+        return self._post_request("configure", data=pkl_data, headers={'Content-Type': 'application/octet-stream'})  # DEBUG
     
     def runtime_alive(self):
         """Spoof function to check if runtime is alive"""

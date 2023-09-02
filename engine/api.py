@@ -11,7 +11,7 @@ Status Codes:
     522: Runtime not initialized
 """
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from source import Runtime
@@ -57,11 +57,13 @@ def root():
 
 # BUG This is not working properly
 @app.post("/configure")
-def configure(config_data: ConfigureRequest):
+def configure(data: Request):
     global runtime
     try:
-        system_config = pickle.loads(config_data.system_config)
-        startup_config = pickle.loads(config_data.startup_config)
+        config_data: bytes = pickle.loads(data.body())
+
+        system_config = config_data['system_config']
+        startup_config = config_data['startup_config']
         runtime = Runtime(system_config, startup_config)
 
         response = JSONResponse(content={
