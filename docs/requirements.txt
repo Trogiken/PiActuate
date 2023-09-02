@@ -1,5 +1,4 @@
 requests
-json
 python-dotenv
 fastapi
 Django
