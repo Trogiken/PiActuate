@@ -1,3 +1,6 @@
+from django.core import serializers
+from django.http import JsonResponse
+from .models import SystemConfig, StartupConfig
 import requests
 import pickle
 
@@ -16,21 +19,21 @@ class ApiComms:
             request = None
         return request
 
-    def _post_request(self, endpoint, data=None, headers=default_header):
+    def _post_request(self, endpoint, json=None, headers=default_header):
         """Post request"""
-        request = requests.post(url=ApiComms.api_url + endpoint, headers=headers, data=data)
+        request = requests.post(url=ApiComms.api_url + endpoint, headers=headers, json=json)
         if request.status_code == 522:
             request = None
         return request
 
     # BUG This is not working
-    def configure(self, system_config, startup_config):
+    def configure(self):
         """Configure api"""
-        pkl_data = pickle.dumps({
-            "system_config": system_config,
-            "startup_config": startup_config
-        })
-        return self._post_request("configure", data=pkl_data, headers={'Content-Type': 'application/octet-stream'})  # DEBUG
+        data = {
+            "system_config": serializers.serialize("json", SystemConfig.objects.first()),
+            "startup_config": serializers.serialize("json", StartupConfig.objects.first())
+        }
+        return self._post_request("configure", json=data)  # DEBUG
     
     def runtime_alive(self):
         """Spoof function to check if runtime is alive"""

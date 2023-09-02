@@ -41,8 +41,8 @@ class ResponseModel(BaseModel):
 
 
 class ConfigureRequest(BaseModel):
-    system_config: bytes
-    startup_config: bytes
+    system_config: dict
+    startup_config: dict
 
 
 def ensure_runtime():
@@ -57,14 +57,16 @@ def root():
 
 # BUG This is not working properly
 @app.post("/configure")
-def configure(data: Request):
+def configure(config_data: ConfigureRequest):
     global runtime
     try:
-        config_data: bytes = pickle.loads(data.body())
-
         system_config = config_data['system_config']
         startup_config = config_data['startup_config']
-        runtime = Runtime(system_config, startup_config)
+        print(system_config)
+        print(startup_config)
+
+        # TODO Make runtime get from the dictionary instead of the db method
+        # runtime = Runtime(system_config, startup_config)
 
         response = JSONResponse(content={
             ResponseModel(route="/configure",

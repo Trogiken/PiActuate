@@ -13,9 +13,10 @@ from .api_comms import ApiComms
 
 api = ApiComms()
 
+# BUG: This only executes when a user loads a page and not when gunicon starts
 # Not First time startup condition
 if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-    api.configure(SystemConfig.objects.first(), StartupConfig.objects.first())
+    api.configure()
 
 
 def backend_init():
@@ -23,7 +24,7 @@ def backend_init():
     if SystemConfig.objects.exists() and StartupConfig.objects.exists():
         if api.runtime_alive():
             api.destroy()
-        api.configure(SystemConfig.objects.first(), StartupConfig.objects.first())
+        api.configure()
 
 
 class RedirectToLoginView(View):
