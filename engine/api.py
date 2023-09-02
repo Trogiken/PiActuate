@@ -187,9 +187,9 @@ def get_aux(_: Runtime = Depends(ensure_runtime)):
 def post_aux(request: AuxPostRequest, _: Runtime = Depends(ensure_runtime)):
     try:
         if request.option == opt.PostAux.start:
-            runtime.aux.run_aux()
+            runtime.door.run_aux()
         elif request.option == opt.PostAux.stop:
-            runtime.aux.stop_aux()
+            runtime.door.stop_aux()
         else:
             return JSONResponse(content={
                 "route": "/aux",
