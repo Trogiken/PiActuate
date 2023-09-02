@@ -9,16 +9,16 @@ class ApiComms:
     default_header = {'Content-Type': 'application/json'}
 
 
-    def _get_request(self, endpoint=""):
+    def _get_request(self, endpoint="", headers=default_header):
         """Get request"""
-        request = requests.get(url=self.api_url + endpoint, headers=self.headers)
+        request = requests.get(url=ApiComms.api_url + endpoint, headers=headers)
         if request.status_code == 522:
             request = None
         return request
 
     def _post_request(self, endpoint, data=None, headers=default_header):
         """Post request"""
-        request = requests.post(url=self.api_url + endpoint, headers=headers, data=data)
+        request = requests.post(url=ApiComms.api_url + endpoint, headers=headers, data=data)
         if request.status_code == 522:
             request = None
         return request
