@@ -68,15 +68,15 @@ class ApiComms:
     
     def get_door_status(self):
         """Return door data"""
-        return self._get_request("door")["data"].get("status")
+        return self._get_request("door").json()["data"]["status"]
     
     def get_aux_alive(self):
         """Return aux data"""
-        return self._get_request("aux")["data"].get("is_alive")
+        return self._get_request("aux").json()["data"]["is_alive"]
     
     def get_auto_alive(self):
         """Return auto data"""
-        return self._get_request("auto")["data"].get("is_alive")
+        return self._get_request("auto").json()["data"]["is_alive"]
     
     def close_door(self):
         """Close door"""
