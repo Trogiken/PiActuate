@@ -28,10 +28,10 @@ class SystemConfigForm(forms.ModelForm):
         pins = range(2, 28) if board_mode == "BCM" else [3, 5, 7, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24, 26, 29, 31, 32, 33, 35, 36, 37, 38, 40]
         for i in range(1, 6):
             if cleaned_data.get(f"switch{i}") not in pins:
-                self.add_error(f"switch{i}", "Invalid Pin")
+                self.add_error(f"switch{i}", f"Invalid Pin for '{board_mode}' Mode")
         for relay in ["relay1", "relay2"]:
             if cleaned_data.get(relay) not in pins:
-                self.add_error(relay, "Invalid Pin")
+                self.add_error(relay, f"Invalid Pin for '{board_mode}' Mode")
 
 
 class UserLoginForm(AuthenticationForm):
