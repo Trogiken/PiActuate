@@ -2,7 +2,12 @@
 
 {% block title %}404{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static '404.css' %}">
+{% endblock %}
+
 {% block content %}
     <h1>404</h1>
-    <p>Page not found</p>
+    <p>Page not Found</p>
+    <a href="{% url 'home' %}">Go back Home</a>
 {% endblock %}
