@@ -15,7 +15,7 @@ class DetailForm(forms.ModelForm):
             "sunset_offset": "Sunset",
         }
 
-# BUG https://github.com/Trogiken/chicken-door/projects/2#card-90372064
+
 class SystemConfigForm(forms.ModelForm):
     class Meta:
         model = SystemConfig

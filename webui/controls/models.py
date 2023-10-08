@@ -1,8 +1,16 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+import pytz
 
 
 class SystemConfig(models.Model):
+    # time zone choice class using pytz.timezones
+    class TimezoneChoices(models.TextChoices):
+        for tz in pytz.all_timezones:
+            locals()[tz] = tz
+        del tz
+        
+
     board_mode = models.CharField(max_length=5, choices=[("BCM", "BCM"), ("BOARD", "BOARD")], default=("BCM", "BCM"), verbose_name="Board Mode", help_text="GPIO pin numbering mode")
     relay1 = models.IntegerField(default=26, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Relay 1", help_text="Extending Motion")
     relay2 = models.IntegerField(default=20, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Relay 2", help_text="Retraction Motion")
@@ -12,8 +20,7 @@ class SystemConfig(models.Model):
     switch4 = models.IntegerField(default=23, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Switch 4", help_text="Aux switch for 'Relay 1'")
     switch5 = models.IntegerField(default=24, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Switch 5", help_text="Aux switch for 'Relay 2'")
     off_state = models.BooleanField(choices=[(True, "On"), (False, "Off")], default=True, verbose_name="Off State", help_text="Power setting for relay off state")
-    # TODO add timezone validation/make this a choice field
-    timezone = models.CharField(max_length=100, verbose_name="Timezone", help_text="Timezone of hardware")
+    timezone = models.CharField(max_length=100, choices=TimezoneChoices.choices, default=TimezoneChoices.UTC, verbose_name="Timezone", help_text="Timezone of hardware")
     longitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Longitude", help_text="Longitudinal location of hardware")
     latitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Latitude", help_text="Latitudinal location of hardware")
     travel_time = models.IntegerField(default=10, verbose_name="Travel Time", help_text="Allowed time, in seconds, for the door to be in motion")
