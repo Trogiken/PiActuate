@@ -11,7 +11,7 @@ except (ImportError, ModuleNotFoundError):
     raise
 
 class Auxiliary(threading.Thread):
-    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, off_state, relay1, relay2, pause_event):
+    def __init__(self, aux_sw1, aux_sw2, aux_sw3, aux_sw4, aux_sw5, off_state, relay1, relay2):
         super().__init__()
         self.AUX_SW1 = aux_sw1  # trigger relay1
         self.AUX_SW2 = aux_sw2  # trigger relay2
@@ -21,7 +21,7 @@ class Auxiliary(threading.Thread):
         self.OFF_STATE = off_state
         self.RELAY1 = relay1
         self.RELAY2 = relay2
-        self.pause_event = pause_event  # interthread communication
+        self.pause_event = threading.Event()
 
         self.motion = 0
         self.in_motion = False
@@ -37,10 +37,19 @@ class Auxiliary(threading.Thread):
 
         log.info("Aux pins set up successfully")
     
+    def pause(self):
+        log.debug("Auxiliary paused")
+        self.pause_event.set()
+    
+    def resume(self):
+        log.debug("Auxiliary resumed")
+        self.pause_event.clear()
+    
     def paused(self):
         return self.pause_event.is_set()
 
     def stop(self):
+        log.debug("Auxiliary stopped")
         self._stop_event.set()
 
     def stopped(self):
@@ -51,36 +60,25 @@ class Auxiliary(threading.Thread):
 
         while not self.stopped():
             if not self.paused():
-                if GPIO.input(self.AUX_SW1) == 1:
-                    self.motion = 1
-                elif GPIO.input(self.AUX_SW2) == 1:
-                    self.motion = 2
-                else:
-                    self.motion = 0
-
-                if self.paused():
-                    self.motion = 0
-                    self.in_motion = False
-                    log.error("Auxiliary run loop continued while paused")
-                
-                if self.motion == 1 or self.motion == 2:  # so that the else statement doesn't repedetly trigger
+                while GPIO.input(self.AUX_SW1) == 1 or GPIO.input(self.AUX_SW2) == 1:
                     relays_prev_triggered = True
                     self.in_motion = True
+                    self.motion = 1 if GPIO.input(self.AUX_SW1) == 1 else 2
 
-                    if self.motion == 1 and GPIO.input(self.AUX_SW3) == 0:
+                    if GPIO.input(self.AUX_SW1) == 1 and GPIO.input(self.AUX_SW3) == 0:  # Requested down and limit switch not triggered
                         if GPIO.input(self.AUX_SW5) == 1:  # block switch triggered, do nothing
                             self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
                         else:
                             self._trigger_relays(not self.OFF_STATE, self.OFF_STATE)
-                    elif self.motion == 2 and GPIO.input(self.AUX_SW4) == 0:
+                    elif GPIO.input(self.AUX_SW2) == 1 and GPIO.input(self.AUX_SW4) == 0:  # Requested up and limit switch not triggered
                         self._trigger_relays(self.OFF_STATE, not self.OFF_STATE)
                     else:  # Motion-related limit switch is triggered
-                        self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
-                        self.in_motion = False
-                else:
-                    if relays_prev_triggered:  # reset relays without repeadetly triggering
-                        self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
-                        relays_prev_triggered = False
+                        break
+                if relays_prev_triggered:  # reset relays without repeadetly triggering
+                    self._trigger_relays(self.OFF_STATE, self.OFF_STATE)
+                    relays_prev_triggered = False
+                    self.in_motion = False
+                    self.motion = 0
             else:
                 self.in_motion = False
                 self.motion = 0
@@ -162,11 +160,6 @@ class Door:
         self.motion = 0
         self.auxiliary = threading.Thread()
         self._move_op_thread = threading.Thread()
-        # BUG Double initialization is fixed but logically pause event is not working
-        # When this event is made and passed into the aux thread initialization, 
-        # it is not the same event that is being used in the aux thread, just the 
-        # current state of the event is being passed in.
-        self.auxiliary_pause_event = threading.Event()  # interthread communication
 
         log.debug(f"off_state: {self.OFF_STATE}")
         log.debug(f"RELAY1: {self.RELAY1}")
@@ -196,7 +189,7 @@ class Door:
         try:
             if not self.auxiliary.is_alive():
                 self.auxiliary = Auxiliary(aux_sw1=self.SW4, aux_sw2=self.SW5, aux_sw3=self.SW1, aux_sw4=self.SW2,
-                                     aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2, pause_event=self.auxiliary_pause_event)
+                                     aux_sw5=self.SW3, off_state=self.OFF_STATE, relay1=self.RELAY1, relay2=self.RELAY2)
                 self.auxiliary.start()
                 log.info("Auxiliary is Running")
             else:
@@ -271,7 +264,8 @@ class Door:
             log.error("Auxiliary Active; Canceling Operation")
             return
         if self.auxiliary.is_alive():
-            self.auxiliary_pause_event.set()  # pause auxiliary thread to prevent interference while moving
+            log.info("Pausing Auxiliary")
+            self.auxiliary.pause()  # pause auxiliary thread to prevent interference while moving
 
         if opt == 1:
             self.motion = 1  # close
@@ -305,8 +299,9 @@ class Door:
 
         # Reset motion and relays
         self.motion = 0
-        if self.auxiliary.is_alive() and self.auxiliary_pause_event.paused():
-            self.auxiliary_pause_event.clear()
+        if self.auxiliary.is_alive() and self.auxiliary.paused():
+            log.info("Resuming Auxiliary")
+            self.auxiliary.resume()
         GPIO.output(self.RELAY1, self.OFF_STATE)
         GPIO.output(self.RELAY2, self.OFF_STATE)
 
