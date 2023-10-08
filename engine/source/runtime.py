@@ -59,6 +59,7 @@ class Runtime(object):
 
     def _logging_config_load(self):
         """Init logging config (Load First)"""
+        # DEBUG Possible bug with data type in logging config - https://github.com/Trogiken/chicken-door/projects/2#card-90279747
         logdir = os.path.join(self._home, 'logs')
         config = os.path.join(self._home, 'loggingConfig.conf')
 
