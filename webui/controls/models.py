@@ -1,24 +1,18 @@
 from django.db import models
-from .validators import excluded_pin
-
-# import max and min
 from django.core.validators import MaxValueValidator, MinValueValidator
-
-# Create your models here.
 
 
 class SystemConfig(models.Model):
-    # BUG https://github.com/Trogiken/chicken-door/projects/2#card-90372024
-
     board_mode = models.CharField(max_length=5, choices=[("BCM", "BCM"), ("BOARD", "BOARD")], default=("BCM", "BCM"), verbose_name="Board Mode", help_text="GPIO pin numbering mode")
-    relay1 = models.IntegerField(default=26, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 1", help_text="Extending Motion")
-    relay2 = models.IntegerField(default=20, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Relay 2", help_text="Retraction Motion")
-    switch1 = models.IntegerField(default=6, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 1", help_text="Extend Limit")
-    switch2 = models.IntegerField(default=13, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 2", help_text="Retract Limit")
-    switch3 = models.IntegerField(default=19, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 3", help_text="Door path is blocked")
-    switch4 = models.IntegerField(default=23, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 4", help_text="Aux switch for 'Relay 1'")
-    switch5 = models.IntegerField(default=24, validators=[MinValueValidator(0), MaxValueValidator(31), excluded_pin], verbose_name="Switch 5", help_text="Aux switch for 'Relay 2'")
+    relay1 = models.IntegerField(default=26, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Relay 1", help_text="Extending Motion")
+    relay2 = models.IntegerField(default=20, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Relay 2", help_text="Retraction Motion")
+    switch1 = models.IntegerField(default=6, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Switch 1", help_text="Extend Limit")
+    switch2 = models.IntegerField(default=13, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Switch 2", help_text="Retract Limit")
+    switch3 = models.IntegerField(default=19, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Switch 3", help_text="Door path is blocked")
+    switch4 = models.IntegerField(default=23, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Switch 4", help_text="Aux switch for 'Relay 1'")
+    switch5 = models.IntegerField(default=24, validators=[MinValueValidator(1), MaxValueValidator(40)], verbose_name="Switch 5", help_text="Aux switch for 'Relay 2'")
     off_state = models.BooleanField(choices=[(True, "On"), (False, "Off")], default=True, verbose_name="Off State", help_text="Power setting for relay off state")
+    # TODO add timezone validation/make this a choice field
     timezone = models.CharField(max_length=100, verbose_name="Timezone", help_text="Timezone of hardware")
     longitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Longitude", help_text="Longitudinal location of hardware")
     latitude = models.DecimalField(default=0.0, max_digits=9, decimal_places=6, verbose_name="Latitude", help_text="Latitudinal location of hardware")
