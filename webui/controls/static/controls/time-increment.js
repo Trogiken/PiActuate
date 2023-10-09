@@ -1,6 +1,7 @@
 function incrementTime() {
     // Get the current time from the element's text content
-    const currentTime = document.getElementById('current-time').textContent;
+    const currentTimeElement = document.getElementById('current-time')
+    const currentTime = currentTimeElement.textContent;
 
     // Split the time into hours and minutes
     const [hours, minutes] = currentTime.split(':').map(Number);
