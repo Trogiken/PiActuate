@@ -1,6 +1,10 @@
 function incrementTime() {
     // Get the current time from the element's text content
     const currentTimeElement = document.getElementById('current-time')
+    if (!currentTimeElement) {
+        return; // No current time element, so do nothing
+    }
+
     const currentTime = currentTimeElement.textContent;
 
     // Split the time into hours and minutes
