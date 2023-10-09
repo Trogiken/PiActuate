@@ -15,6 +15,7 @@
 {% block js %}
 <script src="{% static 'controls/engine-ops.js' %}"></script>
 <script src="{% static 'controls/includes/sidebar-active.js' %}"></script>
+<script src="{% static 'controls/time-increment.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -63,7 +64,7 @@
           <h1>Offset Values</h1>
           <p>(+ or - Minutes)</p>
           {% if active_times.current %}
-            <p>Current Time: {{ active_times.current }}</p>
+            <p>Current Time: <span id="current-time">{{ active_times.current }}</span></p>
           {% endif %}
           <div class="form-control">
             <div>
