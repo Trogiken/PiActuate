@@ -13,8 +13,7 @@ from .api_comms import ApiComms
 
 api = ApiComms()
 
-# BUG: This only executes when a user loads a page and not when gunicon starts
-# Not First time startup condition
+# BUG: This only executes when a user loads a page and not when gunicon starts - https://github.com/Trogiken/chicken-door/projects/2#card-90775094
 if SystemConfig.objects.exists() and StartupConfig.objects.exists():
     api.configure()
 
@@ -44,8 +43,6 @@ class UserLoginView(LoginView):
 
 
 class DetailPostView(LoginRequiredMixin, View):
-    # TODO Fix this view
-
     def post(self, request):
         detail_form = DetailForm(request.POST)
         if detail_form.is_valid():
@@ -92,8 +89,6 @@ class DetailPostView(LoginRequiredMixin, View):
 
 # do the same as above but with a view class
 class DashboardView(LoginRequiredMixin, View):
-    # TODO Fix this view
-
     """View for the dashboard page"""
     def get(self, request):
         if not SystemConfig.objects.exists():  # if there is no system config force user to create one on the system config page

@@ -37,7 +37,7 @@ deactivate
 sudo ufw allow 5900  # DEBUG for VNC
 
 
-# FIXME Close all ports except ngnix, why were these opened?
+# BUG Close all ports except ngnix, why were these opened?
 sudo ufw allow 8000
 sudo ufw allow 8001
 sudo ufw allow 8002
@@ -47,7 +47,7 @@ sudo ufw enable
 
 #############################################
 
-# Configure Uvicorn # DEBUG Untested
+# Configure Uvicorn
 sudo touch /etc/systemd/system/$UVICORN_NAME
 sudo cat <<EOF > /etc/systemd/system/$UVICORN_NAME
 [Unit]

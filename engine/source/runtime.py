@@ -3,7 +3,7 @@ import os
 import logging.config
 from pathlib import Path
 
-# DEBUG Location change may cause logging issues
+
 class Runtime(object):
     """
     Setup runtime objects and verify functionality
@@ -59,7 +59,7 @@ class Runtime(object):
 
     def _logging_config_load(self):
         """Init logging config (Load First)"""
-        # DEBUG Possible bug with data type in logging config
+        # DEBUG Possible bug with backupCount data type in logging config, changed from str to int. Monitor for errors
         logdir = os.path.join(self._home, 'logs')
         config = os.path.join(self._home, 'loggingConfig.conf')
 
@@ -117,7 +117,7 @@ class Runtime(object):
         try:  # Create Door Object
             self._log.info('Creating Door Object')
 
-            from source.door import Door  # DEBUG Location changed
+            from source.door import Door
             self.door = Door(board_mode=str(SyC["board_mode"]), off_state=SyC["off_state"], relay1=int(SyC["relay1"]),
                              relay2=int(SyC["relay2"]), sw1=int(SyC["switch1"]), sw2=int(SyC["switch2"]), sw3=int(SyC["switch3"]),
                              sw4=int(SyC["switch4"]), sw5=int(SyC["switch5"]), travel_time=int(SyC["travel_time"]))
@@ -128,7 +128,7 @@ class Runtime(object):
         try:  # Create Auto Object
             self._log.info('Creating Auto Object')
 
-            from source.auto import Auto  # DEBUG Location Changed
+            from source.auto import Auto
             self.auto = Auto(door=self.door, zone=str(SyC["timezone"]),
                              latitude=float(SyC["latitude"]), longitude=float(SyC["longitude"]),
                              sunrise_offset=int(StC["sunrise_offset"]),

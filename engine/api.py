@@ -7,11 +7,7 @@ import options as opt
 runtime = Runtime.getInstance()
 app = FastAPI()
 
-# Start this api
-# uvicorn main:app --host 0.0.0.0 --port 8000
-
 # TODO Secure this api with HTTPS or CORS
-# TODO Configure setup_script.sh to start api server on boot
 
 class AutoPostRequest(BaseModel):
     option: opt.PostAuto
