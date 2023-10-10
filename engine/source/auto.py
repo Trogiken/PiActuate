@@ -59,7 +59,7 @@ class _Scheduler(threading.Thread):
 
         # set the times that will be compared
         current_time = datetime.now(timezone(self.zone)).strftime("%H:%M")
-        if current_time > today_suntimes['sunset']:
+        if current_time >= today_suntimes['sunset']:
             active_sunrise = tomorrow_suntimes['sunrise']
             active_sunset = tomorrow_suntimes['sunset']
         elif current_time < today_suntimes['sunset']:
@@ -89,14 +89,14 @@ class _Scheduler(threading.Thread):
                     log.info("Opening Door")
                     self.door.move(2)
                 else:
-                    log.debug("Door is already open or blocked")
+                    log.debug(f"Did Not Open Door! | Door Status: {self.door.status}")
             elif self.active_current < self.active_sunrise or self.active_current >= self.active_sunset:
                 log.debug(f'Door close conditions met: Current Time: {self.active_current}')
                 if self.door.status == 'Open':
                     log.info("Closing Door")
                     self.door.move(1)
                 else:
-                    log.debug("Door is already closed or blocked")
+                    log.debug(f"Did Not Close Door! | Door Status: {self.door.status}")
             else:
                 log.error("Something went wrong comparing times")
 
