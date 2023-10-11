@@ -13,10 +13,6 @@ from .api_comms import ApiComms
 
 api = ApiComms()
 
-# BUG: This only executes when a user loads a page and not when gunicon starts - https://github.com/Trogiken/chicken-door/projects/2#card-90775094
-# if SystemConfig.objects.exists() and StartupConfig.objects.exists():
-#     api.configure()
-
 
 def backend_init():
     """Init backend"""

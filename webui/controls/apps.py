@@ -8,6 +8,8 @@ class ControlsConfig(AppConfig):
     def ready(self):
         from controls.models import SystemConfig, StartupConfig
         from controls.api_comms import ApiComms
+        
         api = ApiComms()
+
         if SystemConfig.objects.exists() and StartupConfig.objects.exists():
             api.configure()
