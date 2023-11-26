@@ -15,8 +15,9 @@ from pathlib import Path
 from os import getenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-WEBENV = Path(__file__).resolve().parent.parent.parent / 'webenv'
+# DEBUG parents vs parent
+BASE_DIR = Path(__file__).resolve().parents[1]
+WEBENV = Path(__file__).resolve().parents[2] / 'webenv'
 
 load_dotenv(WEBENV)
 

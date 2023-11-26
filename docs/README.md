@@ -28,7 +28,7 @@ Python 3.10+
     * Example: `USER="rpi-user"`
     * This is requried for the program to function properly
   * SERVER_NAME : IPv4 address or domain used for gateway.
-    * Example: `IP_ADDRESS="192.168.1.10"`
+    * Example: `SERVER_NAME="192.168.1.10"`
     * This is requried for the program to function properly
   * SECRET_KEY : Cryptographic signing and encryption throughout app.
     * Example: `SECRET_KEY="not-secure-key-)*j23891A0239("`
