@@ -111,7 +111,9 @@ class DashboardView(LoginRequiredMixin, View):
 class UpdateView(LoginRequiredMixin, View):
     """View for the update page"""
     def get(self, request):
-        return render(request, "controls/update.html")
+        return render(request, "controls/update.html", {
+            "update_check": api.check_update()
+        })
 
 
 class SystemConfigView(LoginRequiredMixin, View):
