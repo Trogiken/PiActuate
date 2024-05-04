@@ -5,6 +5,7 @@ from pathlib import Path
 import pyupgrader
 import requests
 import json
+import os
 
 PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/chicken-door/pyupgrader-integration/.pyupgrader/"
 LOCAL_PROJECT_PATH = str(Path(__file__).resolve().parents[2])
@@ -115,7 +116,16 @@ class ApiComms:
         }
         return self._post_request(f"aux", json=data)
     
-    def has_update(self):
+    def check_update(self):
         """Check for updates"""
-        update_check = self.update_manager.check_update()
-        return update_check.get("has_update")
+        return self.update_manager.check_update()
+
+    def update(self):
+        """Update the system"""
+        if not self.has_update():
+            return False
+        
+        actions_file = self.update_manager.prepare_update()
+
+        if os.path.exists(actions_file):
+            self.update_manager.update(actions_file)

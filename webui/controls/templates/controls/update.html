@@ -19,7 +19,26 @@
 
 {% block content %}
     <section class="Form-container">
-        <h1>Update</h1>
-        <p>Testing</p>
+        {% if update_check.has_update %}
+            <h1>Update Available</h1>
+            <p>{{ update_check.local_version }} -> {{ update_check.web_version }}</p>
+            <button, class="update-button", onclick="execute_update()">Update</button>
+        {% else %}
+            <h1>No Updates</h1>
+            <p>There are no updates available</p>
+        {% endif %}
     </section>
+    <script>
+        const updateSocket = new WebSocket('ws://'+ window.location.host+ '/ws/api/update/');
+
+        window.addEventListener('beforeunload', function() {
+            stopWebSocket();
+        });
+
+        function sendDoorCommand(command) {
+            updateSocket.send(JSON.stringify({
+                'message': "update"
+            }));
+        }
+    </script>
 {% endblock %}

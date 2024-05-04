@@ -45,3 +45,23 @@ class DoorConsumer(WebsocketConsumer):
                 "message": "Invalid request"
                 })
             )
+
+
+class UpdateConsumer(WebsocketConsumer):
+    def connect(self):
+        self.accept()
+    
+    def disconnect(self, code):
+        return super().disconnect(code)
+    
+    def receive(self, text_data=None, bytes_data=None):
+        data = json.loads(text_data)
+        if data.get('update'):
+            api.update()
+        else:
+            self.send(text_data=json.dumps({
+                "signal": "400",
+                "command": data.get('message'),
+                "message": "Invalid request"
+                })
+            )
