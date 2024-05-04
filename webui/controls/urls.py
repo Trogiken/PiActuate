@@ -12,6 +12,8 @@ urlpatterns = [
          views.SystemConfigView.as_view(), name="systemconfig-page"),
     path("detail-post/",
          views.DetailPostView.as_view(), name="detail-post"),
+    path("update/",
+         views.UpdateView.as_view(), name="update-page"),
 
      path('auth/',
          include('django.contrib.auth.urls')),

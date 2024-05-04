@@ -6,11 +6,10 @@ import pyupgrader
 import requests
 import json
 
-PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/chicken-door/pyupgrader-integration/.pyupgrader}"
+PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/chicken-door/pyupgrader-integration/.pyupgrader"
 LOCAL_PROJECT_PATH = str(Path(__file__).parents[2])
 
 UPDATE_MANAGER = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
-
 
 
 # TODO Improve docstrings
@@ -117,5 +116,5 @@ class ApiComms:
     
     def has_update(self):
         """Check for updates"""
-        update_check = UPDATE_MANAGER.has_update()
+        update_check = UPDATE_MANAGER.check_update()
         return update_check.get("has_update")

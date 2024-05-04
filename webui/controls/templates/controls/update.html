@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Update{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'controls/includes/sidebar-navbar.css' %}">
+{% endblock %}
+
+{% block navbar %}
+{% include "controls/includes/sidebar-navbar.html" %}
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'controls/engine-ops.js' %}"></script>
+<script src="{% static 'controls/includes/sidebar-active.js' %}"></script>
+<script src="{% static 'controls/time-increment.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="Form-container">
+        <h1>Update</h1>
+        <p>Testing</p>
+    </section>
+{% endblock %}

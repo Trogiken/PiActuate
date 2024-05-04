@@ -102,8 +102,14 @@ class DashboardView(LoginRequiredMixin, View):
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),
             "active_times": {'sunrise': auto.get("active_sunrise"), 'sunset': auto.get("active_sunset"), 'current': auto.get("active_current")},
-            "has_update": api.has_update()
+            "has_update": True  # TODO: Implement update check
         })
+
+
+class UpdateView(LoginRequiredMixin, View):
+    """View for the update page"""
+    def get(self, request):
+        return render(request, "controls/update.html")
 
 
 class SystemConfigView(LoginRequiredMixin, View):
