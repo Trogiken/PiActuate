@@ -109,9 +109,9 @@ class DashboardView(LoginRequiredMixin, View):
 class UpdateView(LoginRequiredMixin, View):
     """View for the update page"""
     def get(self, request):
-        return render(request, "controls/update.html", {
-            "update_check": api.check_update(),
-        })
+        if api.check_update().get("has_update"):
+            messages.add_message(request, messages.INFO, "<a href='/update'>Update Available</a> to update.")
+        return render(request, "controls/update.html")
 
 
 class SystemConfigView(LoginRequiredMixin, View):
