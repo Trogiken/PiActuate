@@ -1,8 +1,17 @@
 from django.core import serializers
 from django.http import JsonResponse
 from .models import SystemConfig, StartupConfig
+import pyupgrader
 import requests
 import json
+import os
+
+PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/chicken-door/pyupgrader-integration/.pyupgrader}"
+LOCAL_PROJECT_PATH = os.path.dirname(os.path.realpath(__file__))
+
+UPDATE_MANAGER = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
+
+
 
 # TODO Improve docstrings
 class ApiComms:
@@ -105,3 +114,8 @@ class ApiComms:
             "option": key
         }
         return self._post_request(f"aux", json=data)
+    
+    def has_update(self):
+        """Check for updates"""
+        update_check = UPDATE_MANAGER.has_update()
+        return update_check.get("has_update")
