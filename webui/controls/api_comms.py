@@ -6,10 +6,8 @@ import pyupgrader
 import requests
 import json
 
-PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/chicken-door/pyupgrader-integration/.pyupgrader"
-LOCAL_PROJECT_PATH = str(Path(__file__).parents[2])
-
-UPDATE_MANAGER = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
+PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/chicken-door/pyupgrader-integration/.pyupgrader/"
+LOCAL_PROJECT_PATH = str(Path(__file__).resolve().parents[2])
 
 
 # TODO Improve docstrings
@@ -17,6 +15,9 @@ class ApiComms:
     """Class for communicating with the api"""
     api_url = "http://localhost:8002/"
     default_header = {'Content-Type': 'application/json'}
+
+    def __init__(self):
+        self.update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
 
     def _get_request(self, endpoint="", headers=default_header):
         """Get request"""
@@ -116,5 +117,5 @@ class ApiComms:
     
     def has_update(self):
         """Check for updates"""
-        update_check = UPDATE_MANAGER.check_update()
+        update_check = self.update_manager.check_update()
         return update_check.get("has_update")

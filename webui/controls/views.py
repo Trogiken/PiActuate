@@ -102,7 +102,7 @@ class DashboardView(LoginRequiredMixin, View):
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),
             "active_times": {'sunrise': auto.get("active_sunrise"), 'sunset': auto.get("active_sunset"), 'current': auto.get("active_current")},
-            "has_update": True  # TODO: Implement update check
+            "has_update": api.has_update()
         })
 
 
