@@ -35,7 +35,7 @@
             stopWebSocket();
         });
 
-        function sendDoorCommand(command) {
+        function execute_update() {
             updateSocket.send(JSON.stringify({
                 'message': "update"
             }));
