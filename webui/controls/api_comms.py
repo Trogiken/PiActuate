@@ -1,13 +1,13 @@
 from django.core import serializers
 from django.http import JsonResponse
 from .models import SystemConfig, StartupConfig
+from pathlib import Path
 import pyupgrader
 import requests
 import json
-import os
 
 PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/chicken-door/pyupgrader-integration/.pyupgrader}"
-LOCAL_PROJECT_PATH = os.path.dirname(os.path.realpath(__file__))
+LOCAL_PROJECT_PATH = str(Path(__file__).parents[2])
 
 UPDATE_MANAGER = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
 
