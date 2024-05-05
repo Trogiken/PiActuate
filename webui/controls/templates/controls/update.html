@@ -19,7 +19,6 @@
 
 {% block content %}
     <section class="Form-container">
-        <h1>hi</h1>
         {% if update_check.has_update %}
             <h1>Update Available</h1>
             <h2>{{ update_check.local_version }} -> {{ update_check.web_version }}</h2>
@@ -38,17 +37,17 @@
             <p></p>
         </div>
         <div id="success-buttons">
-            <button onclick="sendUpdateCommand('update')">
-                <a href="{% url 'logout' %}">Update</a>
-            </button>
-            <button>
-                <a href="{% url 'dashboard-page' %}">Cancel</a>
-            </button>
+            <a href="{% url 'logout' %}">
+                <button onclick="sendUpdateCommand('update')">Update</button>
+            </a>
+            <a href="{% url 'dashboard-page' %}">
+                <button>Cancel</button>
+            </a>
         </div>
         <div id="error-buttons">
-            <button>
-                <a href="{% url 'update-page' %}">Close</a>
-            </button>
+            <a href="{% url 'update-page' %}">
+                <button>Close</button>
+            </a>
         </div>
     </section>
 {% endblock %}
