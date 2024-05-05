@@ -31,11 +31,18 @@
     <script>
         const updateSocket = new WebSocket('ws://'+ window.location.host + '/ws/api/update/');
 
+        // print the status of the socket
+        updateSocket.onopen = function() {
+            console.log("Update socket connected");
+        };
+
         window.addEventListener('beforeunload', function() {
+            console.log("Closing update socket");
             updateSocket.close();
         });
 
         function execute_update() {
+            console.log("Sending update message");
             updateSocket.send(JSON.stringify({
                 'message': "update"
             }));

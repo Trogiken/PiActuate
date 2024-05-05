@@ -58,10 +58,3 @@ class UpdateConsumer(WebsocketConsumer):
         data = json.loads(text_data)
         if data.get('message') == 'update':
             api.update()
-        else:
-            self.send(text_data=json.dumps({
-                "signal": "400",
-                "command": data.get('message'),
-                "message": "Invalid request"
-                })
-            )
