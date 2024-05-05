@@ -1,17 +1,18 @@
-.update-button {
-    background-color: #f8f8f8;
-    border: 1px solid #e0e0e0;
-    border-radius: 3px;
-    color: #333;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    margin: 0;
-    padding: 6px 12px;
+.Form-container {
     text-align: center;
-    text-decoration: none;
-    vertical-align: middle;
-    white-space: nowrap;
+}
+
+.update-button {
+    padding: .5rem;
+    background: #3e4684;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: .5rem;
+}
+
+.update-button:hover {
+    background: #1a237e;
 }
