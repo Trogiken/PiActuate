@@ -23,7 +23,7 @@
             <h1>Update Available</h1>
             <h2>{{ update_check.local_version }} -> {{ update_check.web_version }}</h2>
             <p>{{ update_check.description }}</p>
-            <button class="download-button" onclick="sendUpdateCommand('prepare_update')">Download</button>
+            <button class="download-button" id="download-button" onclick="sendUpdateCommand('prepare_update')">Download</button>
         {% else %}
             <h1>Up To Date</h1>
             <h2>{{ update_check.local_version }}</h2>
