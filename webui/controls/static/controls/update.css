@@ -16,3 +16,28 @@
 .update-button:hover {
     background: #1a237e;
 }
+
+.update-button:active {
+    border: 2px solid #3e4684;
+    border-radius: 30px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#update-popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+}
+
+#error-buttons {
+    display: none;
+}

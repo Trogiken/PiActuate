@@ -56,5 +56,29 @@ class UpdateConsumer(WebsocketConsumer):
     
     def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
-        if data.get('message') == 'update':
+        if data.get('message') == 'prepare_update':
+            try:
+                api.prepare_update()
+                self.send(text_data=json.dumps({
+                    "signal": "200",
+                    "command": data.get('message'),
+                    "message": "Update Prepared"
+                    })
+                )
+            except Exception as error:
+                self.send(text_data=json.dumps({
+                    "signal": "500",
+                    "command": data.get('message'),
+                    "message": str(error)
+                    })
+                )
+        elif data.get('message') == 'update':
             api.update()
+            # no point in sending a response here
+        else:
+            self.send(text_data=json.dumps({
+                "signal": "400",
+                "command": data.get('message'),
+                "message": "Invalid request"
+                })
+            )

@@ -120,12 +120,13 @@ class ApiComms:
         """Check for updates"""
         return self.update_manager.check_update()
 
-    def update(self):
+    def prepare_update(self):
         """Update the system"""
         if not self.check_update().get("has_update", False):
             return False
         
-        actions_file = self.update_manager.prepare_update()
+        return self.update_manager.prepare_update()
 
+    def update(self, actions_file):
         if os.path.exists(actions_file):
             self.update_manager.update(actions_file)
