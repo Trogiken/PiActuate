@@ -10,15 +10,22 @@ updateSocket.onmessage = function(e) {
         var popup = document.getElementById("update-popup");
         var success_buttons = document.getElementById("success-buttons");
         var error_buttons = document.getElementById("error-buttons");
+
+        var popup_title = document.getElementById('popup-title')
+        var popup_message = document.getElementById("popup-message");
+        var popup_message_h2 = popup_message.querySelector('h2');
+        var popup_message_p = popup_message.querySelector('p');
         popup.style.display = "block";
-        if (data.signal !== '200') {
-            document.querySelector('#popup-title').innerHTML = 'Download Failed';
-            success_buttons.style.display = "none";
-            error_buttons.style.display = "block";
-        } else {
-            document.querySelector('#popup-title').innerHTML = 'Download Complete';
+        if (data.signal === '200') {
+            popup_title.innerHTML = 'Download Complete';
             success_buttons.style.display = "block";
             error_buttons.style.display = "none";
+        } else {
+            popup_title.innerHTML = 'Download Failed';
+            popup_message_h2.innerHTML = 'Signal: ' + data.signal;
+            popup_message_p.innerHTML = 'Message: ' + data.message;
+            success_buttons.style.display = "none";
+            error_buttons.style.display = "block";
         }
     }
 };
@@ -33,4 +40,4 @@ function sendUpdateCommand(command) {
     updateSocket.send(JSON.stringify({
         'message': command
     }));
-}
+};

@@ -32,6 +32,10 @@
     </section>
     <section class="Form-container" id="update-popup">
         <h1 id="popup-title">Unknown</h1>
+        <div id="popup-message">
+            <h2></h2>
+            <p></p>
+        </div>
         <div id="success-buttons">
             <button class="success-button" onclick="sendUpdateCommand('update')">
                 <a href="{% url 'logout' %}">Update</a>
@@ -42,7 +46,7 @@
         </div>
         <div id="error-buttons">
             <button class="cancel-button">
-                <a href="{% url 'update-page' %}">Close/a>
+                <a href="{% url 'update-page' %}">Close</a>
             </button>
         </div>
     </section>
