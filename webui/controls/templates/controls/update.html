@@ -37,15 +37,15 @@
             <p></p>
         </div>
         <div id="success-buttons">
-            <button class="success-button" onclick="sendUpdateCommand('update')">
+            <button onclick="sendUpdateCommand('update')">
                 <a href="{% url 'logout' %}">Update</a>
             </button>
-            <button class="cancel-button">
+            <button>
                 <a href="{% url 'dashboard-page' %}">Cancel</a>
             </button>
         </div>
         <div id="error-buttons">
-            <button class="cancel-button">
+            <button>
                 <a href="{% url 'update-page' %}">Close</a>
             </button>
         </div>

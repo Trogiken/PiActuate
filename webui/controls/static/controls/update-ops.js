@@ -26,6 +26,7 @@ updateSocket.onmessage = function(e) {
             popup_message_p.innerHTML = 'Message: ' + data.message;
             success_buttons.style.display = "none";
             error_buttons.style.display = "block";
+            popup_message.style.display = "block";
         }
     }
 };

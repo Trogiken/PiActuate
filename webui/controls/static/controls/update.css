@@ -1,7 +1,6 @@
 .Form-container {
     text-align: center;
 }
-
 .Form-container button {
     padding: .5rem;
     background: #3e4684;
@@ -15,23 +14,9 @@
 .Form-container button:hover {
     background: #1a237e;
 }
-
 .Form-container button a {
     text-decoration: none;
     color: white;
-}
-
-.success-button {
-    background: #32de84
-}
-.success-button:hover {
-    background: #22975b;
-}
-.cancel-button {
-    background: #ff4d4d;
-}
-.cancel-button:hover {
-    background: #9f3131;
 }
 
 /* Animations */
@@ -39,7 +24,6 @@
     position: relative;
     overflow: hidden;
 }
-
 #download-button.loading::after {
     content: ""; /* Adds an empty pseudo-element */
     position: absolute; /* Positions the pseudo-element absolutely */
@@ -50,7 +34,6 @@
     background: linear-gradient(to right, #3e4684, #64b5f6, #3e4684); /* Defines the gradient (blue shades) */
     animation: loading 2s infinite; /* Applies the loading animation */
 }
-
 @keyframes loading {
     0% {
         left: -100%; /* Initial position */
@@ -63,6 +46,10 @@
 /* Pop up stuff */
 #update-popup {
     display: none;
+}
+
+#popup-message {
+    display: none
 }
 
 #success-buttons {
