@@ -25,8 +25,9 @@
             <p>{{ update_check.description }}</p>
             <button class="download-button" onclick="sendUpdateCommand('prepare_update')">Download</button>
         {% else %}
-            <h1>No Updates</h1>
-            <p>There are no updates available</p>
+            <h1>Up To Date</h1>
+            <h2>{{ update_check.local_version }}</h2>
+            <p>Latest version is currently installed</p>
         {% endif %}
     </section>
     <section class="Form-container" id="update-popup">

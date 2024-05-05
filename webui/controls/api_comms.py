@@ -2,6 +2,7 @@ from django.core import serializers
 from django.http import JsonResponse
 from .models import SystemConfig, StartupConfig
 from pathlib import Path
+from pyupgrader.utilities import helper
 import pyupgrader
 import requests
 import json
@@ -19,6 +20,7 @@ class ApiComms:
 
     def __init__(self):
         self.update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
+        self.config_manager = helper.Config()
 
     def _get_request(self, endpoint="", headers=default_header):
         """Get request"""
@@ -118,15 +120,16 @@ class ApiComms:
     
     def check_update(self):
         """Check for updates"""
-        check_update = {'has_update': False,
-                        'local_version': '',
+        local_config = self.config_manager.load_yaml(self.update_manager.config_path)
+        mock_check_update = {'has_update': False,
+                        'local_version': local_config.get('local_version'),
                         'web_version': '',
-                        'description': ''
+                        'description': local_config.get('description'),
                     }
         try:
             return self.update_manager.check_update()
         except Exception:
-            return check_update
+            return mock_check_update
 
     def prepare_update(self):
         """Update the system"""
