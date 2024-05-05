@@ -34,11 +34,23 @@
             <div class="popup-content">
                 <h1 id="popup-title">Install and Reboot?</p>
                 <div id="success-buttons">
-                    <button class="update-button" onclick="sendUpdateCommand('update')">Yes</button>
-                    <button class="cancel-button" onclick="closePopup()">Cancel</button>
+                    <button class="update-button" onclick="sendUpdateCommand('update')">
+                        <a href="{% url 'logout' %}">
+                            Yes
+                        </a>
+                    </button>
+                    <button class="cancel-button">
+                        <a href="{% url 'dashboard-page' %}">
+                            Cancel
+                        </a>
+                    </button>
                 </div>
                 <div id="error-buttons">
-                    <button class="cancel-button" onclick="closePopup()">Close</button>
+                    <button class="cancel-button">
+                     <a href="{% url 'update-page' %}">
+                        Close
+                     </a>
+                    </button>
                 </div>
             </div>
         </div>

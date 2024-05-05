@@ -1,6 +1,6 @@
 cleanup: true
-description: Update Yessir
+description: hrefs added to buttons
 hash_db: hashes.db
 required_only: true
 startup_path: 'update.py'
-version: 2.2.2
+version: 2.2.3
