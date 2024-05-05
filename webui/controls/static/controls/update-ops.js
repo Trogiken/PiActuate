@@ -13,7 +13,8 @@ updateSocket.onmessage = function(e) {
         popup.style.display = "block";
         if (data.signal !== '200') {
             document.querySelector('#popup-title').innerHTML = 'Download Failed';
-            document.querySelector('#popup-text').innerHTML = data.message;
+            var p = document.createElement('p');
+            p.innerHTML = data.message;
             success_buttons.style.display = "none";
             error_buttons.style.display = "block";
         }
