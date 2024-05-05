@@ -29,10 +29,10 @@
         {% endif %}
     </section>
     <script>
-        const updateSocket = new WebSocket('ws://'+ window.location.host+ '/ws/api/update/');
+        const updateSocket = new WebSocket('ws://'+ window.location.host + '/ws/api/update/');
 
         window.addEventListener('beforeunload', function() {
-            stopWebSocket();
+            updateSocket.close();
         });
 
         function execute_update() {

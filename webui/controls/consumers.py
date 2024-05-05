@@ -56,7 +56,7 @@ class UpdateConsumer(WebsocketConsumer):
     
     def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
-        if data.get('update'):
+        if data.get('message') == 'update':
             api.update()
         else:
             self.send(text_data=json.dumps({
