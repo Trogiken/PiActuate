@@ -20,8 +20,11 @@ updateSocket.onmessage = function(e) {
 };
 
 function sendUpdateCommand(command) {
-    if (command === 'prepare_update') {
-        document.getElementByClassName("download-button").disabled = true;
+    if (command === 'prepare_update') { // Play animation
+        download_button = document.getElementByClassName("download-button")
+        download_button.disabled = true;
+        download_button.innerHTML = "Downloading...";
+        download_button.classList.add("loading");
     }
     updateSocket.send(JSON.stringify({
         'message': command

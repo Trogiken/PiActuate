@@ -18,27 +18,42 @@
 .update-button {
     background: #32de84
 }
+.update-button:hover {
+    background: #22975b;
+}
 .cancel-button {
     background: #ff4d4d;
 }
-
+.cancel-button:hover {
+    background: #9f3131;
+}
 .download-button:hover {
     background: #1a237e;
 }
 
-/* FIX ANIMATIONS */
-.update-button:active {
-    border: 2px solid #3e4684;
-    border-radius: 30px;
-    animation: spin 1s linear infinite;
+/* Animations */
+.download-button {
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes spin {
+.download-button.loading::after {
+    content: ""; /* Adds an empty pseudo-element */
+    position: absolute; /* Positions the pseudo-element absolutely */
+    top: 0; /* Aligns the top of the pseudo-element with the top of the button */
+    left: -100%; /* Initially positions the pseudo-element outside the button */
+    width: 100%; /* Sets the width of the pseudo-element */
+    height: 100%; /* Sets the height of the pseudo-element */
+    background: linear-gradient(to right, #3e4684, #64b5f6, #3e4684); /* Defines the gradient (blue shades) */
+    animation: loading 2s infinite; /* Applies the loading animation */
+}
+
+@keyframes loading {
     0% {
-        transform: rotate(0deg);
+        left: -100%; /* Initial position */
     }
     100% {
-        transform: rotate(360deg);
+        left: 100%; /* Final position */
     }
 }
 
