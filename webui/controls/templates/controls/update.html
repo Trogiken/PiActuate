@@ -20,7 +20,8 @@
     <section class="Form-container">
         {% if update_check.has_update %}
             <h1>Update Available</h1>
-            <p>{{ update_check.local_version }} -> {{ update_check.web_version }}</p>
+            <h2>{{ update_check.local_version }} -> {{ update_check.web_version }}</h2>
+            <p>update_check.description</p>
             <button class="update-button" onclick="execute_update()">Update</button>
         {% else %}
             <h1>No Updates</h1>
