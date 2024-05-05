@@ -23,7 +23,7 @@
             <h1>Update Available</h1>
             <h2>{{ update_check.local_version }} -> {{ update_check.web_version }}</h2>
             <p>{{ update_check.description }}</p>
-            <button class="download-button" id="download-button" onclick="sendUpdateCommand('prepare_update')">Download</button>
+            <button id="download-button" onclick="sendUpdateCommand('prepare_update')">Download</button>
         {% else %}
             <h1>Up To Date</h1>
             <h2>{{ update_check.local_version }}</h2>
@@ -31,24 +31,18 @@
         {% endif %}
     </section>
     <section class="Form-container" id="update-popup">
-        <h1 id="popup-title">Install and Reboot?</p>
+        <h1 id="popup-title">Unknown</p>
         <div id="success-buttons">
-            <button class="update-button" onclick="sendUpdateCommand('update')">
-                <a href="{% url 'logout' %}">
-                    Yes
-                </a>
+            <button class="success-button" onclick="sendUpdateCommand('update')">
+                <a href="{% url 'logout' %}">Update</a>
             </button>
             <button class="cancel-button">
-                <a href="{% url 'dashboard-page' %}">
-                    Cancel
-                </a>
+                <a href="{% url 'dashboard-page' %}">Cancel</a>
             </button>
         </div>
         <div id="error-buttons">
             <button class="cancel-button">
-                <a href="{% url 'update-page' %}">
-                Close
-                </a>
+                <a href="{% url 'update-page' %}">Close/a>
             </button>
         </div>
     </section>

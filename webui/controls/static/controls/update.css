@@ -2,7 +2,6 @@
     text-align: center;
 }
 
-/* how to change style of a tag */
 .Form-container button {
     text-decoration: none;
     padding: .5rem;
@@ -14,11 +13,14 @@
     width: 100%;
     margin-top: .5rem;
 }
+.Form-container button:hover {
+    background: #1a237e;
+}
 
-.update-button {
+.success-button {
     background: #32de84
 }
-.update-button:hover {
+.success-button:hover {
     background: #22975b;
 }
 .cancel-button {
@@ -27,17 +29,14 @@
 .cancel-button:hover {
     background: #9f3131;
 }
-.download-button:hover {
-    background: #1a237e;
-}
 
 /* Animations */
-.download-button {
+#download-button {
     position: relative;
     overflow: hidden;
 }
 
-.download-button.loading::after {
+#download-button.loading::after {
     content: ""; /* Adds an empty pseudo-element */
     position: absolute; /* Positions the pseudo-element absolutely */
     top: 0; /* Aligns the top of the pseudo-element with the top of the button */
@@ -57,11 +56,13 @@
     }
 }
 
-/* FIX POSITION */
+/* Pop up stuff */
 #update-popup {
     display: none;
-    position: fixed;
-    z-index: 1;
+}
+
+#success-buttons {
+    display: none;
 }
 
 #error-buttons {
