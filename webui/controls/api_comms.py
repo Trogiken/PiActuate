@@ -118,7 +118,15 @@ class ApiComms:
     
     def check_update(self):
         """Check for updates"""
-        return self.update_manager.check_update()
+        check_update = {'has_update': False,
+                        'local_version': '',
+                        'web_version': '',
+                        'description': ''
+                    }
+        try:
+            return self.update_manager.check_update()
+        except Exception:
+            return check_update
 
     def prepare_update(self):
         """Update the system"""
