@@ -48,6 +48,10 @@ class DoorConsumer(WebsocketConsumer):
 
 
 class UpdateConsumer(WebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.actions_file_path = ""
+
     def connect(self):
         self.accept()
     
@@ -58,7 +62,7 @@ class UpdateConsumer(WebsocketConsumer):
         data = json.loads(text_data)
         if data.get('message') == 'prepare_update':
             try:
-                api.prepare_update()
+                self.actions_file_path = api.prepare_update()
                 self.send(text_data=json.dumps({
                     "signal": "200",
                     "command": data.get('message'),
@@ -73,7 +77,8 @@ class UpdateConsumer(WebsocketConsumer):
                     })
                 )
         elif data.get('message') == 'update':
-            api.update()
+            # TODO: Handle errors!
+            api.update(self.actions_file_path)
             # no point in sending a response here
         else:
             self.send(text_data=json.dumps({

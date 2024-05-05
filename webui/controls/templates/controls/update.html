@@ -23,36 +23,32 @@
             <h1>Update Available</h1>
             <h2>{{ update_check.local_version }} -> {{ update_check.web_version }}</h2>
             <p>{{ update_check.description }}</p>
-            <button class="update-button" onclick="sendUpdateCommand('prepare_update')">Download</button>
+            <button class="download-button" onclick="sendUpdateCommand('prepare_update')">Download</button>
         {% else %}
             <h1>No Updates</h1>
             <p>There are no updates available</p>
         {% endif %}
     </section>
     <section class="Form-container" id="update-popup">
-        <div class="popup">
-            <div class="popup-content">
-                <h1 id="popup-title">Install and Reboot?</p>
-                <div id="success-buttons">
-                    <button class="update-button" onclick="sendUpdateCommand('update')">
-                        <a href="{% url 'logout' %}">
-                            Yes
-                        </a>
-                    </button>
-                    <button class="cancel-button">
-                        <a href="{% url 'dashboard-page' %}">
-                            Cancel
-                        </a>
-                    </button>
-                </div>
-                <div id="error-buttons">
-                    <button class="cancel-button">
-                     <a href="{% url 'update-page' %}">
-                        Close
-                     </a>
-                    </button>
-                </div>
-            </div>
+        <h1 id="popup-title">Install and Reboot?</p>
+        <div id="success-buttons">
+            <button class="update-button" onclick="sendUpdateCommand('update')">
+                <a href="{% url 'logout' %}">
+                    Yes
+                </a>
+            </button>
+            <button class="cancel-button">
+                <a href="{% url 'dashboard-page' %}">
+                    Cancel
+                </a>
+            </button>
+        </div>
+        <div id="error-buttons">
+            <button class="cancel-button">
+                <a href="{% url 'update-page' %}">
+                Close
+                </a>
+            </button>
         </div>
     </section>
 {% endblock %}

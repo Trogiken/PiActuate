@@ -2,7 +2,9 @@
     text-align: center;
 }
 
-.update-button {
+/* how to change style of a tag */
+.Form-container button {
+    text-decoration: none;
     padding: .5rem;
     background: #3e4684;
     color: white;
@@ -13,10 +15,18 @@
     margin-top: .5rem;
 }
 
-.update-button:hover {
+.update-button {
+    background: #32de84
+}
+.cancel-button {
+    background: #ff4d4d;
+}
+
+.download-button:hover {
     background: #1a237e;
 }
 
+/* FIX ANIMATIONS */
 .update-button:active {
     border: 2px solid #3e4684;
     border-radius: 30px;
@@ -32,6 +42,7 @@
     }
 }
 
+/* FIX POSITION */
 #update-popup {
     display: none;
     position: fixed;

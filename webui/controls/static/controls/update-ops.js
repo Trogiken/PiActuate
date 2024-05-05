@@ -20,6 +20,9 @@ updateSocket.onmessage = function(e) {
 };
 
 function sendUpdateCommand(command) {
+    if (command === 'prepare_update') {
+        document.getElementByClassName("download-button").disabled = true;
+    }
     updateSocket.send(JSON.stringify({
         'message': command
     }));
