@@ -4,7 +4,7 @@ window.addEventListener('beforeunload', function() {
     updateSocket.close();
 });
 
-doorSocket.onmessage = function(e) {
+updateSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     if (data.command === 'prepare_update') {
         var popup = document.getElementById("update-popup");
