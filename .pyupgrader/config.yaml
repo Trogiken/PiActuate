@@ -1,5 +1,5 @@
 cleanup: true
-description: Error pages added
+description: Update Yessir
 hash_db: hashes.db
 required_only: true
 startup_path: 'update.py'
