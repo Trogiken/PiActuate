@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}404{% endblock %}
+{% block title %}403{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'error-views.css' %}">
 {% endblock %}
 
 {% block content %}
-    <h1>404</h1>
-    <p>Page not Found</p>
+    <h1>403</h1>
+    <p>Access forbidden</p>
     <a href="{% url 'dashboard-page' %}">Go back Home</a>
 {% endblock %}
