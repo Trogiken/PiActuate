@@ -122,7 +122,7 @@ class ApiComms:
 
     def update(self):
         """Update the system"""
-        if not self.has_update():
+        if not self.check_update().get("has_update", False):
             return False
         
         actions_file = self.update_manager.prepare_update()
