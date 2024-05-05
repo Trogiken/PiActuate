@@ -78,7 +78,11 @@ class UpdateConsumer(WebsocketConsumer):
                 )
         elif data.get('message') == 'update':
             # TODO: Handle errors!
+            with open("/home/bench-user/Desktop/note1.txt", 'w') as f:
+                f.write("Update started")
             api.update(self.actions_file_path)
+            with open("/home/bench-user/Desktop/note2.txt", 'w') as f:
+                f.write("Update finished")
             # no point in sending a response here
         else:
             self.send(text_data=json.dumps({
