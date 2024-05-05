@@ -1,5 +1,6 @@
 import subprocess
 import pkg_resources
+import shutil
 import os
 
 # get current directory
@@ -13,6 +14,11 @@ if not os.path.exists(setup_shell_path):
 if not os.access(setup_shell_path, os.X_OK):
     print('Shell script is not executable.')
     exit(1)
+
+static_files_path = os.path.join(main_dir, 'webui', 'staticfiles')
+if os.path.exists(static_files_path):
+    print('Removing static files...')
+    shutil.rmtree(static_files_path)
 
 
 def get_package_location(package_name):
