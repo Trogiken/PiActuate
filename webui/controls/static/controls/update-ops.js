@@ -23,7 +23,7 @@ updateSocket.onmessage = function(e) {
         } else {
             popup_title.innerHTML = 'Download Failed';
             popup_message_h2.innerHTML = 'Signal: ' + data.signal;
-            popup_message_p.innerHTML = 'Message: ' + data.message;
+            popup_message_p.innerHTML = data.message;
             success_buttons.style.display = "none";
             error_buttons.style.display = "block";
             popup_message.style.display = "block";
