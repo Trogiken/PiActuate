@@ -139,5 +139,14 @@ class ApiComms:
         return self.update_manager.prepare_update()
 
     def update(self, actions_file):
+        """Update the system"""
+        with open("/home/bench-user/Desktop/note01.txt", 'w') as f:
+                f.write("update check")
         if os.path.exists(actions_file):
-            self.update_manager.update(actions_file)
+            with open("/home/bench-user/Desktop/note02.txt", 'w') as f:
+                f.write("found")
+            try:
+                self.update_manager.update(actions_file)
+            except Exception as e:
+                with open("/home/bench-user/Desktop/errorlog.txt", 'w') as f:
+                    f.write(str(e))
