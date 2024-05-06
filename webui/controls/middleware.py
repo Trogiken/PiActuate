@@ -1,4 +1,3 @@
-from django.http import HttpResponseServerError
 import subprocess
 
 
@@ -9,7 +8,7 @@ class DaphneStatusMiddleware:
     def __call__(self, request):
         # check daphne only because thats the process we use to run the update script
         if request.method == 'POST' and not self.is_daphne_running():
-            return HttpResponseServerError('Daphne service is not running. Please try again later.')
+            raise("Daphne service is not running, is a update in progress?")
         return self.get_response(request)
     
     def is_daphne_running(self):
