@@ -15,13 +15,4 @@ if not os.access(setup_shell_path, os.X_OK):
 
 if __name__ == '__main__':
     command = ["sudo", "/bin/bash", setup_shell_path]
-
-    try:
-        print('Running shell script...')
-        subprocess.run(command)
-        print('Shell script finished running, rebooting...')
-        os.system("sudo shutdown -r now")
-    except subprocess.CalledProcessError as e:
-        print('Shell script did not finish successfully.')
-        print('Output:', e.output)
-        print('Error:', e.stderr)
+    subprocess.run(command)
