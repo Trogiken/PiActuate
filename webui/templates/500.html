@@ -8,10 +8,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>500</h1>
+    <h1>500</h1>    
     <p>An internal error has occured</p>
-    {% if exception %}
-        <p>"{{ exception }}"</p>
-    {% endif %}
     <a href="{% url 'dashboard-page' %}">Go back Home</a>
 {% endblock %}

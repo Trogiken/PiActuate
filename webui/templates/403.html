@@ -9,6 +9,10 @@
 
 {% block content %}
     <h1>403</h1>
-    <p>Access forbidden</p>
+    {% if not update_message %}
+        <p>Access forbidden</p>
+    {% else %}
+        <p>{{ update_message }}</p>
+    {% endif %}
     <a href="{% url 'dashboard-page' %}">Go back Home</a>
 {% endblock %}
