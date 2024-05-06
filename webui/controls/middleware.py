@@ -1,15 +1,14 @@
 from django.http import HttpResponseServerError
-from django.urls import reverse_lazy
 import subprocess
 
 
 class DaphneStatusMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        self.login_url = reverse_lazy('login')
 
     def __call__(self, request):
-        if request.method == 'POST' and not self.is_daphne_running() and request.path == self.login_url:
+        # check daphne only because thats the process we use to run the update script
+        if request.method == 'POST' and not self.is_daphne_running():
             return HttpResponseServerError('Daphne service is not running. Please try again later.')
         return self.get_response(request)
     
