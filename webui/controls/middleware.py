@@ -13,7 +13,7 @@ class DaphneStatusMiddleware:
             return HttpResponseServerError('Daphne service is not running. Please try again later.')
         return self.get_response(request)
     
-    def is_daphne_running(self.):
+    def is_daphne_running(self):
         try:
             subprocess.run(['systemctl', 'is-active', '--quiet', 'daphne'], check=True)
             return True
