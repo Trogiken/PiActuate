@@ -1,5 +1,4 @@
 import subprocess
-import pkg_resources
 import os
 
 # get current directory
@@ -18,9 +17,10 @@ if __name__ == '__main__':
     command = ["sudo", "/bin/bash", setup_shell_path]
 
     try:
-        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        print('Running shell script...')
+        subprocess.run(command)
         print('Shell script finished running, rebooting...')
-        os.system("sudo reboot")
+        os.system("sudo shutdown -r now")
     except subprocess.CalledProcessError as e:
         print('Shell script did not finish successfully.')
         print('Output:', e.output)
