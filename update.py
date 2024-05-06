@@ -3,7 +3,7 @@ import pkg_resources
 import os
 
 # get current directory
-main_dir = os.path.dirname(os.path.realpath(__file__))
+main_dir = os.path.dirname(os.path.abspath(__file__))
 setup_shell_path = os.path.join(main_dir, 'setup_script.sh')
 
 if not os.path.exists(setup_shell_path):
