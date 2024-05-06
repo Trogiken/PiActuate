@@ -31,7 +31,6 @@ def write_update_log(msg: str):
 
 if __name__ == '__main__':
     command = ["sudo", "/bin/bash", setup_shell_path]
-    os.system("sudo apt-get update && sudo apt-get upgrade -y")
 
     try:
         result = subprocess.run(command, check=True, capture_output=True, text=True)
