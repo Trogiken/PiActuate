@@ -1,6 +1,6 @@
 cleanup: true
-description: Pyupgrader Integration2
+description: Pyupgrader Integration
 hash_db: hashes.db
 required_only: true
 startup_path: 'update.py'
-version: 2.2.5
+version: 2.2.4
