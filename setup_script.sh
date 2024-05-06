@@ -9,6 +9,9 @@ GUNICORN_NAME="gunicorn.service"
 DAPHNE_NAME="daphne.service"
 UVICORN_NAME="uvicorn.service"
 
+# create a lock file
+touch $DIR/update.lock
+
 source $DIR/webenv
 USER=$USER
 SERVER_NAME=$SERVER_NAME
@@ -168,3 +171,6 @@ if systemctl is-active --quiet $DAPHNE_NAME; then
 else
     sudo systemctl start $DAPHNE_NAME
 fi
+
+# Delete lock file
+rm $DIR/update.lock
