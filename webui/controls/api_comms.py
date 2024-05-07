@@ -19,7 +19,10 @@ class ApiComms:
     default_header = {'Content-Type': 'application/json'}
 
     def __init__(self):
-        self.update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
+        try:
+            self.update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
+        except Exception:
+            self.update_manager = None
         self.config_manager = helper.Config()
 
     def _get_request(self, endpoint="", headers=default_header):
@@ -123,7 +126,7 @@ class ApiComms:
         local_config = self.config_manager.load_yaml(self.update_manager.config_path)
         mock_check_update = {'has_update': False,
                         'local_version': local_config.get('local_version'),
-                        'web_version': '',
+                        'web_version': 'Unknown Version',
                         'description': local_config.get('description'),
                     }
         try:

@@ -77,9 +77,15 @@ class UpdateConsumer(WebsocketConsumer):
                     })
                 )
         elif data.get('message') == 'update':
-            # TODO: Handle errors!
-            api.update(self.actions_file_path)
-            # no point in sending a response here
+            try:
+                api.update(self.actions_file_path)
+            except Exception as error:
+                self.send(text_data=json.dumps({
+                    "signal": "500",
+                    "command": data.get('message'),
+                    "message": str(error)
+                    })
+                )
         else:
             self.send(text_data=json.dumps({
                 "signal": "400",
