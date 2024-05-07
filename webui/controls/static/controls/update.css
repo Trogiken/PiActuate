@@ -47,15 +47,6 @@
     }
 }
 
-/* Pop up stuff */
-#update-popup {
-    display: none;
-}
-
-#popup-message {
-    display: none
-}
-
 #success-buttons {
     display: none;
 }

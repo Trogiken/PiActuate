@@ -8,27 +8,25 @@ updateSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     if (data.command === 'prepare_update') {
         var update_info = document.getElementById("update-info"); // update-info container
-        var popup = document.getElementById("update-popup"); // update-popup container
+        var download_button = document.getElementById("download-button");
+        var info_h1 = update_info.querySelector('h1');
+        var info_h2 = update_info.querySelector('h2');
+        var info_p = update_info.querySelector('p');
         var success_buttons = document.getElementById("success-buttons");
         var error_buttons = document.getElementById("error-buttons");
 
-        var popup_title = document.getElementById('popup-title')
-        var popup_message = document.getElementById("popup-message");
-        var popup_message_h2 = popup_message.querySelector('h2');
-        var popup_message_p = popup_message.querySelector('p');
-        update_info.style.display = "none"; // hide the update-info container so the popup takes its place
-        popup.style.display = "block";
+        download_button.style.display = 'none';
         if (data.signal === '200') {
-            popup_title.innerHTML = 'Download Complete';
+            info_h1.innerHTML = 'Complete!';
+            info_p.innerHTML = "Downloaded the latest update";
             success_buttons.style.display = "block";
             error_buttons.style.display = "none";
         } else {
-            popup_title.innerHTML = 'Download Failed';
-            popup_message_h2.innerHTML = 'Signal: ' + data.signal;
-            popup_message_p.innerHTML = data.message;
+            info_h1.innerHTML = 'Download Failed';
+            info_h2.innerHTML = 'Signal: ' + data.signal;
+            info_p.innerHTML = data.message;
             success_buttons.style.display = "none";
             error_buttons.style.display = "block";
-            popup_message.style.display = "block";
         }
     }
 };
