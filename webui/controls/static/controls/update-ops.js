@@ -38,6 +38,7 @@ function sendUpdateCommand(command) {
         var download_button = document.getElementById("download-button");
         download_button.disabled = true;
         download_button.innerHTML = "Downloading...";
+        download_button.classList.add("disabled");
         download_button.classList.add("loading");
     }
     updateSocket.send(JSON.stringify({

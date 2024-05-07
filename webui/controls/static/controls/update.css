@@ -19,6 +19,10 @@
     color: white;
 }
 
+.disabled {
+    cursor: not-allowed;
+}
+
 /* Animations */
 #download-button {
     position: relative;
