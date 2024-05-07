@@ -10,8 +10,7 @@ if not os.path.exists(setup_shell_path):
     exit(1)
 
 if not os.access(setup_shell_path, os.X_OK):
-    print('Shell script is not executable.')
-    exit(1)
+    os.chmod(setup_shell_path, 0o755)
 
 
 if __name__ == '__main__':
