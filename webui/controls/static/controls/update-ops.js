@@ -7,7 +7,8 @@ window.addEventListener('beforeunload', function() {
 updateSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     if (data.command === 'prepare_update') {
-        var popup = document.getElementById("update-popup");
+        var update_info = document.getElementById("update-info"); // update-info container
+        var popup = document.getElementById("update-popup"); // update-popup container
         var success_buttons = document.getElementById("success-buttons");
         var error_buttons = document.getElementById("error-buttons");
 
@@ -15,6 +16,7 @@ updateSocket.onmessage = function(e) {
         var popup_message = document.getElementById("popup-message");
         var popup_message_h2 = popup_message.querySelector('h2');
         var popup_message_p = popup_message.querySelector('p');
+        update_info.style.display = "none"; // hide the update-info container so the popup takes its place
         popup.style.display = "block";
         if (data.signal === '200') {
             popup_title.innerHTML = 'Download Complete';
