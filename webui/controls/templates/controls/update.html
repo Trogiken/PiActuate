@@ -37,10 +37,14 @@
                     <button class="submit-button">Close</button>
                 </a>
             </div>
-        {% else %}
+        {% elif update_check.web_version is not None %}
             <h1>Up To Date</h1>
             <h2>{{ update_check.local_version }}</h2>
             <p>Latest version is currently installed</p>
+        {% else %}
+            <h1>Update Check Failed</h1>
+            <h2>{{ update_check.local_version }}</h2>
+            <p>Failed to check for updates</p>
         {% endif %}
     </section>
 {% endblock %}

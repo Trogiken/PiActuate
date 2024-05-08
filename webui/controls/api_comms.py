@@ -19,11 +19,12 @@ class ApiComms:
     default_header = {'Content-Type': 'application/json'}
 
     def __init__(self):
-        try:
-            self.update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
-        except Exception:
-            self.update_manager = None
+        self._update_manager = None
         self.config_manager = helper.Config()
+        try:
+            self._update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
+        except Exception:
+            raise Exception("Update manager failed to initialize")
 
     def _get_request(self, endpoint="", headers=default_header):
         """Get request"""
@@ -123,14 +124,14 @@ class ApiComms:
     
     def check_update(self):
         """Check for updates"""
-        local_config = self.config_manager.load_yaml(self.update_manager.config_path)
+        local_config = self.config_manager.load_yaml(self._update_manager.config_path)
         mock_check_update = {'has_update': False,
                         'local_version': local_config.get('local_version'),
-                        'web_version': 'Unknown Version',
+                        'web_version': None,
                         'description': local_config.get('description'),
                     }
         try:
-            return self.update_manager.check_update()
+            return self._update_manager.check_update()
         except Exception:
             return mock_check_update
 
@@ -138,10 +139,10 @@ class ApiComms:
         """Update the system"""
         if not self.check_update().get("has_update", False):
             return False
-        
-        return self.update_manager.prepare_update()
+
+        return self._update_manager.prepare_update()
 
     def update(self, actions_file):
         """Update the system"""
         if os.path.exists(actions_file):
-            self.update_manager.update(actions_file)
+            self._update_manager.update(actions_file)
