@@ -23,18 +23,18 @@
             <h1>Update Available</h1>
             <h2>{{ update_check.local_version }} -> {{ update_check.web_version }}</h2>
             <p>{{ update_check.description }}</p>
-            <button id="download-button" onclick="sendUpdateCommand('prepare_update')">Download</button>
+            <button id="download-button" class="submit-button" onclick="sendUpdateCommand('prepare_update')">Download</button>
             <div id="success-buttons">
                 <a href="{% url 'logout' %}">
-                    <button onclick="sendUpdateCommand('update')">Update</button>
+                    <button class="submit-button" onclick="sendUpdateCommand('update')">Update</button>
                 </a>
                 <a href="{% url 'dashboard-page' %}">
-                    <button>Cancel</button>
+                    <button class="submit-button">Cancel</button>
                 </a>
             </div>
             <div id="error-buttons">
                 <a href="{% url 'update-page' %}">
-                    <button>Close</button>
+                    <button class="submit-button">Close</button>
                 </a>
             </div>
         {% else %}

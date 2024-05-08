@@ -1,20 +1,6 @@
-.Form-container {
-    text-align: center;
-}
-.Form-container button {
+.Form-container .submit-button {
     padding: .5rem;
-    background: #3e4684;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-weight: 600;
-    width: 100%;
     margin-top: .5rem;
-}
-.Form-container button:hover {
-    background: #1a237e;
-}
-.Form-container a button {
     text-decoration: none;
     color: white;
 }
@@ -47,10 +33,7 @@
     }
 }
 
-#success-buttons {
-    display: none;
-}
-
+#success-buttons,
 #error-buttons {
     display: none;
 }
