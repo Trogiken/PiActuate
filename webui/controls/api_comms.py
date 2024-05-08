@@ -145,7 +145,8 @@ class ApiComms:
         try:
             return self._update_manager.check_update()
         except Exception:
-            self._configure_update_manager()  # Try to reconfigure the update manager
+            if self._update_manager is None:
+                self._configure_update_manager()  # Try to reconfigure the update manager
             return mock_check_update
 
     def prepare_update(self):
