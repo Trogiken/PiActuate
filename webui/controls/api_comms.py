@@ -21,11 +21,16 @@ class ApiComms:
     def __init__(self):
         self._update_manager = None
         self.config_manager = helper.Config()
-        try:
-            self._update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
-        except Exception:
-            # The raised expection shouldnt cause a complete crash
-            raise Exception("Update manager failed to initialize")
+        # Attempt to create an update manager object
+        attempt = 1
+        while attempt <= 3:
+            try:
+                self._update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
+            except Exception:
+                pass
+            else:
+                break
+            attempt += 1
 
     def _get_request(self, endpoint="", headers=default_header):
         """Get request"""
@@ -124,15 +129,16 @@ class ApiComms:
         return self._post_request(f"aux", json=data)
     
     def check_update(self):
-        """Check for updates"""
+        """Check for updates - return mock data if exception occurs to prevent crashing the system"""
         local_config = self.config_manager.load_yaml(
             os.path.join(LOCAL_PROJECT_PATH, ".pyupgrader", "config.yaml")
         )
-        mock_check_update = {'has_update': False,
-                        'local_version': local_config.get('local_version'),
-                        'web_version': None,
-                        'description': local_config.get('description'),
-                    }
+        mock_check_update = {
+            'has_update': False,
+            'local_version': local_config.get('version'),
+            'web_version': None,
+            'description': local_config.get('description'),
+        }
         try:
             return self._update_manager.check_update()
         except Exception:
