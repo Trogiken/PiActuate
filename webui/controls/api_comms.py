@@ -21,7 +21,10 @@ class ApiComms:
     def __init__(self):
         self._update_manager = None
         self.config_manager = helper.Config()
-        # Attempt to create an update manager object
+        self._configure_update_manager()
+    
+    def _configure_update_manager(self):
+        """Configure update manager"""
         attempt = 1
         while attempt <= 3:
             try:
@@ -142,6 +145,7 @@ class ApiComms:
         try:
             return self._update_manager.check_update()
         except Exception:
+            self._configure_update_manager()  # Try to reconfigure the update manager
             return mock_check_update
 
     def prepare_update(self):
