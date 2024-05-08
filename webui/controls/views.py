@@ -98,10 +98,21 @@ class DashboardView(LoginRequiredMixin, View):
             startup_config.auxiliary = False
         startup_config.save()
 
+        if api.check_update().get("has_update"):
+            messages.add_message(request, messages.INFO, "Update Available!")
+
         auto = api.get_auto().json()["data"]
         return render(request, "controls/dashboard.html", {
             "detail_form": DetailForm(instance=StartupConfig.objects.first()),
             "active_times": {'sunrise': auto.get("active_sunrise"), 'sunset': auto.get("active_sunset"), 'current': auto.get("active_current")},
+        })
+
+
+class UpdateView(LoginRequiredMixin, View):
+    """View for the update page"""
+    def get(self, request):
+        return render(request, "controls/update.html", {
+            "update_check": api.check_update()
         })
 
 

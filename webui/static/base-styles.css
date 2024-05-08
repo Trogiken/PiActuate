@@ -32,10 +32,24 @@
 
 .container {
   padding: 1rem;
+  text-align: center;
 }
 
 button {
   cursor: pointer;
+}
+
+.submit-button {
+  padding: 1rem;
+  background: #3e4684;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  width: 100%;
+}
+.submit-button:hover {
+  background: #1a237e;
 }
 
 /* Hide up down arrows */
@@ -72,7 +86,7 @@ body::-webkit-scrollbar-thumb:hover {
   /* Limit form width */
   .Form-container {
     width: 30%;
-    max-width: 600px;
+    max-width: 500px;
   }
 }
 
@@ -82,6 +96,7 @@ body::-webkit-scrollbar-thumb:hover {
   border-radius: 30px;
   box-shadow: 0 0 2rem #e6e9f9;
   margin: auto;
+  text-align: center;
 }
 
 /* Style system messages here */

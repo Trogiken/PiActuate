@@ -1,0 +1,39 @@
+.Form-container .submit-button {
+    padding: .5rem;
+    margin-top: .5rem;
+    text-decoration: none;
+    color: white;
+}
+
+.disabled {
+    cursor: not-allowed;
+}
+
+/* Animations */
+#download-button {
+    position: relative;
+    overflow: hidden;
+}
+#download-button.loading::after {
+    content: ""; /* Adds an empty pseudo-element */
+    position: absolute; /* Positions the pseudo-element absolutely */
+    top: 0; /* Aligns the top of the pseudo-element with the top of the button */
+    left: -100%; /* Initially positions the pseudo-element outside the button */
+    width: 100%; /* Sets the width of the pseudo-element */
+    height: 100%; /* Sets the height of the pseudo-element */
+    background: linear-gradient(to right, #3e4684, #64b5f6, #3e4684); /* Defines the gradient (blue shades) */
+    animation: loading 2s infinite; /* Applies the loading animation */
+}
+@keyframes loading {
+    0% {
+        left: -100%; /* Initial position */
+    }
+    100% {
+        left: 100%; /* Final position */
+    }
+}
+
+#success-buttons,
+#error-buttons {
+    display: none;
+}

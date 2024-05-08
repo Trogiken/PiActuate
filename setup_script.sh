@@ -9,6 +9,9 @@ GUNICORN_NAME="gunicorn.service"
 DAPHNE_NAME="daphne.service"
 UVICORN_NAME="uvicorn.service"
 
+# create a lock file
+touch $DIR/update.lock
+
 source $DIR/webenv
 USER=$USER
 SERVER_NAME=$SERVER_NAME
@@ -150,21 +153,8 @@ sudo systemctl enable gunicorn.service
 sudo systemctl enable daphne.service
 sudo systemctl enable nginx.service
 
-# Restart services incase they are already running
-if systemctl is-active --quiet $UVICORN_NAME; then
-    sudo systemctl restart $UVICORN_NAME
-else
-    sudo systemctl start $UVICORN_NAME
-fi
+# Delete lock file
+rm $DIR/update.lock
 
-if systemctl is-active --quiet $GUNICORN_NAME; then
-    sudo systemctl restart $GUNICORN_NAME
-else
-    sudo systemctl start $GUNICORN_NAME
-fi
-
-if systemctl is-active --quiet $DAPHNE_NAME; then
-    sudo systemctl restart $DAPHNE_NAME
-else
-    sudo systemctl start $DAPHNE_NAME
-fi
+# Restart device
+sudo reboot

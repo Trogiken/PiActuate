@@ -29,14 +29,13 @@
         </a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item" id="dashboard-item">
         <a href="{% url 'dashboard-page' %}" class="nav-link">
           <svg xmlns="http://www.w3.org/2000/svg"
                aria-hidden="true"
                focusable="false"
                data-prefix="fad"
                role="img"
-               xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 640 512"
                class="fa-solid fa-gauge"
           >
@@ -52,14 +51,35 @@
         </a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item" id="update-item">
+        <a href="{% url 'update-page' %}", class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               aria-hidden="true"
+               focusable="false"
+               data-prefix="fad"
+               role="img"
+               viewBox="0 0 640 512"
+               class="fa-solid fa-circle-arrow-down"
+          >
+            <g class="fa-group">
+              <path
+              fill="currentColor"
+              d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM127 281c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l71 71L232 136c0-13.3 10.7-24 24-24s24 10.7 24 24l0 182.1 71-71c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 393c-9.4 9.4-24.6 9.4-33.9 0L127 281z"
+              class="fa-primary"
+              ></path>
+            </g>
+          </svg>
+          <span class="link-text">Update</span>
+        </a>
+      </li>
+
+      <li class="nav-item" id="config-item">
         <a href="{% url 'systemconfig-page' %}" class="nav-link">
           <svg xmlns="http://www.w3.org/2000/svg"
                aria-hidden="true"
                focusable="false"
                data-prefix="fad"
                role="img"
-               xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 640 512"
                class="fa-solid fa-gear"
           >
@@ -75,14 +95,13 @@
         </a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item" id="source-item">
         <a href="https://github.com/Trogiken/chicken-door" target="_blank" rel="noreferrer noopener" class="nav-link">
           <svg xmlns="http://www.w3.org/2000/svg"
                aria-hidden="true"
                focusable="false"
                data-prefix="fad"
                role="img"
-               xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 640 512"
                class="fa-brands fa-github"
           >

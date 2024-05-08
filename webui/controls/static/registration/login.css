@@ -5,6 +5,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    text-align: left;
 }
 .Form-container .logo {
     margin: -3rem auto;
@@ -30,16 +31,4 @@
 }
 .Form-container .form-control ion-icon {
     margin-bottom: -0.2rem;
-}
-.Form-container .submit-button {
-    padding: 1rem;
-    background: #3e4684;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-weight: 600;
-    width: 100%;
-}
-.Form-container .submit-button:hover {
-    background: #1a237e;
 }

@@ -1,7 +1,7 @@
 const doorSocket = new WebSocket(
     'ws://'
     + window.location.host
-    + '/ws/engine/door/'
+    + '/ws/api/door/'
   );
 
 function stopWebSocket() {

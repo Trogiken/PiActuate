@@ -1,14 +1,39 @@
 from django.core import serializers
 from django.http import JsonResponse
 from .models import SystemConfig, StartupConfig
+from pathlib import Path
+from pyupgrader.utilities import helper
+import pyupgrader
 import requests
 import json
+import os
+
+PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/chicken-door/pyupgrader-integration/.pyupgrader/"
+LOCAL_PROJECT_PATH = str(Path(__file__).resolve().parents[2])
+
 
 # TODO Improve docstrings
 class ApiComms:
     """Class for communicating with the api"""
     api_url = "http://localhost:8002/"
     default_header = {'Content-Type': 'application/json'}
+
+    def __init__(self):
+        self._update_manager = None
+        self.config_manager = helper.Config()
+        self._configure_update_manager()
+    
+    def _configure_update_manager(self):
+        """Configure update manager"""
+        attempt = 1
+        while attempt <= 3:
+            try:
+                self._update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
+            except Exception:
+                pass
+            else:
+                break
+            attempt += 1
 
     def _get_request(self, endpoint="", headers=default_header):
         """Get request"""
@@ -105,3 +130,29 @@ class ApiComms:
             "option": key
         }
         return self._post_request(f"aux", json=data)
+    
+    def check_update(self):
+        """Check for updates - return mock data if exception occurs to prevent crashing the system"""
+        local_config = self.config_manager.load_yaml(
+            os.path.join(LOCAL_PROJECT_PATH, ".pyupgrader", "config.yaml")
+        )
+        mock_check_update = {
+            'has_update': False,
+            'local_version': local_config.get('version'),
+            'web_version': None,
+            'description': local_config.get('description'),
+        }
+        try:
+            return self._update_manager.check_update()
+        except Exception:
+            if self._update_manager is None:
+                self._configure_update_manager()  # Try to reconfigure the update manager
+            return mock_check_update
+
+    def prepare_update(self):
+        """Update the system - handle exceptions"""
+        return self._update_manager.prepare_update()
+
+    def update(self, actions_file):
+        """Update the system - handle exceptions"""
+        self._update_manager.update(actions_file)
