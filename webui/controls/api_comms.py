@@ -24,6 +24,7 @@ class ApiComms:
         try:
             self._update_manager = pyupgrader.UpdateManager(PYUPGRADER_URL, LOCAL_PROJECT_PATH)
         except Exception:
+            # The raised expection shouldnt cause a complete crash
             raise Exception("Update manager failed to initialize")
 
     def _get_request(self, endpoint="", headers=default_header):
@@ -124,7 +125,9 @@ class ApiComms:
     
     def check_update(self):
         """Check for updates"""
-        local_config = self.config_manager.load_yaml(self._update_manager.config_path)
+        local_config = self.config_manager.load_yaml(
+            os.path.join(LOCAL_PROJECT_PATH, ".pyupgrader", "config.yaml")
+        )
         mock_check_update = {'has_update': False,
                         'local_version': local_config.get('local_version'),
                         'web_version': None,
@@ -136,13 +139,9 @@ class ApiComms:
             return mock_check_update
 
     def prepare_update(self):
-        """Update the system"""
-        if not self.check_update().get("has_update", False):
-            return False
-
+        """Update the system - handle exceptions"""
         return self._update_manager.prepare_update()
 
     def update(self, actions_file):
-        """Update the system"""
-        if os.path.exists(actions_file):
-            self._update_manager.update(actions_file)
+        """Update the system - handle exceptions"""
+        self._update_manager.update(actions_file)
