@@ -1,0 +1,14 @@
+requests
+python-dotenv
+fastapi
+Django
+channels
+uvicorn
+gunicorn
+daphne
+RPi.GPIO
+pytz
+solartime
+pyupgrader==2.5.16b2
+twisted>=23.10.0rc1 # not directly required, pinned by Snyk to avoid a vulnerability
+sqlparse>=0.5.0 # not directly required, pinned by Snyk to avoid a vulnerability

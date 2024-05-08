@@ -1,0 +1,165 @@
+* {
+    font-family: "Poppins";
+}
+
+:root {
+  --nav-text-primary: #b6b6b6;
+  --nav-text-secondary: #ececec;
+  --nav-bg-primary: #23232e;
+  --nav-bg-secondary: #141418;
+  --nav-transition-speed: 600ms;
+  /* Make more variables for form elements */
+}
+
+.errorlist {
+  list-style: none;
+  margin-top: 0.5rem;
+  margin-bottom: -0.5rem;
+  padding: 0;
+  color: #d6000b;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #d6000b;
+  border-radius: 12px;
+  text-align: center;
+}
+.invalid-indicator {
+  color: #d6000b;
+}
+.invalid {
+  border: 1px solid #d6000b;
+}
+
+.container {
+  padding: 1rem;
+  text-align: center;
+}
+
+button {
+  cursor: pointer;
+}
+
+.submit-button {
+  padding: 1rem;
+  background: #3e4684;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  width: 100%;
+}
+.submit-button:hover {
+  background: #1a237e;
+}
+
+/* Hide up down arrows */
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+body {
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    background: #B1D1EF;
+    font-size: 16px;
+}
+
+body::-webkit-scrollbar {
+  width: 0.25rem;
+}
+body::-webkit-scrollbar-track {
+  background: #1e1e24;
+}
+body::-webkit-scrollbar-thumb {
+  background: #6649b8;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: #7e5bd6;
+}
+
+/* Large screens */
+@media only screen and (min-width: 600px) {
+  /* Limit form width */
+  .Form-container {
+    width: 30%;
+    max-width: 500px;
+  }
+}
+
+.Form-container {
+  background: #f1f7fe;
+  padding: 2rem;
+  border-radius: 30px;
+  box-shadow: 0 0 2rem #e6e9f9;
+  margin: auto;
+  text-align: center;
+}
+
+/* Style system messages here */
+/* Including the LEVEL styles (debug, critical, etc) */
+.messages {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 30px;
+  background: #f1f7fe;
+  box-shadow: 0 0 2rem #e6e9f9;
+  color: #3e4684;
+  font-weight: 600;
+  text-align: center;
+  list-style: none;
+}
+.messages.flash {
+  animation: flash 1s;
+}
+
+@keyframes flash {
+  0% {
+      background-color: #f1f7fe;
+  }
+  50% {
+      color: white;
+      background-color: #3e4684;
+  }
+  100% {
+      background-color: #f1f7fe;
+  }
+}
+
+/* Listed level styles for ease of change */
+.messages li.debug {
+  color: #3e4684;
+}
+.messages li.debug:before {
+  content: "DEBUG: ";
+}
+.messages li.info {
+  color: #3e4684;
+}
+.messages li.info:before {
+  content: "INFO: ";
+}
+.messages li.success {
+  color: #3e4684;
+}
+.messages li.success:before {
+  content: "SUCCESS: ";
+  color: #00a600;
+}
+.messages li.warning {
+  color: #3e4684;
+}
+.messages li.warning:before {
+  content: "WARNING: ";
+  color: #ce9e00;
+}
+.messages li.error {
+  color: #3e4684;
+}
+.messages li.error::before {
+  content: "ERROR: ";
+  color: #d6000b;
+}

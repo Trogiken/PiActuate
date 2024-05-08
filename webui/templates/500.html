@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}500{% endblock %}
+
+{% block content %}
+    <h1>500</h1>    
+    <p>An internal error has occured</p>
+    <a href="{% url 'dashboard-page' %}">Go back Home</a>
+{% endblock %}

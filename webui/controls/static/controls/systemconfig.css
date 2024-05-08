@@ -1,0 +1,82 @@
+.SystemConfig-form {
+  flex-direction: column;
+  display: flex;
+}
+
+.item-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+.SystemConfig-form .form-control {
+  background: white;
+  box-shadow: 0 0 2rem #e6e9f9;
+  padding: 1rem;
+  border-radius: 20px;
+  color: #4d4d4d;
+  margin: .4rem;
+  width: auto;
+  text-align: center;
+}
+.SystemConfig-form .form-control label {
+  font-size: 16px;
+  font-weight: 500;
+}
+/* more space for button */
+.SystemConfig-form .form-control:last-of-type {
+  margin-bottom: 1rem;
+}
+.SystemConfig-form .form-control input,
+.SystemConfig-form .form-control select {
+  padding: .5em 0;
+  border: 1px solid #e6e9f9;
+  border-radius: 30px;
+  background: #f1f7fe;
+  box-shadow: 0 0 2em #e6e9f9;
+  width: 25%;
+  min-width: 100px;
+  text-align: center;
+}
+/* center the value text in select tag */
+.SystemConfig-form .form-control select {
+  text-align-last: center;
+}
+
+.SystemConfig-form .submit-button {
+  padding: 1rem;
+  background: #3e4684;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  width: 100%;
+}
+.SystemConfig-form .submit-button:hover {
+  background: #1a237e;
+}
+.help-button {
+  background: #3e4684;
+  border: none;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  color: white;
+  font-weight: bold;
+  /* iOS adds padding for some reason */
+  padding: 0;
+}
+.help-button:hover {
+  background: #1a237e;
+}
+.help-button svg {
+  fill: currentColor;
+  text-align: center;
+}
+.help-text {
+  color: #3e4684;
+  margin: .25rem 0 0 0;
+  font-weight: 400;
+  display: none;
+}

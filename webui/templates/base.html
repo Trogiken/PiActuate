@@ -1,0 +1,60 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
+    <!--  Load base css files  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap'>
+    <link rel="stylesheet" href="{% static 'base-styles.css' %}">
+    <!--  Load extended css files  -->
+    {% block css %}{% endblock %}
+</head>
+<body>
+    {% block navbar %}{% endblock %}
+
+    <main class="container">
+        {% if messages %}
+        <ul class="messages flash">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!--  Load js files  -->
+    {% block js %}{% endblock %}
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        // hide the specified messages after 3 seconds
+        var messages = document.querySelectorAll('.success, .debug, info');
+
+        window.onload = function() {
+            // Hide messages
+            setTimeout(function(){
+                for (var i = 0; i < messages.length; i ++) {
+                    messages[i].setAttribute('style', 'display:none');
+                }
+                
+                // Check if all messages are hidden
+                var messageContainer = document.querySelector('.messages');
+                if (messageContainer && Array.from(messageContainer.querySelectorAll('.warning, .error, .success')).every(function(el) {
+                    return el.style.display === 'none';
+                })) {
+                    messageContainer.remove();
+                }
+            }, 5000)
+        };
+    </script>
+</body>
+</html>

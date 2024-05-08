@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'controls/includes/sidebar-navbar.css' %}">
+<link rel="stylesheet" href="{% static 'controls/dashboard.css' %}">
+{% endblock %}
+
+{% block navbar %}
+{% include "controls/includes/sidebar-navbar.html" %}
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'controls/engine-ops.js' %}"></script>
+<script src="{% static 'controls/includes/sidebar-active.js' %}"></script>
+<script src="{% static 'controls/time-increment.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="Form-container">
+      <div class="Control-form">
+        <h1>Door Controls</h1>
+        <button class="move-button" onclick="sendDoorCommand('open')">
+          <div class="button-icon">
+            <ion-icon name="arrow-up-outline"></ion-icon>
+          </div>
+        </button>
+        <button class="move-button" onclick="sendDoorCommand('close')">
+          <div class="button-icon">
+            <ion-icon name="arrow-down-outline"></ion-icon>
+          </div>
+        </button>
+        
+        <label>Door Status: <span id="status_text"></span></label>
+        <div id="loading-container">
+          <div id="loading-overlay">
+            <div class="loading-spinner"></div>
+            <div id="loading-text">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div>
+        <form class="Detail-form" action="{% url 'detail-post' %}" method="POST">
+          {% csrf_token %}
+
+          <div class="form-control">
+            {{ detail_form.automation.label_tag }}
+            {{ detail_form.automation }}
+            {{ detail_form.automation.errors }}
+          </div>
+          <div class="form-control">
+            {{ detail_form.auxiliary.label_tag }}
+            {{ detail_form.auxiliary }}
+            {{ detail_form.auxiliary.errors }}
+          </div>
+
+          <hr>
+
+          <h1>Offset Values</h1>
+          <p>(+ or - Minutes)</p>
+          {% if active_times.current %}
+            <p>Current Time: <span id="current-time">{{ active_times.current }}</span></p>
+          {% endif %}
+          <div class="form-control">
+            <div>
+              {{ detail_form.sunrise_offset.label_tag }}
+              {% if active_times.sunrise %}
+                <span>[{{ active_times.sunrise }}]</span>
+              {% endif %}
+            </div>
+            {{ detail_form.sunrise_offset }}
+            {{ detail_form.sunrise_offset.errors }}
+          </div>
+          <div class="form-control">
+            <div>
+              {{ detail_form.sunset_offset.label_tag }}
+              {% if active_times.sunset %}
+                <span>[{{ active_times.sunset }}]</span>
+              {% endif %}
+            </div>
+            {{ detail_form.sunset_offset }}
+            {{ detail_form.sunset_offset.errors }}
+          </div>
+
+          <button class="submit-button" type="submit">Save</button>
+        </form>
+      </div>
+    </section>
+{% endblock %}

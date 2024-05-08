@@ -1,0 +1,8 @@
+# Uncomment and enter the value between the double quotes
+# WARNING: USER and SERVER_NAME are requried!
+
+# USER=""
+# SERVER_NAME=""
+# IS_DEVELOPMENT=""
+# ALLOWED_HOSTS=""
+# SECRET_KEY=""

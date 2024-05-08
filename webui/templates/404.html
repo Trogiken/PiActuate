@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}404{% endblock %}
+
+{% block content %}
+    <h1>404</h1>
+    <p>Page not Found</p>
+    <a href="{% url 'dashboard-page' %}">Go back Home</a>
+{% endblock %}
