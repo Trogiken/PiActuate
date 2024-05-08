@@ -17,6 +17,8 @@ If you believe you have found a security vulnerability, please report it to us t
 
 Instead, create an advisory via the security tab.
 
+**HTTP will be used for the foreseeable future and should not be reported**
+
 Please include as much of the information listed below as you can to help us better understand and resolve the issue:
 
   * The type of issue (e.g., buffer overflow, SQL injection, or cross-site scripting)
