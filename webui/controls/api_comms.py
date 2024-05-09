@@ -8,7 +8,7 @@ import requests
 import json
 import os
 
-PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/chicken-door/pyupgrader-integration/.pyupgrader/"
+PYUPGRADER_URL = r"https://raw.githubusercontent.com/Trogiken/PiActuate/Pre-Production/.pyupgrader/"
 LOCAL_PROJECT_PATH = str(Path(__file__).resolve().parents[2])
 
 
