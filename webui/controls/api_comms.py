@@ -151,8 +151,12 @@ class ApiComms:
 
     def prepare_update(self):
         """Update the system - handle exceptions"""
+        if self._update_manager is None:
+            self._configure_update_manager()  # Try to reconfigure the update manager
         return self._update_manager.prepare_update()
 
     def update(self, actions_file):
         """Update the system - handle exceptions"""
+        if self._update_manager is None:
+            self._configure_update_manager()  # Try to reconfigure the update manager
         self._update_manager.update(actions_file)
