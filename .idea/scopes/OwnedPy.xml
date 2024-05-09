@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="OwnedPy" pattern="file:*.py&amp;&amp;!file[chicken-door]:source/packages//*||file:source/packages/__init__.py" />
-</component>
