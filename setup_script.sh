@@ -37,13 +37,7 @@ python $WEBUI/manage.py collectstatic --noinput
 deactivate
 
 # allow ports
-sudo ufw allow 5900  # DEBUG for VNC
-
-
-# BUG Close all ports except ngnix, why were these opened?
-sudo ufw allow 8000
-sudo ufw allow 8001
-sudo ufw allow 8002
+sudo ufw allow 5900  # VNC port for debugging, may be removed
 sudo ufw allow 80
 sudo ufw allow 'Nginx Full'
 sudo ufw enable
