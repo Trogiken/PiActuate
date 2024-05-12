@@ -39,6 +39,9 @@ def configure(config_data: dict):
         system_config = config_data.get('system_config')
         startup_config = config_data.get('startup_config')
 
+        if runtime is not None:
+            runtime.destroy()
+
         runtime = Runtime(system_config, startup_config)
 
         response = JSONResponse(content={
